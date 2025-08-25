@@ -36,26 +36,18 @@ int yyerror(void);
 /* Obtener el numero de linea */
 %option yylineno 
 
-DIGITO			    [0-9]
-LETRA			    [a-zA-Z]
-ESPACIO			    [" "]
-SIMBOLO			    [+*/-]
+/* Palabras reservadas */
+IF		        "if"|"IF"
+ELSE		    "else"|"ELSE"
+WHILE		    "while"|"WHILE"
+FOR		        "for"|"FOR"
+READ            "read"|"READ"
+WRITE           "write"|"WRITE"
 
-/* Quise agregar numeros negativos pero entran en conflicto con la resta.*/
-CTE_ENTERA		    {DIGITO}+ 
-
-CTE_STRING		    \"[^"\n]*\"
-ID			        {LETRA}({LETRA}|{DIGITO})*
-ASIGNACION   		"="
-SUMA		        "+"
-MULTIPLICACION      "*"
-RESTA		        "-"
-DIVISION            "/"
-PARENTESIS_A		"("
-PARENTESIS_C		")"
-
-COMENTARIO_A		"/*"
-COMENTARIO_C		"*/"
+/*Operadores logicos*/
+AND             "AND"
+OR              "OR"
+NOT             "NOT"
 
 /* Comparadores */
 MAYOR		    ">"
@@ -65,34 +57,54 @@ MENOR_IGUAL	    "<="
 IGUAL		    "=="
 DISTINTO		"!="
 
-/*Operadores logicos*/
-AND             "AND"
-OR              "OR"
-NOT             "NOT"
+/* Operadores */
+ASIGNACION   		"="
+SUMA		        "+"
+MULTIPLICACION      "*"
+RESTA		        "-"
+DIVISION            "/"
 
-/* Palabras reservadas */
-IF		        "if"|"IF"
-ELSE		    "else"|"ELSE"
-WHILE		    "while"|"WHILE"
-FOR		        "for"|"FOR"
-READ            "read"|"READ"
-WRITE           "write"|"WRITE"
+/* Simbolos importantes */
+PARENTESIS_A		"("
+PARENTESIS_C		")"
+
+LLAVES_A            "{"
+LLAVES_C            "}"
+
+COMENTARIO_SIMPLE   "//".* 
+COMENTARIO_MULTIPLE "/*"([^*]|\*+[^*/])*\*+"/"
+
+CORCHETE_A          "["
+CORCHETE_C          "]"
+
+PUNTO_Y_COMA        ";"
+
+
+/* Reutilizables */
+DIGITO			    [0-9]
+LETRA			    [a-zA-Z]
+GUION_BAJO          "_"
+
+/* Constantes */
+CTE_ENTERA		    {DIGITO}+
+CTE_STRING		    \"[^"\n]*\"
+
+/* Identificador */
+ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO})*
+
+UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 
 %%
+{IF}                {print_lexico("Palabra Reservada If"); return IF;}
+{ELSE}              {print_lexico("Palabra Reservada Else"); return ELSE;}
+{WHILE}             {print_lexico("Palabra Reservada While"); return WHILE;}
+{FOR}               {print_lexico("Palabra Reservada For"); return FOR;}
+{READ}              {print_lexico("Palabra Reservada Read"); return READ;}
+{WRITE}             {print_lexico("Palabra Reservada Write"); return WRITE;}
 
-{CTE_ENTERA}		{print_lexico("Constante Entera"); return CTE_ENTERA;}
-{CTE_STRING}		{print_lexico("Constante String"); return CTE_STRING;}
-{ID}			    {print_lexico("Identificador"); return ID;}
-{SUMA}		        {print_lexico("Operador Suma"); return SUMA;}
-{ASIGNACION}		{print_lexico("Operador Asignación"); return ASIGNACION;}
-{MULTIPLICACION}	{print_lexico("Operador Multiplicación"); return MULTIPLICACION;}
-{RESTA}		        {print_lexico("Operador Resta"); return RESTA;}
-{DIVISION}		    {print_lexico("Operador División"); return DIVISION;}
-{PARENTESIS_A}		{print_lexico("Paréntesis Abierto"); return PARENTESIS_A;}
-{PARENTESIS_C}		{print_lexico("Paréntesis Cerrado"); return PARENTESIS_C;}
-
-{COMENTARIO_A}      {print_lexico("Comentario"); return COMENTARIO_A;}
-{COMENTARIO_C}      {print_lexico("Comentario"); return COMENTARIO_C;}
+{AND}               {print_lexico("Operador And"); return AND;}
+{OR}                {print_lexico("Operador Or"); return OR;}
+{NOT}               {print_lexico("Operador Not"); return NOT;}
 
 {MAYOR}             {print_lexico("Operador Mayor"); return MAYOR;}
 {MENOR}             {print_lexico("Operador Menor"); return MENOR;}
@@ -101,26 +113,28 @@ WRITE           "write"|"WRITE"
 {IGUAL}             {print_lexico("Operador Igual"); return IGUAL;}
 {DISTINTO}          {print_lexico("Operador Distinto"); return DISTINTO;}
 
-{AND}               {print_lexico("Operador And"); return AND;}
-{OR}                {print_lexico("Operador Or"); return OR;}
-{NOT}               {print_lexico("Operador Not"); return NOT;}
+{SUMA}		        {print_lexico("Operador Suma"); return SUMA;}
+{ASIGNACION}		{print_lexico("Operador Asignación"); return ASIGNACION;}
+{MULTIPLICACION}	{print_lexico("Operador Multiplicación"); return MULTIPLICACION;}
+{RESTA}		        {print_lexico("Operador Resta"); return RESTA;}
+{DIVISION}		    {print_lexico("Operador División"); return DIVISION;}
 
-{IF}                {print_lexico("Palabra Reservada If"); return IF;}
-{ELSE}              {print_lexico("Palabra Reservada Else"); return ELSE;}
-{WHILE}             {print_lexico("Palabra Reservada While"); return WHILE;}
-{FOR}               {print_lexico("Palabra Reservada For"); return FOR;}
-{READ}              {print_lexico("Palabra Reservada Read"); return READ;}
-{WRITE}             {print_lexico("Palabra Reservada Write"); return WRITE;}
+{PARENTESIS_A}		{print_lexico("Paréntesis Abierto"); return PARENTESIS_A;}
+{PARENTESIS_C}		{print_lexico("Paréntesis Cerrado"); return PARENTESIS_C;}
 
-"\n"      		
-"\t"
-"\n\t"
-" "             		
-"\r\n"
-.			 { 
-    printf( COLOR_RED "[ERROR LEXICO]" COLOR_RESET COLOR_WHITE " Línea %d: Caracter no reconocido: '%s'" COLOR_RESET "\n", yylineno, yytext ); 
-    printf( COLOR_RED "[ERROR LEXICO]" COLOR_RESET COLOR_WHITE " Posición: %d" COLOR_RESET "\n", yylineno );
-    exit (0);
-}
+{LLAVES_A}          {print_lexico("Llave Abierta"); return LLAVES_A;}
+{LLAVES_C}          {print_lexico("Llave Cerrada"); return LLAVES_C;}
 
+{CORCHETE_A}        {print_lexico("Corchete Abierto"); return CORCHETE_A;}
+{CORCHETE_C}        {print_lexico("Corchete Cerrado"); return CORCHETE_C;}
 
+{PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
+
+{CTE_ENTERA}		{print_lexico("Constante Entera"); return CTE_ENTERA;}
+{CTE_STRING}		{print_lexico("Constante String"); return CTE_STRING;}
+
+{ID}			    {print_lexico("Identificador"); return ID;}
+
+{COMENTARIO_SIMPLE}  {}
+{COMENTARIO_MULTIPLE} {}
+{UNKNOWN} { }
