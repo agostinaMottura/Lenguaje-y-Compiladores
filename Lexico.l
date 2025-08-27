@@ -84,15 +84,15 @@ WRITE           "write"|"WRITE"
 {CTE_STRING}		{print_lexico("Constante String"); return CTE_STRING;}
 {ID}			    {print_lexico("Identificador"); return ID;}
 {SUMA}		        {print_lexico("Operador Suma"); return SUMA;}
-{ASIGNACION}		{print_lexico("Operador Asignación"); return ASIGNACION;}
-{MULTIPLICACION}	{print_lexico("Operador Multiplicación"); return MULTIPLICACION;}
+{ASIGNACION}		{print_lexico("Operador Asignacion"); return ASIGNACION;}
+{MULTIPLICACION}	{print_lexico("Operador Multiplicacion"); return MULTIPLICACION;}
 {RESTA}		        {print_lexico("Operador Resta"); return RESTA;}
-{DIVISION}		    {print_lexico("Operador División"); return DIVISION;}
-{PARENTESIS_A}		{print_lexico("Paréntesis Abierto"); return PARENTESIS_A;}
-{PARENTESIS_C}		{print_lexico("Paréntesis Cerrado"); return PARENTESIS_C;}
+{DIVISION}		    {print_lexico("Operador Division"); return DIVISION;}
+{PARENTESIS_A}		{print_lexico("Parentesis Abierto"); return PARENTESIS_A;}
+{PARENTESIS_C}		{print_lexico("Parentesis Cerrado"); return PARENTESIS_C;}
 
-{COMENTARIO_A}      {print_lexico("Comentario"); return COMENTARIO_A;}
-{COMENTARIO_C}      {print_lexico("Comentario"); return COMENTARIO_C;}
+/*{COMENTARIO_A}      {print_lexico("Comentario"); return COMENTARIO_A;}
+{COMENTARIO_C}      {print_lexico("Comentario"); return COMENTARIO_C;}*/
 
 {MAYOR}             {print_lexico("Operador Mayor"); return MAYOR;}
 {MENOR}             {print_lexico("Operador Menor"); return MENOR;}
@@ -118,8 +118,8 @@ WRITE           "write"|"WRITE"
 " "             		
 "\r\n"
 .			 { 
-    printf( COLOR_RED "[ERROR LEXICO]" COLOR_RESET COLOR_WHITE " Línea %d: Caracter no reconocido: '%s'" COLOR_RESET "\n", yylineno, yytext ); 
-    printf( COLOR_RED "[ERROR LEXICO]" COLOR_RESET COLOR_WHITE " Posición: %d" COLOR_RESET "\n", yylineno );
+    printf( COLOR_RED "[ERROR LEXICO]" COLOR_RESET COLOR_WHITE " Linea %d: Caracter no reconocido: '%s'" COLOR_RESET "\n", yylineno, yytext ); 
+    printf( COLOR_RED "[ERROR LEXICO]" COLOR_RESET COLOR_WHITE " Posicion: %d" COLOR_RESET "\n", yylineno );
     exit (0);
 }
 
