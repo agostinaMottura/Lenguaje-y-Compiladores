@@ -30,22 +30,20 @@ FILE  *yyin;
 
 %}
 
-%token CTE_ENTERA
-%token CTE_STRING
-%token ID
+/* Palabras reservadas */
+%token IF
+%token ELSE
+%token WHILE
+%token FOR
+%token READ
+%token WRITE
 
-%token ASIGNACION
-%token SUMA
-%token MULTIPLICACION
-%token RESTA
-%token DIVISION
+/*Operadores logicos*/
+%token AND
+%token OR
+%token NOT
 
-%token PARENTESIS_A
-%token PARENTESIS_C
-
-%token COMENTARIO_A
-%token COMENTARIO_C
-
+/* Comparadores */
 %token MAYOR
 %token MENOR
 %token MAYOR_IGUAL
@@ -53,16 +51,32 @@ FILE  *yyin;
 %token IGUAL
 %token DISTINTO
 
-%token AND
-%token OR
-%token NOT
+/* Operadores */
+%token ASIGNACION
+%token SUMA
+%token MULTIPLICACION
+%token RESTA
+%token DIVISION
 
-%token IF
-%token ELSE
-%token WHILE
-%token FOR
-%token READ
-%token WRITE
+/* Simbolos importantes */
+%token PARENTESIS_A
+%token PARENTESIS_C
+
+%token LLAVES_A
+%token LLAVES_C
+
+%token CORCHETE_A
+%token CORCHETE_C
+
+%token PUNTO_Y_COMA
+
+/* Constantes */
+%token CTE_ENTERA
+%token CTE_STRING
+
+/* Identificador */
+%token ID
+
 
 %%
 programa:
