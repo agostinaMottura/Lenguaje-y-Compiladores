@@ -7,7 +7,7 @@ FILE  *yyin;
 int yylval;
 char *yyltext;
 
-// Definición de colores ANSI
+// Definicion de colores ANSI
 #define COLOR_RESET   "\033[0m"
 #define COLOR_RED     "\033[31m"
 #define COLOR_GREEN   "\033[32m"
@@ -24,7 +24,7 @@ static int token_count = 0;
 
 void print_lexico(const char* type) {
     token_count++;
-    printf(COLOR_CYAN "[LEXICO]" COLOR_RESET " " COLOR_YELLOW "Token #%d" COLOR_RESET " | " COLOR_WHITE "Línea %d" COLOR_RESET " | " COLOR_GREEN "%s" COLOR_RESET " | " COLOR_NARANJA "Valor: '%s'" COLOR_RESET "\n", 
+    printf(COLOR_CYAN "[LEXICO]" COLOR_RESET " " COLOR_YELLOW "Token #%d" COLOR_RESET " | " COLOR_WHITE "Linea %d" COLOR_RESET " | " COLOR_GREEN "%s" COLOR_RESET " | " COLOR_NARANJA "Valor: '%s'" COLOR_RESET "\n", 
            token_count, yylineno, type, yytext);
 }
 
@@ -114,13 +114,13 @@ UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 {DISTINTO}          {print_lexico("Operador Distinto"); return DISTINTO;}
 
 {SUMA}		        {print_lexico("Operador Suma"); return SUMA;}
-{ASIGNACION}		{print_lexico("Operador Asignación"); return ASIGNACION;}
-{MULTIPLICACION}	{print_lexico("Operador Multiplicación"); return MULTIPLICACION;}
+{ASIGNACION}		{print_lexico("Operador Asignacion"); return ASIGNACION;}
+{MULTIPLICACION}	{print_lexico("Operador Multiplicacion"); return MULTIPLICACION;}
 {RESTA}		        {print_lexico("Operador Resta"); return RESTA;}
-{DIVISION}		    {print_lexico("Operador División"); return DIVISION;}
+{DIVISION}		    {print_lexico("Operador Division"); return DIVISION;}
 
-{PARENTESIS_A}		{print_lexico("Paréntesis Abierto"); return PARENTESIS_A;}
-{PARENTESIS_C}		{print_lexico("Paréntesis Cerrado"); return PARENTESIS_C;}
+{PARENTESIS_A}		{print_lexico("Parentesis Abierto"); return PARENTESIS_A;}
+{PARENTESIS_C}		{print_lexico("Parentesis Cerrado"); return PARENTESIS_C;}
 
 {LLAVES_A}          {print_lexico("Llave Abierta"); return LLAVES_A;}
 {LLAVES_C}          {print_lexico("Llave Cerrada"); return LLAVES_C;}
