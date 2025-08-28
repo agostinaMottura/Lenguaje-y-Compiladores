@@ -25,7 +25,7 @@ void print_sintactico(const char* message) {
 int yystopparser=0;
 FILE  *yyin;
 
-  int yyerror();
+  int yyerror(const char *s);
   int yylex();
 
 %}
@@ -102,7 +102,6 @@ termino:
   factor {print_sintactico("Factor es Termino");}
   |termino MULTIPLICACION factor {print_sintactico("Termino*Factor es Termino");}
   |termino DIVISION factor {print_sintactico("Termino/Factor es Termino");}
-  |CTE_STRING {print_sintactico("CTE_STRING es Termino");}
   ;
 
 factor: 
@@ -128,7 +127,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-int yyerror(void)
+int yyerror(const char *s)
 {
     extern int yylineno;
     extern char *yytext;

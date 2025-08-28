@@ -28,7 +28,7 @@ void print_lexico(const char* type) {
            token_count, yylineno, type, yytext);
 }
 
-int yyerror(void);
+int yyerror(const char *s);
 
 %}
 
