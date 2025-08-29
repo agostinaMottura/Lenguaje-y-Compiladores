@@ -28,6 +28,10 @@ FILE  *yyin;
   int yyerror(const char *s);
   int yylex();
 
+// Variables auxiliares para constantes
+int constante_aux_int;
+float constante_aux_float;
+
 %}
 
 /* Palabras reservadas */
@@ -182,6 +186,18 @@ factor:
   ID {print_sintactico("ID es Factor");}
   | CTE_INT {print_sintactico("CTE_INT es Factor");}
   | CTE_FLOAT {print_sintactico("CTE_FLOAT es Factor");}
+  | RESTA CTE_INT
+      {
+        constante_aux_int=$2;
+        int cteneg = constante_aux_int * (-1);
+        print_sintactico("NEG CTE_INT es Factor");
+      }
+  | RESTA CTE_FLOAT
+  {
+    constante_aux_float=$2;
+    float cteneg = constante_aux_float * (-1);
+     print_sintactico("NEG CTE_FLOAT es Factor");
+  }
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
   ;
 

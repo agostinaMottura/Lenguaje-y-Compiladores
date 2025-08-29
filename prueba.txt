@@ -8,6 +8,8 @@ init {
 }
 
 # ----- ASIGNACIONES -----
+a := -205
+b := -9.5
 a := 99999.99
 a := 99.
 a := .9999
@@ -16,6 +18,8 @@ b := "@sdADaSjfla%dfg"
 b := "asldk  fh sjf"
 
 c := d*(e-21)/4
+c := d*(e-21)/(-4)
+
 a := "palabra"
 
 # ----- OPERACIONES ARITMETICAS -----
