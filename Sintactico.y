@@ -93,7 +93,8 @@ sentencia:
 	asignacion {print_sintactico("Sentencia de asignación completada");} ;
   | write {print_sintactico("Sentencia de write completada");} ;
   | read {print_sintactico("Sentencia de read completada");} ;
-  | ciclo {print_sintactico("Sentencia de condición completada");} ;
+  | ciclo {print_sintactico("Sentencia de ciclo completada");} ;
+  | condicional {print_sintactico("Sentencia de condicional completada");} ;
 
 asignacion: 
   ID ASIGNACION expresion {print_sintactico("ID = Expresion es ASIGNACION");}
@@ -108,7 +109,12 @@ read:
   ;
 
 ciclo:
-  WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C {print_sintactico("While es condicion");}
+  WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C {print_sintactico("While es ciclo");}
+
+condicional:
+  IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C {print_sintactico("If es condicional");}
+  | IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C ELSE LLAVES_A programa LLAVES_C {print_sintactico("If-Else es condicional");}
+  ;
 
 condicion:
   termino MAYOR termino {print_sintactico("Termino>Termino es Condicion");}
