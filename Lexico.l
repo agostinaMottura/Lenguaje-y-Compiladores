@@ -37,12 +37,12 @@ int yyerror(const char *s);
 %option yylineno 
 
 /* Palabras reservadas */
-IF		        "if"|"IF"
-ELSE		    "else"|"ELSE"
-WHILE		    "while"|"WHILE"
-FOR		        "for"|"FOR"
-READ            "read"|"READ"
-WRITE           "write"|"WRITE"
+IF		        "if"
+ELSE		    "else"
+WHILE		    "while"
+FOR		        "for"
+READ            "read"
+WRITE           "write"
 
 /*Operadores logicos*/
 AND             "AND"
@@ -58,7 +58,7 @@ IGUAL		    "=="
 DISTINTO		"!="
 
 /* Operadores */
-ASIGNACION   		"="
+ASIGNACION   		":="
 SUMA		        "+"
 MULTIPLICACION      "*"
 RESTA		        "-"
@@ -71,19 +71,21 @@ PARENTESIS_C		")"
 LLAVES_A            "{"
 LLAVES_C            "}"
 
-COMENTARIO_SIMPLE   "//".* 
-COMENTARIO_MULTIPLE "/*"([^*]|\*+[^*/])*\*+"/"
-
 CORCHETE_A          "["
 CORCHETE_C          "]"
 
 PUNTO_Y_COMA        ";"
 
+GUION_BAJO          "_"
+
+/* Comentarios */
+COMENTARIO_SIMPLE   "//".* 
+COMENTARIO_MULTIPLE "/*"([^*]|\*+[^*/])*\*+"/"
 
 /* Reutilizables */
 DIGITO			    [0-9]
 LETRA			    [a-zA-Z]
-GUION_BAJO          "_"
+
 
 /* Constantes */
 CTE_ENTERA		    {DIGITO}+
@@ -129,6 +131,8 @@ UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 {CORCHETE_C}        {print_lexico("Corchete Cerrado"); return CORCHETE_C;}
 
 {PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
+
+{GUION_BAJO}        {print_lexico("Guion Bajo"); return GUION_BAJO;}
 
 {CTE_ENTERA}		{print_lexico("Constante Entera"); return CTE_ENTERA;}
 {CTE_STRING}		{print_lexico("Constante String"); return CTE_STRING;}
