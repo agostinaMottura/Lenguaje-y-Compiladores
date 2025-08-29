@@ -70,6 +70,8 @@ FILE  *yyin;
 
 %token PUNTO_Y_COMA
 
+%token GUION_BAJO
+
 /* Constantes */
 %token CTE_ENTERA
 %token CTE_STRING
