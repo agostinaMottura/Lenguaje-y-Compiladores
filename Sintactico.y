@@ -37,6 +37,12 @@ FILE  *yyin;
 %token FOR
 %token READ
 %token WRITE
+%token INIT
+
+/* Tipos de datos */
+%token FLOAT
+%token INT
+%token STRING
 
 /*Operadores logicos*/
 %token AND
@@ -74,10 +80,14 @@ FILE  *yyin;
 
 %token PUNTO
 
+%token DOS_PUNTOS
+
+%token COMA
+
 /* Constantes */
-%token CTE_ENTERA
+%token CTE_INT
 %token CTE_STRING
-%token CTE_DECIMAL
+%token CTE_FLOAT
 
 /* Identificador */
 %token ID
@@ -85,20 +95,46 @@ FILE  *yyin;
 
 %%
 programa:
-  | sentencias {print_sintactico("Programa extendido con nueva sentencia");} 
+  instrucciones {print_sintactico("Programa completado");}
   ;
 
-sentencias:
-  sentencia {print_sintactico("Sentencias completadas");} ;
-  | sentencias sentencia {print_sintactico("Sentencias extendidas con nueva sentencia");} 
+instrucciones:
+  sentencia {print_sintactico("Instrucciones con una sentencia");}
+  | instrucciones sentencia {print_sintactico("Instrucciones extendidas con nueva sentencia");}
   ;
 
 sentencia:  	   
-	asignacion {print_sintactico("Sentencia de asignación completada");} ;
-  | write {print_sintactico("Sentencia de write completada");} ;
-  | read {print_sintactico("Sentencia de read completada");} ;
-  | ciclo {print_sintactico("Sentencia de ciclo completada");} ;
-  | condicional {print_sintactico("Sentencia de condicional completada");} ;
+  asignacion {print_sintactico("Sentencia de asignación completada");}
+  | write {print_sintactico("Sentencia de write completada");}
+  | read {print_sintactico("Sentencia de read completada");}
+  | ciclo {print_sintactico("Sentencia de ciclo completada");}
+  | condicional {print_sintactico("Sentencia de condicional completada");}
+  | declaracion {print_sintactico("Sentencia de declaracion completada");}
+  ;
+
+declaracion:
+  INIT LLAVES_A lista_declaraciones LLAVES_C {print_sintactico("Bloque de declaraciones completado");}
+  ;
+
+lista_declaraciones:
+  declaracion_var {print_sintactico("Declaracion de variable");}
+  | lista_declaraciones declaracion_var {print_sintactico("Lista de declaraciones extendida");}
+  ;
+
+declaracion_var:
+  lista_ids DOS_PUNTOS tipo {print_sintactico("Declaracion de variable con tipo");}
+  ;
+
+lista_ids:
+  ID {print_sintactico("Identificador en lista");}
+  | lista_ids COMA ID {print_sintactico("Lista de identificadores extendida");}
+  ;
+
+tipo:
+  FLOAT {print_sintactico("Tipo float");}
+  | INT {print_sintactico("Tipo int");}
+  | STRING {print_sintactico("Tipo string");}
+  ;
 
 asignacion: 
   ID ASIGNACION expresion {print_sintactico("ID = Expresion es ASIGNACION");}
@@ -113,11 +149,11 @@ read:
   ;
 
 ciclo:
-  WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C {print_sintactico("While es ciclo");}
+  WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("While es ciclo");}
 
 condicional:
-  IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C {print_sintactico("If es condicional");}
-  | IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C ELSE LLAVES_A programa LLAVES_C {print_sintactico("If-Else es condicional");}
+  IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
+  | IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("If-Else es condicional");}
   ;
 
 condicion:
@@ -144,16 +180,16 @@ termino:
 
 factor: 
   ID {print_sintactico("ID es Factor");}
-  | CTE_ENTERA {print_sintactico("CTE_ENTERA es Factor");}
-  | CTE_DECIMAL {print_sintactico("CTE_DECIMAL es Factor");}
+  | CTE_INT {print_sintactico("CTE_INT es Factor");}
+  | CTE_FLOAT {print_sintactico("CTE_FLOAT es Factor");}
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
   ;
 
 write_element:
   ID {print_sintactico("ID es Write_element");}
   | CTE_STRING {print_sintactico("CTE_STRING es Write_element");}
-  | CTE_ENTERA {print_sintactico("CTE_ENTERA es Write_element");}
-  | CTE_DECIMAL {print_sintactico("CTE_DECIMAL es Write_element");}
+  | CTE_INT {print_sintactico("CTE_INT es Write_element");}
+  | CTE_FLOAT {print_sintactico("CTE_FLOAT es Write_element");}
   ;
 %%
 

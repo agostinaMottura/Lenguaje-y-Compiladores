@@ -1,11 +1,21 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 #include "y.tab.h"
 FILE  *yyin;
 int yylval;
 char *yyltext;
+
+
+/*Definicion para validaciones*/
+#define MAX_STRING 40
+#define MAX_INT 65535
+#define COTA_INFERIOR_FLOAT pow(-1.17549,-38)
+#define COTA_SUPERIOR_FLOAT pow(3.40282,38)
+
 
 // Definicion de colores ANSI
 #define COLOR_RESET   "\033[0m"
@@ -30,6 +40,11 @@ void print_lexico(const char* type) {
 
 int yyerror(const char *s);
 
+// Prototipos de funciones de validación
+void validacion_string(char cadena[]);
+void validacion_float(float numero);
+void validacion_int(int numero);
+
 %}
 
 %option noyywrap  
@@ -44,11 +59,15 @@ WHILE		    "while"
 FOR		        "for"
 READ            "read"
 WRITE           "write"
+INIT            "init"
+FLOAT           "float"
+INT             "int"
+STRING          "string"
 
 /*Operadores logicos*/
-AND             "AND"
-OR              "OR"
-NOT             "NOT"
+AND             "and"
+OR              "or"
+NOT             "not"
 
 /* Comparadores */
 MAYOR		    ">"
@@ -78,6 +97,8 @@ CORCHETE_C          "]"
 PUNTO_Y_COMA        ";"
 GUION_BAJO          "_"
 PUNTO               "."
+DOS_PUNTOS          ":"
+COMA                ","
 
 /* Reutilizables */
 DIGITO			    [0-9]
@@ -85,8 +106,8 @@ LETRA			    [a-zA-Z]
 
 
 /* Constantes */
-CTE_ENTERA		    {DIGITO}+
-CTE_DECIMAL         ({DIGITO}+{PUNTO}{DIGITO}*|{PUNTO}{DIGITO}+)
+CTE_INT		        {DIGITO}+
+CTE_FLOAT         ({DIGITO}+{PUNTO}{DIGITO}*|{PUNTO}{DIGITO}+)
 CTE_STRING		    \"[^"\n]*\"
 
 /* Identificador */
@@ -94,11 +115,18 @@ ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO})*
 
 /* Comentarios */
 COMENTARIO \#\+.*\+\#
+COMENTARIO_LINEA \#.*
 
 UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 
 %%
 {COMENTARIO}       {}
+{COMENTARIO_LINEA} {}
+
+{INIT}              {print_lexico("Palabra Reservada Init"); return INIT;}
+{FLOAT}             {print_lexico("Palabra Reservada Float"); return FLOAT;}
+{INT}               {print_lexico("Palabra Reservada Int"); return INT;}
+{STRING}            {print_lexico("Palabra Reservada String"); return STRING;}
 
 {IF}                {print_lexico("Palabra Reservada If"); return IF;}
 {ELSE}              {print_lexico("Palabra Reservada Else"); return ELSE;}
@@ -136,11 +164,57 @@ UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 {PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
 {GUION_BAJO}        {print_lexico("Guion Bajo"); return GUION_BAJO;}
 {PUNTO}             {print_lexico("Punto"); return PUNTO;}
+{DOS_PUNTOS}        {print_lexico("Dos Puntos"); return DOS_PUNTOS;}
+{COMA}              {print_lexico("Coma"); return COMA;}
 
-{CTE_ENTERA}		{print_lexico("Constante Entera"); return CTE_ENTERA;}
-{CTE_STRING}		{print_lexico("Constante String"); return CTE_STRING;}
-{CTE_DECIMAL}       {print_lexico("Constante Decimal"); return CTE_DECIMAL;}
+{CTE_STRING}	{
+                    validacion_string(yytext); 
+                    print_lexico("Constante String");
+                    return CTE_STRING;
+                }
+{CTE_FLOAT}	    {
+                    validacion_float(atof(yytext));
+                    print_lexico("Constante Float");
+                    return CTE_FLOAT;
+                }    	
+{CTE_INT}	    {
+                    validacion_int(atoi(yytext));
+                    print_lexico("Constante Int");
+                    return CTE_INT;
+                } 
 
-{ID}			    {print_lexico("Identificador"); return ID;}
+{ID}			{print_lexico("Identificador"); return ID;}
 
 {UNKNOWN} { }
+
+%%
+
+/* Funciones para validar los tipos de datos */
+
+void validacion_string(char cadena[])
+{
+    int largo = strlen(cadena);
+    if(largo > MAX_STRING)
+    {
+        printf("ERROR: Rango de string excedido en linea %d. Se permite un maximo de %d caracteres \n", yylineno, MAX_STRING);
+        yyerror("Error de rango en string");
+    }
+}
+
+void validacion_float(float numero)
+{   
+    if (isnan(numero) || isinf(numero) || numero > COTA_SUPERIOR_FLOAT || numero < COTA_INFERIOR_FLOAT)
+    {
+        printf("ERROR: Rango de float excedido. Se permite float de 32 bits.\n");
+        yyerror("Error de rango en float");
+    } 
+}
+
+void validacion_int(int numero)
+{
+    if(numero > MAX_INT)
+    {
+        printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
+        yyerror("Error de rango en int");
+    }
+}

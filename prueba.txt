@@ -1,2 +1,48 @@
+# ===== ARCHIVO UNIFICADO DE TESTS =====
+
+# ----- INIT (Declaraciones) -----
+init {
+    a1, b1 : float
+    variable1 : int
+    p1, p2, p3 : string
+}
+
+# ----- ASIGNACIONES -----
+a := 99999.99
+a := 99.
+a := .9999
+
+b := "@sdADaSjfla%dfg"
+b := "asldk  fh sjf"
+
 c := d*(e-21)/4
 a := "palabra"
+
+# ----- OPERACIONES ARITMETICAS -----
+x := 27 - c
+x := r + 500
+x := 34 * 3
+x := z / f
+
+# ----- COMENTARIOS -----
+#+ Esto es un comentario +#
+
+# ----- ESTRUCTURA IF -----
+if (a > b)
+{
+    write("a es mas grande que b")
+}
+else
+{
+    write("a es mas chico o igual a b")
+}
+
+# ----- ESTRUCTURA WHILE -----
+a := 1
+b := 3
+
+while (a > b)
+{
+    write("a es mas grande que b")
+    a := a + 1
+}
