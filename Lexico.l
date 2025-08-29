@@ -36,6 +36,7 @@ int yyerror(const char *s);
 /* Obtener el numero de linea */
 %option yylineno 
 
+
 /* Palabras reservadas */
 IF		        "if"
 ELSE		    "else"
@@ -75,14 +76,9 @@ CORCHETE_A          "["
 CORCHETE_C          "]"
 
 PUNTO_Y_COMA        ";"
-
 GUION_BAJO          "_"
-
-PUNTO              "."
-
-/* Comentarios */
-COMENTARIO_SIMPLE   "//".* 
-COMENTARIO_MULTIPLE "/*"([^*]|\*+[^*/])*\*+"/"
+PUNTO               "."
+NUMERAL             "#"
 
 /* Reutilizables */
 DIGITO			    [0-9]
@@ -97,9 +93,14 @@ CTE_STRING		    \"[^"\n]*\"
 /* Identificador */
 ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO})*
 
+/* Comentarios */
+COMENTARIO {NUMERAL}{SUMA}({DIGITO}|{LETRA})+{SUMA}{NUMERAL}
+
 UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 
 %%
+{COMENTARIO}       {}
+
 {IF}                {print_lexico("Palabra Reservada If"); return IF;}
 {ELSE}              {print_lexico("Palabra Reservada Else"); return ELSE;}
 {WHILE}             {print_lexico("Palabra Reservada While"); return WHILE;}
@@ -134,9 +135,7 @@ UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 {CORCHETE_C}        {print_lexico("Corchete Cerrado"); return CORCHETE_C;}
 
 {PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
-
 {GUION_BAJO}        {print_lexico("Guion Bajo"); return GUION_BAJO;}
-
 {PUNTO}             {print_lexico("Punto"); return PUNTO;}
 
 {CTE_ENTERA}		{print_lexico("Constante Entera"); return CTE_ENTERA;}
@@ -145,6 +144,4 @@ UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 
 {ID}			    {print_lexico("Identificador"); return ID;}
 
-{COMENTARIO_SIMPLE}  {}
-{COMENTARIO_MULTIPLE} {}
 {UNKNOWN} { }

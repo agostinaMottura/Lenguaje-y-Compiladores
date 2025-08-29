@@ -5,7 +5,7 @@ for archivo in ./tests/*; do
         nombre=$(basename "$archivo")
         echo "Running test: $nombre"
         echo ""
-        ./run.sh "$nombre"
+        ./run.sh "$archivo"
         echo ""
         echo "   -----------------------------------   "
     fi
