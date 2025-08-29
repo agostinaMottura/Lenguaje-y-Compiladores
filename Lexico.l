@@ -78,7 +78,6 @@ CORCHETE_C          "]"
 PUNTO_Y_COMA        ";"
 GUION_BAJO          "_"
 PUNTO               "."
-NUMERAL             "#"
 
 /* Reutilizables */
 DIGITO			    [0-9]
@@ -94,7 +93,7 @@ CTE_STRING		    \"[^"\n]*\"
 ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO})*
 
 /* Comentarios */
-COMENTARIO {NUMERAL}{SUMA}({DIGITO}|{LETRA})+{SUMA}{NUMERAL}
+COMENTARIO \#\+.*\+\#
 
 UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 

@@ -85,8 +85,12 @@ FILE  *yyin;
 
 %%
 programa:
-  sentencia {print_sintactico("Programa completado");} ;
-  | programa sentencia {print_sintactico("Programa extendido con nueva sentencia");} 
+  | sentencias {print_sintactico("Programa extendido con nueva sentencia");} 
+  ;
+
+sentencias:
+  sentencia {print_sintactico("Sentencias completadas");} ;
+  | sentencias sentencia {print_sintactico("Sentencias extendidas con nueva sentencia");} 
   ;
 
 sentencia:  	   
