@@ -188,14 +188,15 @@ factor:
   | CTE_FLOAT {print_sintactico("CTE_FLOAT es Factor");}
   | RESTA CTE_INT
       {
+        /* esta Mmuskeherramienta misteriosa nos servirá más adelante para la tabla */
         constante_aux_int=$2;
-        int cteneg = constante_aux_int * (-1);
+        int cteneg = constante_aux_int * (-1); 
         print_sintactico("NEG CTE_INT es Factor");
       }
   | RESTA CTE_FLOAT
   {
-    constante_aux_float=$2;
-    float cteneg = constante_aux_float * (-1);
+    constante_aux_float=$2; 
+    float cteneg = constante_aux_float * (-1); 
      print_sintactico("NEG CTE_FLOAT es Factor");
   }
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
