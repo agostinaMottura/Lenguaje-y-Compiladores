@@ -72,9 +72,12 @@ FILE  *yyin;
 
 %token GUION_BAJO
 
+%token PUNTO
+
 /* Constantes */
 %token CTE_ENTERA
 %token CTE_STRING
+%token CTE_DECIMAL
 
 /* Identificador */
 %token ID
@@ -109,6 +112,7 @@ termino:
 factor: 
   ID {print_sintactico("ID es Factor");}
   | CTE_ENTERA {print_sintactico("CTE_ENTERA es Factor");}
+  | CTE_DECIMAL {print_sintactico("CTE_DECIMAL es Factor");}
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
   ;
 %%
