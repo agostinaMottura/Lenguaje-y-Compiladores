@@ -91,9 +91,32 @@ programa:
 
 sentencia:  	   
 	asignacion {print_sintactico("Sentencia de asignación completada");} ;
+  | write {print_sintactico("Sentencia de write completada");} ;
+  | read {print_sintactico("Sentencia de read completada");} ;
+  | ciclo {print_sintactico("Sentencia de condición completada");} ;
 
 asignacion: 
   ID ASIGNACION expresion {print_sintactico("ID = Expresion es ASIGNACION");}
+  ;
+
+write:
+  WRITE PARENTESIS_A write_element PARENTESIS_C {print_sintactico("WRITE(Expresion); es WRITE");}
+  ;
+
+read:
+  READ PARENTESIS_A ID PARENTESIS_C PUNTO_Y_COMA {print_sintactico("READ(ID); es READ");}
+  ;
+
+ciclo:
+  WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A programa LLAVES_C {print_sintactico("While es condicion");}
+
+condicion:
+  termino MAYOR termino {print_sintactico("Termino>Termino es Condicion");}
+  |termino MENOR termino {print_sintactico("Termino<Termino es Condicion");}
+  |termino MAYOR_IGUAL termino {print_sintactico("Termino>=Termino es Condicion");}
+  |termino MENOR_IGUAL termino {print_sintactico("Termino<=Termino es Condicion");}
+  |termino IGUAL termino {print_sintactico("Termino==Termino es Condicion");}
+  |termino DISTINTO termino {print_sintactico("Termino!=Termino es Condicion");}
   ;
 
 expresion:
@@ -114,6 +137,13 @@ factor:
   | CTE_ENTERA {print_sintactico("CTE_ENTERA es Factor");}
   | CTE_DECIMAL {print_sintactico("CTE_DECIMAL es Factor");}
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
+  ;
+
+write_element:
+  ID {print_sintactico("ID es Write_element");}
+  | CTE_STRING {print_sintactico("CTE_STRING es Write_element");}
+  | CTE_ENTERA {print_sintactico("CTE_ENTERA es Write_element");}
+  | CTE_DECIMAL {print_sintactico("CTE_DECIMAL es Write_element");}
   ;
 %%
 
