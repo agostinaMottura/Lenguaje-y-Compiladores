@@ -78,6 +78,8 @@ PUNTO_Y_COMA        ";"
 
 GUION_BAJO          "_"
 
+PUNTO              "."
+
 /* Comentarios */
 COMENTARIO_SIMPLE   "//".* 
 COMENTARIO_MULTIPLE "/*"([^*]|\*+[^*/])*\*+"/"
@@ -89,6 +91,7 @@ LETRA			    [a-zA-Z]
 
 /* Constantes */
 CTE_ENTERA		    {DIGITO}+
+CTE_DECIMAL         ({DIGITO}+{PUNTO}{DIGITO}*|{PUNTO}{DIGITO}+)
 CTE_STRING		    \"[^"\n]*\"
 
 /* Identificador */
@@ -134,8 +137,11 @@ UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
 
 {GUION_BAJO}        {print_lexico("Guion Bajo"); return GUION_BAJO;}
 
+{PUNTO}             {print_lexico("Punto"); return PUNTO;}
+
 {CTE_ENTERA}		{print_lexico("Constante Entera"); return CTE_ENTERA;}
 {CTE_STRING}		{print_lexico("Constante String"); return CTE_STRING;}
+{CTE_DECIMAL}       {print_lexico("Constante Decimal"); return CTE_DECIMAL;}
 
 {ID}			    {print_lexico("Identificador"); return ID;}
 
