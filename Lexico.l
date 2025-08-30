@@ -111,13 +111,13 @@ CTE_FLOAT         ({DIGITO}+{PUNTO}{DIGITO}*|{PUNTO}{DIGITO}+)
 CTE_STRING		    \"[^"\n]*\"
 
 /* Identificador */
-ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO})*
-
-/* Comentarios */
-COMENTARIO \#\+.*\+\#
-COMENTARIO_LINEA \#.*
+ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO}|{GUION_BAJO})*
 
 UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
+
+/* Comentarios */
+COMENTARIO \#\+{UNKNOWN}*\+\#
+COMENTARIO_LINEA \#.*
 
 %%
 {COMENTARIO}       {}
@@ -196,7 +196,7 @@ void validacion_string(char cadena[])
     int largo = strlen(cadena);
     if(largo > MAX_STRING)
     {
-        printf("ERROR: Rango de string excedido en linea %d. Se permite un maximo de %d caracteres \n", yylineno, MAX_STRING);
+        printf("ERROR: Rango de string excedido en linea %d. Se permite un maximo de %d caracteres. Largo actual: %d \n", yylineno, MAX_STRING, largo);
         yyerror("Error de rango en string");
     }
 }

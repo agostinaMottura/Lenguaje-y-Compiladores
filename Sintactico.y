@@ -112,7 +112,7 @@ sentencia:
   | write {print_sintactico("Sentencia de write completada");}
   | read {print_sintactico("Sentencia de read completada");}
   | ciclo {print_sintactico("Sentencia de ciclo completada");}
-  | condicional {print_sintactico("Sentencia de condicional completada");}
+  | if {print_sintactico("Sentencia de condicional completada");}
   | declaracion {print_sintactico("Sentencia de declaracion completada");}
   ;
 
@@ -155,9 +155,14 @@ read:
 ciclo:
   WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("While es ciclo");}
 
+if:
+  IF condicional LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
+  | IF condicional LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("If-Else es condicional");}
+  ;
+
+
 condicional:
-  IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
-  | IF PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("If-Else es condicional");}
+  PARENTESIS_A condicion PARENTESIS_C  {print_sintactico("PA condicion PC es condicional");}
   ;
 
 condicion:
@@ -167,6 +172,9 @@ condicion:
   |termino MENOR_IGUAL termino {print_sintactico("Termino<=Termino es Condicion");}
   |termino IGUAL termino {print_sintactico("Termino==Termino es Condicion");}
   |termino DISTINTO termino {print_sintactico("Termino!=Termino es Condicion");}
+  |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
+  |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
+  |condicional {print_sintactico("Condicional es condicion");}
   ;
 
 expresion:

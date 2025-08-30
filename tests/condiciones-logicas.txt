@@ -1,0 +1,9 @@
+if (((a > b) and ((c > d)) and (m == m)) or (a == -2.23) and 6 < 7) 
+{
+    write("a mayor que b y c mayor que d ")
+}
+
+if (a < b or c < d)
+{
+    write("a menor que b o c menor que d")
+}
