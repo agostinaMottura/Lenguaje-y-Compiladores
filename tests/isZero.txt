@@ -1,0 +1,6 @@
+esCero := isZero( s*7+1-h/2 )
+
+if (isZero(8)) 
+{
+    write("Es Cero")
+}

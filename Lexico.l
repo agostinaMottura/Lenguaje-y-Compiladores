@@ -64,6 +64,10 @@ FLOAT           "float"
 INT             "int"
 STRING          "string"
 
+/* Temas especiales */
+IS_ZERO                 "isZero"  
+TRIANGLE_AREA_MAXIMUM   "triangleAreaMaximum"
+
 /*Operadores logicos*/
 AND             "and"
 OR              "or"
@@ -134,6 +138,9 @@ COMENTARIO_LINEA \#.*
 {FOR}               {print_lexico("Palabra Reservada For"); return FOR;}
 {READ}              {print_lexico("Palabra Reservada Read"); return READ;}
 {WRITE}             {print_lexico("Palabra Reservada Write"); return WRITE;}
+
+{TRIANGLE_AREA_MAXIMUM} {print_lexico("Funcion especial triangleAreaMaximum"); return TRIANGLE_AREA_MAXIMUM;}
+{IS_ZERO}               {print_lexico("Funcion especial isZero"); return IS_ZERO;}
 
 {AND}               {print_lexico("Operador And"); return AND;}
 {OR}                {print_lexico("Operador Or"); return OR;}
