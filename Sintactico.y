@@ -122,8 +122,14 @@ sentencia:
   ;
 
 funcion:
-  IS_ZERO PARENTESIS_A expresion_numerica PARENTESIS_C {print_sintactico("Funcion isZero completada");}
-  | TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C {print_sintactico("Funcion triangleAreaMaximum completada");}
+  funcion_booleana {print_sintactico("Funcion es funcion booleana");}
+  |funcion_numerica {print_sintactico("Funcion es funcion numerica");}
+
+funcion_booleana:
+  IS_ZERO PARENTESIS_A expresion_numerica PARENTESIS_C {print_sintactico("Funcion booleana isZero completada");}
+
+funcion_numerica:
+  TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C {print_sintactico("Funcion numerica triangleAreaMaximum completada");}
 
 triangulo:
   CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C {print_sintactico("Coordenadas entre corchetes es triangulo");}
@@ -192,7 +198,6 @@ condicion:
   |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
   |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
   |condicional {print_sintactico("Condicional es condicion");}
-  |funcion {print_sintactico("Condicional es funcion");}
   ;
 
 expresion:
@@ -204,6 +209,7 @@ expresion_numerica:
   termino {print_sintactico("Termino es Expresion Numerica");}
   |expresion_numerica SUMA termino {print_sintactico("Expresion+Termino es Expresion Numerica");}
   |expresion_numerica RESTA termino {print_sintactico("Expresion-Termino es Expresion Numerica");}
+  |funcion_numerica {print_sintactico("Funcion Numerica es Expresion Numerica");}
 
 
 termino: 
