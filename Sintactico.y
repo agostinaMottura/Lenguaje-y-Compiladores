@@ -178,32 +178,44 @@ ciclo:
   WHILE PARENTESIS_A condicion PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("While es ciclo");}
 
 if:
-  IF condicional LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
-  | IF condicional LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("If-Else es condicional");}
+  bloque_if 
+  | else
   ;
 
+bloque_if:
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
+  ;
+
+else:
+   ELSE bloque_if
+  | ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("Else es bloque else");}
+  ;
 
 condicional:
-  PARENTESIS_A condicion PARENTESIS_C  {print_sintactico("PA condicion PC es condicional");}
+   condicion  {print_sintactico("PA condicion PC es condicional");}
+  |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
+  |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
   ;
 
 condicion:
-  expresion IGUAL expresion {print_sintactico("Expresion==Expresion es Condicion");}
-  |expresion DISTINTO expresion {print_sintactico("Expresion!=Expresion es Condicion");}
-  |expresion MAYOR expresion {print_sintactico("Expresion>Expresion es Condicion");}
-  |expresion MENOR expresion {print_sintactico("Expresion<Expresion es Condicion");}
-  |expresion MAYOR_IGUAL expresion {print_sintactico("Expresion>=Expresion es Condicion");}
-  |expresion MENOR_IGUAL expresion {print_sintactico("Expresion<=Expresion es Condicion");}
-  |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
-  |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
+  expresion operador_comparacion expresion {print_sintactico("Expresion==Expresion es Condicion");}
   |expresion {print_sintactico("Expresion es Condicion");}
+  |PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Condicional es Condicion");}
   ;
+
+operador_comparacion:
+  MAYOR 
+  | MAYOR_IGUAL 
+  | MENOR_IGUAL 
+  | MENOR 
+  | IGUAL
+  | DISTINTO
+;
 
 expresion:
   termino {print_sintactico("Termino es Expresion");}
   |expresion SUMA termino {print_sintactico("Expresion+Termino es Expresion");}
   |expresion RESTA termino {print_sintactico("Expresion-Termino es Expresion");}
-  |CTE_STRING {print_sintactico("CTE_STRING es Expresion");}
   ;
 
 termino: 
@@ -229,6 +241,7 @@ factor:
     float cteneg = constante_aux_float * (-1); 
      print_sintactico("NEG CTE_FLOAT es Factor");
   }
+  | CTE_STRING {print_sintactico("CTE_STRING es Expresion");}
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
   | funcion {print_sintactico("Funcion es condicion");}
   ;
