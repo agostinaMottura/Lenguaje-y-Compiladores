@@ -122,20 +122,20 @@ sentencia:
   ;
 
 funcion:
-  funcion_booleana {print_sintactico("Funcion es funcion booleana");}
-  |funcion_numerica {print_sintactico("Funcion es funcion numerica");}
+  isZero {print_sintactico("Funcion es funcion booleana");}
+  |triangleAreaMaximum {print_sintactico("Funcion es funcion numerica");}
 
-funcion_booleana:
-  IS_ZERO PARENTESIS_A expresion_numerica PARENTESIS_C {print_sintactico("Funcion booleana isZero completada");}
+isZero:
+  IS_ZERO PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Funcion booleana isZero completada");}
 
-funcion_numerica:
+triangleAreaMaximum:
   TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C {print_sintactico("Funcion numerica triangleAreaMaximum completada");}
 
 triangulo:
   CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C {print_sintactico("Coordenadas entre corchetes es triangulo");}
 
 coordenada: 
-  expresion_numerica COMA expresion_numerica {print_sintactico("Expresion numerica coma Expresion numerica es coordenada");}
+  expresion COMA expresion {print_sintactico("Expresion coma Expresion es coordenada");}
 
 
 declaracion:
@@ -164,7 +164,6 @@ tipo:
 
 asignacion: 
   ID ASIGNACION expresion {print_sintactico("ID = Expresion es ASIGNACION");}
-  | ID ASIGNACION funcion {print_sintactico("ID = Funcion es ASIGNACION");}
   ;
 
 write:
@@ -191,26 +190,21 @@ condicional:
 condicion:
   expresion IGUAL expresion {print_sintactico("Expresion==Expresion es Condicion");}
   |expresion DISTINTO expresion {print_sintactico("Expresion!=Expresion es Condicion");}
-  |expresion_numerica MAYOR expresion_numerica {print_sintactico("Expresion Numerica>Expresion Numerica es Condicion");}
-  |expresion_numerica MENOR expresion_numerica {print_sintactico("Expresion Numerica<Expresion Numerica es Condicion");}
-  |expresion_numerica MAYOR_IGUAL expresion_numerica {print_sintactico("Expresion Numerica>=Expresion Numerica es Condicion");}
-  |expresion_numerica MENOR_IGUAL expresion_numerica {print_sintactico("Expresion Numerica<=Expresion Numerica es Condicion");}
+  |expresion MAYOR expresion {print_sintactico("Expresion>Expresion es Condicion");}
+  |expresion MENOR expresion {print_sintactico("Expresion<Expresion es Condicion");}
+  |expresion MAYOR_IGUAL expresion {print_sintactico("Expresion>=Expresion es Condicion");}
+  |expresion MENOR_IGUAL expresion {print_sintactico("Expresion<=Expresion es Condicion");}
   |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
   |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
-  |condicional {print_sintactico("Condicional es condicion");}
+  |expresion {print_sintactico("Expresion es Condicion");}
   ;
 
 expresion:
-  expresion_numerica {print_sintactico("Expresion Numerica es Expresion");}
+  termino {print_sintactico("Termino es Expresion");}
+  |expresion SUMA termino {print_sintactico("Expresion+Termino es Expresion");}
+  |expresion RESTA termino {print_sintactico("Expresion-Termino es Expresion");}
   |CTE_STRING {print_sintactico("CTE_STRING es Expresion");}
   ;
-
-expresion_numerica:
-  termino {print_sintactico("Termino es Expresion Numerica");}
-  |expresion_numerica SUMA termino {print_sintactico("Expresion+Termino es Expresion Numerica");}
-  |expresion_numerica RESTA termino {print_sintactico("Expresion-Termino es Expresion Numerica");}
-  |funcion_numerica {print_sintactico("Funcion Numerica es Expresion Numerica");}
-
 
 termino: 
   factor {print_sintactico("Factor es Termino");}
@@ -235,7 +229,8 @@ factor:
     float cteneg = constante_aux_float * (-1); 
      print_sintactico("NEG CTE_FLOAT es Factor");
   }
-  | PARENTESIS_A expresion_numerica PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
+  | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
+  | funcion {print_sintactico("Funcion es condicion");}
   ;
 
 write_element:

@@ -4,3 +4,8 @@ if (isZero(8))
 {
     write("Es Cero")
 }
+
+while(isZero(10-1) == 0)
+{
+    write("Es ceroo")
+}

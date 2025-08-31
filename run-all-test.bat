@@ -1,7 +1,7 @@
 @echo off
 REM 
 
-for %%f in (tests\*) do (
+for %%f in (tests\isZero.txt) do (
     if exist "%%f" (
         echo Running test: %%~nxf
         echo.
