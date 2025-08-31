@@ -192,14 +192,15 @@ else:
   ;
 
 condicional:
-   condicion  {print_sintactico("PA condicion PC es condicional");}
-  |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
-  |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
+  condicion  {print_sintactico("PA condicion PC es condicional");}
+  | NOT condicional {print_sintactico("NOT condicion es condicional");}
   ;
 
 condicion:
   expresion operador_comparacion expresion {print_sintactico("Expresion==Expresion es Condicion");}
   |expresion {print_sintactico("Expresion es Condicion");}
+  |condicion AND condicion {print_sintactico("Condicion AND Condicion es Condicion");}
+  |condicion OR condicion {print_sintactico("Condicion OR Condicion es Condicion");}
   |PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Condicional es Condicion");}
   ;
 

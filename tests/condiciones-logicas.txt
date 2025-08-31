@@ -7,3 +7,11 @@ if (a < b or c < d)
 {
     write("a menor que b o c menor que d")
 }
+
+if (not a) {
+    write("a")
+}
+
+if (not not (a == 0)) {
+    write("a")
+}
