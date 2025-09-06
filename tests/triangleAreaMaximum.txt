@@ -1,7 +1,3 @@
-areaMaxima := triangleAreaMaximum( [0,x; 4.0,12; 2.5,3] ; [x,0; 6,0; z,2] )
-
-while (triangleAreaMaximum( [0,x; 4.0,12; 2.5,3] ; [x,0; 6,0; z,2] ) > b)
-{
-    write("a es mas grande que b")
-    a := a + 1
-}
+Integer z := 2;
+Float x := 3.8;
+areaMax = triangleAreaMaximum( [0,x; 4.0,12; 2.5,3] ; [x,0; 6,0; z,2] )

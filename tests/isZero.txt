@@ -1,11 +1,15 @@
-esCero := isZero( s*7+1-h/2 )
-
-if (isZero(8)) 
-{
-    write("Es Cero")
+init {
+    s,h,contador : Int
 }
-
-while(isZero(10-1) == 0)
+s := 3
+h := 44
+contador := 10
+while (isZero( contador - 10 ))
 {
-    write("Es ceroo")
+    print("El contador vale 10")
+    contador := contador - 1
+}
+if (isZero( s*7+1-h/2 ))
+{
+    print("La expresion es igual a cero")
 }

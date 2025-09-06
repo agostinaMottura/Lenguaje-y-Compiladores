@@ -1,17 +1,18 @@
-if (((a > b) and ((c > d)) and (m == m)) or (a == -2.23) and 6 < 7) 
+a := 1
+b := 1
+c := 2
+
+if (a > b AND c > b)
 {
-    write("a mayor que b y c mayor que d ")
+    write("a es mas grande que b y c es mas grande que b")
 }
 
-if (a < b or c < d)
+if (NOT a > b)
 {
-    write("a menor que b o c menor que d")
+    write("a no es mas grande que b")
 }
 
-if (not a) {
-    write("a")
-}
-
-if (not not (a == 0)) {
-    write("a")
+if (a > b OR c > b)
+{
+    write("a es mas grande que b o c es mas grande que b")
 }

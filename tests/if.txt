@@ -2,20 +2,7 @@ if (a > b)
 {
     write("a es mas grande que b")
 }
-else if(a > b)
-{
-    write("a es mas chico o igual a b")
-}
-else 
-{
-    write("a es mas chico o igual a b")
-}
-
-if(a > b)
-{
-    write("a es mas chico o igual a b")
-}
-else 
+else
 {
     write("a es mas chico o igual a b")
 }

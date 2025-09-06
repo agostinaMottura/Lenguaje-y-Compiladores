@@ -1,5 +1,5 @@
 init {
-    a1, b1 : float
-    variable1 : int
-    p1, p2, p3 : string
+    a1, b1 : Float
+    variable1 : Int
+    p1, p2, p3 : String
 }
