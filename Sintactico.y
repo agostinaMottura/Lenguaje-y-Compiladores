@@ -181,29 +181,28 @@ condicional:
   ;
 
 condicion_compuesta:
-  condicion_compuesta AND condicion_unaria {print_sintactico("Condicion AND Condicion es Condicion");}
-  | condicion_compuesta OR condicion_unaria {print_sintactico("Condicion OR Condicion es Condicion");}
-  | condicion_unaria
+  condicion_compuesta AND condicion_unaria {print_sintactico("Condicion AND Condicion es Condicion compuesta");}
+  | condicion_compuesta OR condicion_unaria {print_sintactico("Condicion OR Condicion es Condicion compuesta");}
+  | condicion_unaria {print_sintactico("Condicion es Condicion compuesta");}
   ;
 
 condicion_unaria:
-  NOT condicion_unaria {print_sintactico("NOT condicion es condicional");}
-  | predicado
+  NOT condicion_unaria {print_sintactico("NOT condicion es condicion unaria");}
+  | predicado {print_sintactico("Predicado es condicion unaria");}
   ;
 
 predicado:
   expresion operador_comparacion expresion {print_sintactico("Expresion==Expresion es Predicado");}
   | PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Condicional es Predicado");}
-  | factor {print_sintactico("Factor es Predicado");}
   ;
 
 operador_comparacion:
-  MAYOR 
-  | MAYOR_IGUAL 
-  | MENOR_IGUAL 
-  | MENOR 
-  | IGUAL
-  | DISTINTO
+  MAYOR {print_sintactico("Mayor es Operador de comparacion");}
+  | MAYOR_IGUAL {print_sintactico("Mayor Igual es Operador de comparacion");}
+  | MENOR_IGUAL {print_sintactico("Menor Igual es Operador de comparacion");}
+  | MENOR {print_sintactico("Menor es Operador de comparacion");}
+  | IGUAL {print_sintactico("Igual es Operador de comparacion");}
+  | DISTINTO {print_sintactico("Distinto es Operador de comparacion");}
 ;
 
 expresion:
