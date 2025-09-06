@@ -35,13 +35,12 @@ float constante_aux_float;
 %}
 
 /* Palabras reservadas */
-%token IF ELSE
+%token IF
+%token ELSE
 %token WHILE
 %token READ
 %token WRITE
 %token INIT
-%nonassoc LOWER_THAN_ELSE
-%nonassoc ELSE
 
 /* Funciones */
 %token IS_ZERO
@@ -117,21 +116,33 @@ sentencia:
   ;
 
 funcion:
+  funcion_numerica {print_sintactico("Funcion numerica");}
+  | funcion_booleana {print_sintactico("Funcion booleana");}
+  ;
+
+funcion_numerica:
+  triangleAreaMaximum {print_sintactico("Funcion es funcion numerica");}
+  ;
+
+funcion_booleana:
   isZero {print_sintactico("Funcion es funcion booleana");}
-  |triangleAreaMaximum {print_sintactico("Funcion es funcion numerica");}
+  ;
 
 isZero:
   IS_ZERO PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Funcion booleana isZero completada");}
+  ;
 
 triangleAreaMaximum:
   TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C {print_sintactico("Funcion numerica triangleAreaMaximum completada");}
-
+  ;
+  
 triangulo:
   CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C {print_sintactico("Coordenadas entre corchetes es triangulo");}
+  ;
 
 coordenada: 
   expresion COMA expresion {print_sintactico("Expresion coma Expresion es coordenada");}
-
+  ;
 
 declaracion:
   INIT LLAVES_A lista_declaraciones LLAVES_C {print_sintactico("Bloque de declaraciones completado");}
@@ -171,10 +182,21 @@ read:
 
 ciclo:
   WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("While es ciclo");}
+  ;
 
 if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C %prec LOWER_THAN_ELSE {print_sintactico("If es condicional");}
-  | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("If-Else es condicional");}
+  bloque_if 
+  | bloque_if else
+  ;
+
+bloque_if:
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
+  ;
+
+else:
+   ELSE bloque_if
+  | ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("Else es bloque else");}
+  ;
 
 condicional:
   condicion_compuesta {print_sintactico("PA condicion PC es condicional");}
@@ -193,7 +215,8 @@ condicion_unaria:
 
 predicado:
   expresion operador_comparacion expresion {print_sintactico("Expresion==Expresion es Predicado");}
-  | PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Condicional es Predicado");}
+  | PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Parentesis_A Condicional Parentesis_C es Predicado");}
+  | funcion_booleana {print_sintactico("Funcion booleana es Predicado");}
   ;
 
 operador_comparacion:
@@ -235,8 +258,8 @@ factor:
      print_sintactico("NEG CTE_FLOAT es Factor");
   }
   | CTE_STRING {print_sintactico("CTE_STRING es Expresion");}
-  | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
-  | funcion {print_sintactico("Funcion es condicion");}
+  | PARENTESIS_A expresion PARENTESIS_C %prec PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
+  | funcion_numerica {print_sintactico("Funcion numerica es factor");}
   ;
 
 write_element:
