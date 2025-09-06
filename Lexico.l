@@ -11,7 +11,7 @@ char *yyltext;
 
 
 /*Definicion para validaciones*/
-#define MAX_STRING 40
+#define MAX_STRING 50
 #define MAX_INT 65535
 #define COTA_INFERIOR_FLOAT pow(-1.17549,-38)
 #define COTA_SUPERIOR_FLOAT pow(3.40282,38)
@@ -56,7 +56,6 @@ void validacion_int(int numero);
 IF		        "if"
 ELSE		    "else"
 WHILE		    "while"
-FOR		        "for"
 READ            "read"
 WRITE           "write"
 INIT            "init"
@@ -98,8 +97,8 @@ LLAVES_C            "}"
 CORCHETE_A          "["
 CORCHETE_C          "]"
 
-PUNTO_Y_COMA        ";"
 GUION_BAJO          "_"
+PUNTO_Y_COMA        ";"
 PUNTO               "."
 DOS_PUNTOS          ":"
 COMA                ","
@@ -111,13 +110,13 @@ LETRA			    [a-zA-Z]
 
 /* Constantes */
 CTE_INT		        {DIGITO}+
-CTE_FLOAT         ({DIGITO}+{PUNTO}{DIGITO}*|{PUNTO}{DIGITO}+)
+CTE_FLOAT         {DIGITO}+{PUNTO}{DIGITO}+
 CTE_STRING		    \"[^"\n]*\"
 
 /* Identificador */
 ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO}|{GUION_BAJO})*
 
-UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|.
+UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|""|.
 
 /* Comentarios */
 COMENTARIO \#\+{UNKNOWN}*\+\#
@@ -135,7 +134,6 @@ COMENTARIO_LINEA \#.*
 {IF}                {print_lexico("Palabra Reservada If"); return IF;}
 {ELSE}              {print_lexico("Palabra Reservada Else"); return ELSE;}
 {WHILE}             {print_lexico("Palabra Reservada While"); return WHILE;}
-{FOR}               {print_lexico("Palabra Reservada For"); return FOR;}
 {READ}              {print_lexico("Palabra Reservada Read"); return READ;}
 {WRITE}             {print_lexico("Palabra Reservada Write"); return WRITE;}
 
@@ -168,11 +166,9 @@ COMENTARIO_LINEA \#.*
 {CORCHETE_A}        {print_lexico("Corchete Abierto"); return CORCHETE_A;}
 {CORCHETE_C}        {print_lexico("Corchete Cerrado"); return CORCHETE_C;}
 
-{PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
-{GUION_BAJO}        {print_lexico("Guion Bajo"); return GUION_BAJO;}
-{PUNTO}             {print_lexico("Punto"); return PUNTO;}
 {DOS_PUNTOS}        {print_lexico("Dos Puntos"); return DOS_PUNTOS;}
 {COMA}              {print_lexico("Coma"); return COMA;}
+{PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
 
 {CTE_STRING}	{
                     validacion_string(yytext); 

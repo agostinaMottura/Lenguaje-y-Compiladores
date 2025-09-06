@@ -2,17 +2,17 @@ a := 1
 b := 1
 c := 2
 
-if (a > b AND c > b)
+if (a > b and c > b)
 {
     write("a es mas grande que b y c es mas grande que b")
 }
 
-if (NOT a > b)
+if (not a > b)
 {
     write("a no es mas grande que b")
 }
 
-if (a > b OR c > b)
+if (a > b or c > b)
 {
     write("a es mas grande que b o c es mas grande que b")
 }

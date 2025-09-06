@@ -1,15 +1,15 @@
 init {
-    s,h,contador : Int
+    s,h,contador : int
 }
 s := 3
 h := 44
 contador := 10
 while (isZero( contador - 10 ))
 {
-    print("El contador vale 10")
+    write("El contador vale 10")
     contador := contador - 1
 }
 if (isZero( s*7+1-h/2 ))
 {
-    print("La expresion es igual a cero")
+    write("La expresion es igual a cero")
 }

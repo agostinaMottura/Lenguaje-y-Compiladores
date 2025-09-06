@@ -1,1 +1,1 @@
-#+ Esto es un comentario +#
+a := 5 #+ Esto es un comentario +#

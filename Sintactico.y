@@ -35,13 +35,13 @@ float constante_aux_float;
 %}
 
 /* Palabras reservadas */
-%token IF
-%token ELSE
+%token IF ELSE
 %token WHILE
-%token FOR
 %token READ
 %token WRITE
 %token INIT
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 /* Funciones */
 %token IS_ZERO
@@ -84,10 +84,6 @@ float constante_aux_float;
 
 %token PUNTO_Y_COMA
 
-%token GUION_BAJO
-
-%token PUNTO
-
 %token DOS_PUNTOS
 
 %token COMA
@@ -106,8 +102,8 @@ programa:
   ;
 
 instrucciones:
-  sentencia {print_sintactico("Instrucciones con una sentencia");}
-  | instrucciones sentencia {print_sintactico("Instrucciones extendidas con nueva sentencia");}
+  instrucciones sentencia {print_sintactico("Instrucciones extendidas con nueva sentencia");}
+  |sentencia {print_sintactico("Instrucciones con una sentencia");}
   ;
 
 sentencia:  	   
@@ -170,46 +166,35 @@ write:
   ;
 
 read:
-  READ PARENTESIS_A ID PARENTESIS_C PUNTO_Y_COMA {print_sintactico("READ(ID); es READ");}
+  READ PARENTESIS_A ID PARENTESIS_C {print_sintactico("READ(ID); es READ");}
   ;
 
 ciclo:
   WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("While es ciclo");}
 
 if:
-  bloque_if 
-  | else
-  ;
-
-bloque_if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {print_sintactico("If es condicional");}
-  ;
-
-else:
-   ELSE bloque_if
-  | ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("Else es bloque else");}
-  ;
-
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C %prec LOWER_THAN_ELSE {print_sintactico("If es condicional");}
+  | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C {print_sintactico("If-Else es condicional");}
 
 condicional:
-  expresion_booleana  {print_sintactico("PA condicion PC es condicional");}
+  condicion_compuesta {print_sintactico("PA condicion PC es condicional");}
   ;
 
-expresion_booleana:
-  expresion_booleana AND unidad_booleana {print_sintactico("Condicion AND Condicion es Condicion");}
-  | expresion_booleana OR unidad_booleana {print_sintactico("Condicion OR Condicion es Condicion");}
-  | unidad_booleana
+condicion_compuesta:
+  condicion_compuesta AND condicion_unaria {print_sintactico("Condicion AND Condicion es Condicion");}
+  | condicion_compuesta OR condicion_unaria {print_sintactico("Condicion OR Condicion es Condicion");}
+  | condicion_unaria
   ;
 
-unidad_booleana:
-  NOT unidad_booleana {print_sintactico("NOT condicion es condicional");}
+condicion_unaria:
+  NOT condicion_unaria {print_sintactico("NOT condicion es condicional");}
   | predicado
   ;
 
 predicado:
-  expresion operador_comparacion expresion {print_sintactico("Expresion==Expresion es Condicion");}
-  | expresion {print_sintactico("Expresion es Condicion");}
-  | PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Condicional es Condicion");}
+  expresion operador_comparacion expresion {print_sintactico("Expresion==Expresion es Predicado");}
+  | PARENTESIS_A condicional PARENTESIS_C {print_sintactico("Condicional es Predicado");}
+  | factor {print_sintactico("Factor es Predicado");}
   ;
 
 operador_comparacion:
@@ -222,15 +207,15 @@ operador_comparacion:
 ;
 
 expresion:
-  termino {print_sintactico("Termino es Expresion");}
-  |expresion SUMA termino {print_sintactico("Expresion+Termino es Expresion");}
+  expresion SUMA termino {print_sintactico("Expresion+Termino es Expresion");}
   |expresion RESTA termino {print_sintactico("Expresion-Termino es Expresion");}
+  |termino {print_sintactico("Termino es Expresion");}
   ;
 
 termino: 
-  factor {print_sintactico("Factor es Termino");}
-  |termino MULTIPLICACION factor {print_sintactico("Termino*Factor es Termino");}
+  termino MULTIPLICACION factor {print_sintactico("Termino*Factor es Termino");}
   |termino DIVISION factor {print_sintactico("Termino/Factor es Termino");}
+  |factor {print_sintactico("Factor es Termino");}
   ;
 
 factor: 
