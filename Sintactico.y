@@ -270,6 +270,53 @@ write_element:
   ;
 %%
 
+#define MAX_LISTA 1000
+#define MAX_LONG_NOMBRE_SIMBOLO 100
+#define MAX_LONG_TIPO_SIMBOLO 20
+#define MAX_LONG_VALOR_SIMBOLO 100
+
+typedef struct
+{
+    char nombre[MAX_LONG_NOMBRE_SIMBOLO];
+    char tipoDato[MAX_LONG_TIPO_SIMBOLO];
+    char valor[MAX_LONG_VALOR_SIMBOLO];
+    int longitud;
+} t_simbolo;
+
+typedef struct
+{
+    t_simbolo elementos[MAX_LISTA];
+    int cantidad;
+} t_tabla_simbolos;
+
+t_tabla_simbolos tabla_simbolos;
+
+void print_tabla_simbolos(const char* message) {
+  printf(COLOR_YELLOW "[TABLA_SIMBOLOS]" COLOR_RESET COLOR_WHITE " %s" COLOR_RESET "\n", message);
+}
+
+void crear_tabla_simbolos() {
+    tabla_simbolos.cantidad = 0;
+}
+
+int tabla_simbolos_llena() {
+    return tabla_simbolos.cantidad == MAX_LISTA;
+}
+
+int insertar_simbolo(const t_simbolo *simbolo) {
+    if (tabla_simbolos_llena()) {
+        print_tabla_simbolos("ERROR: Tabla de símbolos llena, no se puede insertar nuevo símbolo.");
+        return 0;
+    }
+    tabla_simbolos.elementos[tabla_simbolos.cantidad] = *simbolo;
+    tabla_simbolos.cantidad++;
+    return 1;
+}
+
+void exportar_tabla_simbolos() {
+    // Implementación de la exportación de la tabla de símbolos
+    print_tabla_simbolos("Exportando tabla de símbolos...");
+}
 
 int main(int argc, char *argv[])
 {
@@ -280,7 +327,11 @@ int main(int argc, char *argv[])
     }
     else
     {   
+        crear_tabla_simbolos();
+
         yyparse();        
+
+        exportar_tabla_simbolos();
     }
 	fclose(yyin);
     return 0;
