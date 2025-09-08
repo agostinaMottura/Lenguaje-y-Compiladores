@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h"
+#include "tabla_simbolos.h"
+
 
 // Definición de colores ANSI
 #define COLOR_RESET   "\033[0m"
@@ -28,11 +30,28 @@ FILE  *yyin;
   int yyerror(const char *s);
   int yylex();
 
-// Variables auxiliares para constantes
+// Declaracion variables tabla de simbolos 
+int i=0;
+char tipo_dato[10];
+int cant_id = 0;
+char nombre_id[20];
 int constante_aux_int;
 float constante_aux_float;
+char constante_aux_string[40];
+char aux_string[40];
+t_nombresId t_ids[10];
 
 %}
+
+%union {
+    int entero;
+    float flotante;
+    char cadena[100];
+}
+
+%type <cadena> CTE_STRING ID
+%type <entero> CTE_INT
+%type <flotante> CTE_FLOAT
 
 /* Palabras reservadas */
 %token IF
@@ -154,22 +173,50 @@ lista_declaraciones:
   ;
 
 declaracion_var:
-  lista_ids DOS_PUNTOS tipo {print_sintactico("Declaracion de variable con tipo");}
+  lista_ids DOS_PUNTOS tipo
+   {
+    print_sintactico("Declaracion de variable con tipo");
+    for(i=0;i<cant_id;i++)
+      {
+        insertar_tabla_simbolos(t_ids[i].cadena, tipo_dato, "", 0, 0);
+      }
+    cant_id=0;
+   }
   ;
 
 lista_ids:
-  ID {print_sintactico("Identificador en lista");}
-  | lista_ids COMA ID {print_sintactico("Lista de identificadores extendida");}
+  ID {
+    print_sintactico("Identificador en lista");
+    strcpy(t_ids[cant_id].cadena, $1);
+    cant_id++;
+  }
+  | lista_ids COMA ID {
+    print_sintactico("Lista de identificadores extendida");
+    strcpy(t_ids[cant_id].cadena, $3);
+    cant_id++;
+  }
   ;
 
 tipo:
-  FLOAT {print_sintactico("Tipo float");}
-  | INT {print_sintactico("Tipo int");}
-  | STRING {print_sintactico("Tipo string");}
+  FLOAT {
+    print_sintactico("Tipo float");
+    strcpy(tipo_dato, "FLOAT");
+  }
+  | INT {
+    print_sintactico("Tipo int");
+    strcpy(tipo_dato, "INT");
+  }
+  | STRING {
+    print_sintactico("Tipo string");
+    strcpy(tipo_dato, "STRING");
+  }
   ;
 
 asignacion: 
-  ID ASIGNACION expresion {print_sintactico("ID = Expresion es ASIGNACION");}
+  ID ASIGNACION expresion {
+    print_sintactico("ID = Expresion es ASIGNACION");
+    insertar_tabla_simbolos($1, "ID", "", 0, 0.0);
+  }
   ;
 
 write:
@@ -242,22 +289,45 @@ termino:
 
 factor: 
   ID {print_sintactico("ID es Factor");}
-  | CTE_INT {print_sintactico("CTE_INT es Factor");}
-  | CTE_FLOAT {print_sintactico("CTE_FLOAT es Factor");}
+  | CTE_INT 
+      {
+        print_sintactico("CTE_INT es Factor");
+        constante_aux_int=$1;
+        itoa(constante_aux_int, nombre_id, 10);
+        insertar_tabla_simbolos(nombre_id, "CTE_INT", "", $1, 0.0);
+      }
+  | CTE_FLOAT 
+      {
+        print_sintactico("CTE_FLOAT es Factor");
+        constante_aux_float=$1;
+        sprintf(nombre_id, "%f", $1); 
+        insertar_tabla_simbolos(nombre_id, "CTE_FLOAT", "", 0, $1);
+      }
   | RESTA CTE_INT
       {
-        /* esta Mmuskeherramienta misteriosa nos servirá más adelante para la tabla */
-        constante_aux_int=$2;
-        int cteneg = constante_aux_int * (-1); 
         print_sintactico("NEG CTE_INT es Factor");
+
+        constante_aux_int=$2;
+        int cteneg = constante_aux_int * (-1);
+        itoa(cteneg, nombre_id, 10);
+        
+        insertar_tabla_simbolos(nombre_id, "CTE_INT", "", cteneg, 0.0);
       }
   | RESTA CTE_FLOAT
-  {
-    constante_aux_float=$2; 
-    float cteneg = constante_aux_float * (-1); 
-     print_sintactico("NEG CTE_FLOAT es Factor");
-  }
-  | CTE_STRING {print_sintactico("CTE_STRING es Expresion");}
+      {
+        constante_aux_float=$2;
+        float cteneg = constante_aux_float * (-1);
+        sprintf(nombre_id, "%f", cteneg);  
+        print_sintactico("NEG CTE_FLOAT es Factor");
+      
+        insertar_tabla_simbolos(nombre_id, "CTE_FLOAT", "", 0, cteneg);
+      }
+  | CTE_STRING 
+      {
+        print_sintactico("CTE_STRING es Expresion");
+        strcpy(constante_aux_string, $1);
+        insertar_tabla_simbolos($1, "CTE_STR", $1, 0, 0.0);
+      }
   | PARENTESIS_A expresion PARENTESIS_C %prec PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
   | funcion_numerica {print_sintactico("Funcion numerica es factor");}
   ;
@@ -269,54 +339,6 @@ write_element:
   | CTE_FLOAT {print_sintactico("CTE_FLOAT es Write_element");}
   ;
 %%
-
-#define MAX_LISTA 1000
-#define MAX_LONG_NOMBRE_SIMBOLO 100
-#define MAX_LONG_TIPO_SIMBOLO 20
-#define MAX_LONG_VALOR_SIMBOLO 100
-
-typedef struct
-{
-    char nombre[MAX_LONG_NOMBRE_SIMBOLO];
-    char tipoDato[MAX_LONG_TIPO_SIMBOLO];
-    char valor[MAX_LONG_VALOR_SIMBOLO];
-    int longitud;
-} t_simbolo;
-
-typedef struct
-{
-    t_simbolo elementos[MAX_LISTA];
-    int cantidad;
-} t_tabla_simbolos;
-
-t_tabla_simbolos tabla_simbolos;
-
-void print_tabla_simbolos(const char* message) {
-  printf(COLOR_YELLOW "[TABLA_SIMBOLOS]" COLOR_RESET COLOR_WHITE " %s" COLOR_RESET "\n", message);
-}
-
-void crear_tabla_simbolos() {
-    tabla_simbolos.cantidad = 0;
-}
-
-int tabla_simbolos_llena() {
-    return tabla_simbolos.cantidad == MAX_LISTA;
-}
-
-int insertar_simbolo(const t_simbolo *simbolo) {
-    if (tabla_simbolos_llena()) {
-        print_tabla_simbolos("ERROR: Tabla de símbolos llena, no se puede insertar nuevo símbolo.");
-        return 0;
-    }
-    tabla_simbolos.elementos[tabla_simbolos.cantidad] = *simbolo;
-    tabla_simbolos.cantidad++;
-    return 1;
-}
-
-void exportar_tabla_simbolos() {
-    // Implementación de la exportación de la tabla de símbolos
-    print_tabla_simbolos("Exportando tabla de símbolos...");
-}
 
 int main(int argc, char *argv[])
 {
@@ -331,7 +353,7 @@ int main(int argc, char *argv[])
 
         yyparse();        
 
-        exportar_tabla_simbolos();
+        guardar_tabla_simbolos();
     }
 	fclose(yyin);
     return 0;

@@ -6,8 +6,6 @@
 
 #include "y.tab.h"
 FILE  *yyin;
-int yylval;
-char *yyltext;
 
 
 /*Definicion para validaciones*/
@@ -173,20 +171,27 @@ COMENTARIO_LINEA \#.*
 {CTE_STRING}	{
                     validacion_string(yytext); 
                     print_lexico("Constante String");
+                    strcpy(yylval.cadena, yytext);
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {
                     validacion_float(atof(yytext));
                     print_lexico("Constante Float");
+                    yylval.flotante = atof(yytext);
                     return CTE_FLOAT;
                 }    	
 {CTE_INT}	    {
                     validacion_int(atoi(yytext));
                     print_lexico("Constante Int");
+                    yylval.entero = atoi(yytext);
                     return CTE_INT;
                 } 
 
-{ID}			{print_lexico("Identificador"); return ID;}
+{ID}			{
+                    print_lexico("Identificador"); 
+                    strcpy(yylval.cadena, yytext);
+                    return ID;
+                }
 
 {UNKNOWN} { }
 

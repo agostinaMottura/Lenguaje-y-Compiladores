@@ -2,7 +2,7 @@
 flex Lexico.l
 bison -dyv Sintactico.y
 
-gcc.exe lex.yy.c y.tab.c -o compilador.exe
+gcc.exe lex.yy.c y.tab.c tabla_simbolos.c -o compilador.exe
 
 if "%~1"=="" (
     compilador.exe prueba.txt
