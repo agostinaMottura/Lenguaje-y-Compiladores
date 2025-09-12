@@ -1,7 +1,7 @@
 ## Script para Unix
 flex Lexico.l
 bison -dyv Sintactico.y
-gcc lex.yy.c y.tab.c -o compilador
+gcc lex.yy.c y.tab.c tabla_simbolos.c -o compilador
 if [ -z "$1" ]; then
     ./compilador prueba.txt
 else

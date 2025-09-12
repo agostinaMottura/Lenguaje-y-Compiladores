@@ -180,7 +180,7 @@ void guardar_tabla_simbolos()
         return;
     }
 
-    fprintf(arch, "%-30s%-30s%-40s%-30s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
+    fprintf(arch, "%-55s%-30s%-55s%-30s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
 
     t_simbolo *tabla = tabla_simbolos.primero;
     char valor[100];
@@ -195,7 +195,7 @@ void guardar_tabla_simbolos()
             strcmp(tabla->data.tipo, "FLOAT") == 0 ||
             strcmp(tabla->data.tipo, "STRING") == 0)
         {
-            fprintf(arch, "%-30s%-30s%-40s%-30s\n",
+            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                 tabla->data.nombre,
                 "--",
                 "--",
@@ -203,7 +203,7 @@ void guardar_tabla_simbolos()
         }
         else if (strcmp(tabla->data.tipo, "ID") == 0)
         {
-            fprintf(arch, "%-30s%-30s%-40s%-30s\n",
+            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                 tabla->data.nombre,
                 "--",
                 "--",
@@ -212,7 +212,7 @@ void guardar_tabla_simbolos()
         else if (strcmp(tabla->data.tipo, "CTE_INT") == 0)
         {
             sprintf(valor, "%d", tabla->data.valor.valor_var_int);
-            fprintf(arch, "%-30s%-30s%-40s%-30s\n",
+            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                 tabla->data.nombre,
                 "CTE_INT",
                 valor,
@@ -221,7 +221,7 @@ void guardar_tabla_simbolos()
         else if (strcmp(tabla->data.tipo, "CTE_FLOAT") == 0)
         {
             sprintf(valor, "%f", tabla->data.valor.valor_var_float);
-            fprintf(arch, "%-30s%-30s%-40s%-30s\n",
+            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                 tabla->data.nombre,
                 "CTE_FLOAT",
                 valor,
@@ -238,7 +238,7 @@ void guardar_tabla_simbolos()
 
                 sprintf(longitud, "%d", (int)strlen(aux_string));
 
-                fprintf(arch, "%-30s%-30s%-40s%-30s\n",
+                fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                     tabla->data.nombre,
                     "CTE_STR",
                     aux_string,
@@ -246,7 +246,7 @@ void guardar_tabla_simbolos()
             }
             else
             {
-                fprintf(arch, "%-30s%-30s%-40s%-30s\n",
+                fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                     tabla->data.nombre,
                     "CTE_STR",
                     tabla->data.valor.valor_var_str,

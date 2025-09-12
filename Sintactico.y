@@ -34,11 +34,11 @@ FILE  *yyin;
 int i=0;
 char tipo_dato[10];
 int cant_id = 0;
-char nombre_id[20];
+char nombre_id[55];
 int constante_aux_int;
 float constante_aux_float;
-char constante_aux_string[40];
-char aux_string[40];
+char constante_aux_string[55];
+char aux_string[55];
 t_nombresId t_ids[10];
 
 %}
@@ -220,11 +220,14 @@ asignacion:
   ;
 
 write:
-  WRITE PARENTESIS_A write_element PARENTESIS_C {print_sintactico("WRITE(Expresion); es WRITE");}
+  WRITE PARENTESIS_A expresion PARENTESIS_C {print_sintactico("WRITE(Expresion); es WRITE");}
   ;
 
 read:
-  READ PARENTESIS_A ID PARENTESIS_C {print_sintactico("READ(ID); es READ");}
+  READ PARENTESIS_A ID PARENTESIS_C {
+    print_sintactico("READ(ID); es READ");
+    insertar_tabla_simbolos($3, "ID", "", 0, 0.0);
+  }
   ;
 
 ciclo:
@@ -250,9 +253,9 @@ condicional:
   ;
 
 condicion_compuesta:
-  condicion_compuesta AND condicion_unaria {print_sintactico("Condicion AND Condicion es Condicion compuesta");}
+  condicion_unaria {print_sintactico("Condicion es Condicion compuesta");}
+  | condicion_compuesta AND condicion_unaria {print_sintactico("Condicion AND Condicion es Condicion compuesta");}
   | condicion_compuesta OR condicion_unaria {print_sintactico("Condicion OR Condicion es Condicion compuesta");}
-  | condicion_unaria {print_sintactico("Condicion es Condicion compuesta");}
   ;
 
 condicion_unaria:
@@ -288,12 +291,15 @@ termino:
   ;
 
 factor: 
-  ID {print_sintactico("ID es Factor");}
+  ID {
+    print_sintactico("ID es Factor");
+    insertar_tabla_simbolos($1, "ID", "", 0, 0.0);
+  }
   | CTE_INT 
       {
         print_sintactico("CTE_INT es Factor");
         constante_aux_int=$1;
-        itoa(constante_aux_int, nombre_id, 10);
+        sprintf(nombre_id, "%d", constante_aux_int);
         insertar_tabla_simbolos(nombre_id, "CTE_INT", "", $1, 0.0);
       }
   | CTE_FLOAT 
@@ -309,7 +315,7 @@ factor:
 
         constante_aux_int=$2;
         int cteneg = constante_aux_int * (-1);
-        itoa(cteneg, nombre_id, 10);
+        sprintf(nombre_id, "%d", cteneg);
         
         insertar_tabla_simbolos(nombre_id, "CTE_INT", "", cteneg, 0.0);
       }
@@ -322,22 +328,21 @@ factor:
       
         insertar_tabla_simbolos(nombre_id, "CTE_FLOAT", "", 0, cteneg);
       }
+  | RESTA ID
+      {
+        print_sintactico("NEG ID es Factor");
+        insertar_tabla_simbolos($2, "ID", "", 0, 0.0);
+      }
   | CTE_STRING 
       {
         print_sintactico("CTE_STRING es Expresion");
         strcpy(constante_aux_string, $1);
         insertar_tabla_simbolos($1, "CTE_STR", $1, 0, 0.0);
       }
-  | PARENTESIS_A expresion PARENTESIS_C %prec PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
+  | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("Expresion entre parentesis es Factor");}
   | funcion_numerica {print_sintactico("Funcion numerica es factor");}
   ;
 
-write_element:
-  ID {print_sintactico("ID es Write_element");}
-  | CTE_STRING {print_sintactico("CTE_STRING es Write_element");}
-  | CTE_INT {print_sintactico("CTE_INT es Write_element");}
-  | CTE_FLOAT {print_sintactico("CTE_FLOAT es Write_element");}
-  ;
 %%
 
 int main(int argc, char *argv[])

@@ -31,7 +31,7 @@ typedef struct
 }t_tabla;
 
 typedef struct{
-    char cadena[40];
+    char cadena[55];
 }t_nombresId;
 
 // Variables globales
