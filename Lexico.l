@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <errno.h>
 
 #include "y.tab.h"
 FILE  *yyin;
@@ -11,8 +12,8 @@ FILE  *yyin;
 /*Definicion para validaciones*/
 #define MAX_STRING 50
 #define MAX_INT 65535
-#define COTA_INFERIOR_FLOAT pow(-1.17549,-38)
-#define COTA_SUPERIOR_FLOAT pow(3.40282,38)
+#define COTA_INFERIOR_FLOAT 1.17549e-38f
+#define COTA_SUPERIOR_FLOAT 3.40282e+38f
 
 
 // Definicion de colores ANSI
@@ -40,8 +41,8 @@ int yyerror(const char *s);
 
 // Prototipos de funciones de validación
 void validacion_string(char cadena[]);
-void validacion_float(float numero);
-void validacion_int(int numero);
+void validacion_float(char* cadena);
+void validacion_int(char* cadena);
 
 %}
 
@@ -108,7 +109,7 @@ LETRA			    [a-zA-Z]
 
 /* Constantes */
 CTE_INT		        {DIGITO}+
-CTE_FLOAT         {DIGITO}+{PUNTO}{DIGITO}+
+CTE_FLOAT         ({DIGITO}+{PUNTO}{DIGITO}+)|({DIGITO}+{PUNTO}{DIGITO}+[eE][+-]?{DIGITO}+)|({DIGITO}+[eE][+-]?{DIGITO}+)
 CTE_STRING		    \"[^"\n]*\"
 
 /* Identificador */
@@ -175,13 +176,13 @@ COMENTARIO_LINEA \#.*
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {
-                    validacion_float(atof(yytext));
+                    validacion_float(yytext);
                     print_lexico("Constante Float");
                     yylval.flotante = atof(yytext);
                     return CTE_FLOAT;
                 }    	
 {CTE_INT}	    {
-                    validacion_int(atoi(yytext));
+                    validacion_int(yytext);
                     print_lexico("Constante Int");
                     yylval.entero = atoi(yytext);
                     return CTE_INT;
@@ -209,18 +210,44 @@ void validacion_string(char cadena[])
     }
 }
 
-void validacion_float(float numero)
+void validacion_float(char* cadena)
 {   
-    if (isnan(numero) || isinf(numero) || numero > COTA_SUPERIOR_FLOAT || numero < COTA_INFERIOR_FLOAT)
-    {
+    char* endptr;
+    errno = 0;
+    double numero = strtod(cadena, &endptr);
+    
+    if (*endptr != '\0') {
+        printf("ERROR: Formato de float inválido.\n");
+        yyerror("Error de formato en float");
+        return;
+    }
+    
+    float numero_float = (float)numero;
+    
+    if (errno == ERANGE || isnan(numero_float) || isinf(numero_float)) {
         printf("ERROR: Rango de float excedido. Se permite float de 32 bits.\n");
         yyerror("Error de rango en float");
-    } 
+    }
 }
 
-void validacion_int(int numero)
+void validacion_int(char* cadena)
 {
-    if(numero > MAX_INT)
+    int longitud = strlen(cadena);
+    
+    if (longitud > 5) {
+        printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
+        yyerror("Error de rango en int");
+        return;
+    }
+    
+    if (longitud == 5 && strcmp(cadena, "65535") > 0) {
+        printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
+        yyerror("Error de rango en int");
+        return;
+    }
+    
+    long numero_long = atol(cadena);
+    if(numero_long > MAX_INT)
     {
         printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
         yyerror("Error de rango en int");
