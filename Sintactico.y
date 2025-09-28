@@ -7,8 +7,7 @@
 #include "y.tab.h"
 #include "tabla_simbolos.h"
 
-
-// Definición de colores ANSI
+// Definicion de colores ANSI
 #define COLOR_RESET   "\033[0m"
 #define COLOR_RED     "\033[31m"
 #define COLOR_GREEN   "\033[32m"
@@ -125,7 +124,7 @@ instrucciones:
   ;
 
 sentencia:  	   
-  asignacion {print_sintactico("Sentencia de asignación completada");}
+  asignacion {print_sintactico("Sentencia de asignacion completada");}
   | write {print_sintactico("Sentencia de write completada");}
   | read {print_sintactico("Sentencia de read completada");}
   | ciclo {print_sintactico("Sentencia de ciclo completada");}
@@ -371,9 +370,8 @@ int yyerror(const char *s)
     
     printf("\n");
     printf(COLOR_RED "[ERROR SINTACTICO] ================================================" COLOR_RESET "\n");
-    printf(COLOR_RED "[ERROR SINTACTICO] Línea: %d" COLOR_RESET "\n", yylineno);
+    printf(COLOR_RED "[ERROR SINTACTICO] Linea: %d" COLOR_RESET "\n", yylineno);
     printf(COLOR_RED "[ERROR SINTACTICO] Token inesperado: '%s'" COLOR_RESET "\n", yytext ? yytext : "EOF");
     printf(COLOR_RED "[ERROR SINTACTICO] ================================================" COLOR_RESET "\n");
     exit(1);
 }
-

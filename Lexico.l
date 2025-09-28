@@ -38,6 +38,7 @@ void print_lexico(const char* type) {
 }
 
 int yyerror(const char *s);
+void informar_error_lexico(const char *mensaje_error, const char *cadena, const char *aclaracion);
 
 // Prototipos de funciones de validación
 void validacion_string(char cadena[]);
@@ -106,24 +107,25 @@ COMA                ","
 DIGITO			    [0-9]
 LETRA			    [a-zA-Z]
 
+INVALIDO        "~"|"`"|"^"|"¨"|"´"|"¬"
 
 /* Constantes */
 CTE_INT		        {DIGITO}+
 CTE_FLOAT         ({DIGITO}+{PUNTO}{DIGITO}+)|({DIGITO}+{PUNTO}{DIGITO}+[eE][+-]?{DIGITO}+)|({DIGITO}+[eE][+-]?{DIGITO}+)
-CTE_STRING		    \"[^"\n]*\"
+CTE_STRING		  \"[^"~`^¨´¬]*\"
 
 /* Identificador */
 ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO}|{GUION_BAJO})*
 
-UNKNOWN             "\n"|"\t"|"\n\t"|" "|"\r\n"|""|.
+ESPACIOS         "\n"|"\t"|"\n\t"|" "|"\r\n"
 
 /* Comentarios */
-COMENTARIO \#\+{UNKNOWN}*\+\#
-COMENTARIO_LINEA \#.*
+COMENTARIO \#\+.*\+\#
 
 %%
 {COMENTARIO}       {}
-{COMENTARIO_LINEA} {}
+
+{ESPACIOS}       {}
 
 {INIT}              {print_lexico("Palabra Reservada Init"); return INIT;}
 {FLOAT}             {print_lexico("Palabra Reservada Float"); return FLOAT;}
@@ -194,7 +196,7 @@ COMENTARIO_LINEA \#.*
                     return ID;
                 }
 
-{UNKNOWN} { }
+{INVALIDO}  { informar_error_lexico("Caracter desconocido", yytext, "Caracter no permitido en el lenguaje");}
 
 %%
 
@@ -205,8 +207,14 @@ void validacion_string(char cadena[])
     int largo = strlen(cadena);
     if(largo > MAX_STRING)
     {
-        printf("ERROR: Rango de string excedido en linea %d. Se permite un maximo de %d caracteres. Largo actual: %d \n", yylineno, MAX_STRING, largo);
-        yyerror("Error de rango en string");
+        char buffer[2]; 
+        sprintf(buffer, "%d", MAX_STRING);
+
+        char mensaje_caracteres_maximos[40];
+        strcpy(mensaje_caracteres_maximos, "Se permite un maximo de ");
+        strcat(mensaje_caracteres_maximos, buffer);
+        strcat(mensaje_caracteres_maximos, " caracteres");
+        informar_error_lexico("Cadena de texto supera el maximo de caracteres permitido", cadena, mensaje_caracteres_maximos);
     }
 }
 
@@ -217,16 +225,13 @@ void validacion_float(char* cadena)
     double numero = strtod(cadena, &endptr);
     
     if (*endptr != '\0') {
-        printf("ERROR: Formato de float inválido.\n");
-        yyerror("Error de formato en float");
-        return;
+        informar_error_lexico("Formato de float invalido", cadena, "Debe ser un numero decimal");
     }
     
     float numero_float = (float)numero;
     
     if (errno == ERANGE || isnan(numero_float) || isinf(numero_float)) {
-        printf("ERROR: Rango de float excedido. Se permite float de 32 bits.\n");
-        yyerror("Error de rango en float");
+        informar_error_lexico("Flotante fuera de rango", cadena, "Floats validos hasta 32 bits");
     }
 }
 
@@ -235,21 +240,22 @@ void validacion_int(char* cadena)
     int longitud = strlen(cadena);
     
     if (longitud > 5) {
-        printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
-        yyerror("Error de rango en int");
-        return;
-    }
-    
-    if (longitud == 5 && strcmp(cadena, "65535") > 0) {
-        printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
-        yyerror("Error de rango en int");
-        return;
+        informar_error_lexico("Entero supera la longitud maxima permitida", cadena, "Enteros validos hasta 16 bits");
     }
     
     long numero_long = atol(cadena);
-    if(numero_long > MAX_INT)
-    {
-        printf("\n ERROR: Valor de variable int excedido, el mayor posible es %d \n", MAX_INT);
-        yyerror("Error de rango en int");
+    if(numero_long > MAX_INT) {
+        informar_error_lexico("Entero fuera de rango", cadena, "Enteros validos hasta 65535");
     }
+}
+
+void informar_error_lexico(const char *mensaje_error, const char *cadena, const char *aclaracion)
+{
+    printf("\n");
+    printf(COLOR_RED "[ERROR LEXICO] ===============================================================" COLOR_RESET "\n");
+    printf(COLOR_RED "[ERROR LEXICO] Linea: %d" COLOR_RESET "\n", yylineno);
+    printf(COLOR_RED "[ERROR LEXICO] %s: %s" COLOR_RESET "\n",mensaje_error, cadena);
+    printf(COLOR_RED "[ERROR LEXICO] Aclaracion: %s" COLOR_RESET "\n",aclaracion);
+    printf(COLOR_RED "[ERROR LEXICO] ===============================================================" COLOR_RESET "\n");
+    exit(1);
 }
