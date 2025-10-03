@@ -202,21 +202,30 @@ COMENTARIO \#\+.*\+\#
 
 /* Funciones para validar los tipos de datos */
 
+char* int_to_string(int numero) {
+    static char buffer[12];
+    sprintf(buffer, "%d", numero);
+    return buffer;
+}
+
 void validacion_string(char cadena[])
 {
     int largo = strlen(cadena);
     if(largo > MAX_STRING)
     {
-        char buffer[2]; 
-        sprintf(buffer, "%d", MAX_STRING);
-
         char mensaje_caracteres_maximos[40];
         strcpy(mensaje_caracteres_maximos, "Se permite un maximo de ");
-        strcat(mensaje_caracteres_maximos, buffer);
+        strcat(mensaje_caracteres_maximos, int_to_string(MAX_STRING));
         strcat(mensaje_caracteres_maximos, " caracteres");
-        informar_error_lexico("Cadena de texto supera el maximo de caracteres permitido", cadena, mensaje_caracteres_maximos);
+        informar_error_lexico(
+            "Cadena de texto supera el maximo de caracteres permitido", 
+            cadena, 
+            mensaje_caracteres_maximos
+        );
     }
 }
+
+
 
 void validacion_float(char* cadena)
 {   
