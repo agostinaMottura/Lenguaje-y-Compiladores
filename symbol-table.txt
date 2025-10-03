@@ -1,3 +1,4 @@
 NOMBRE                                                 TIPODATO                      VALOR                                                  LONGITUD                      
-_"ewr"                                                 CTE_STR                       ewr                                                    3                             
-var1                                                   --                            --                                                     --                            
+a                                                      --                            --                                                     --                            
+_10                                                    CTE_INT                       10                                                     --                            
+b                                                      --                            --                                                     --                            
