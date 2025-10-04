@@ -20,68 +20,87 @@ int insertar_tabla_simbolos(const char *nombre, const char *tipo,
     {
         if (strcmp(tipo, "STRING") == 0 || strcmp(tipo, "INT") == 0 || strcmp(tipo, "FLOAT") == 0 || strcmp(tipo, "ID") == 0)
         {
+            printf("a\n");
             if (strcmp(tabla->data.nombre, nombre) == 0)
             {
+                printf("b\n");
                 return 1;
             }
         }
         else if (strcmp(tipo, "CTE_STRING") == 0)
         {
+            printf("c\n");
             if (strcmp(tabla->data.tipo, "CTE_STRING") == 0 &&
                 strcmp(tabla->data.valor.valor_var_str, valor_string) == 0)
             {
+                printf("d\n");
                 return 1;
             }
         }
         else if (strcmp(tipo, "CTE_INT") == 0)
         {
+            printf("e\n");
             if (strcmp(tabla->data.tipo, "CTE_INT") == 0 &&
                 tabla->data.valor.valor_var_int == valor_var_int)
             {
+                printf("f\n");
                 return 1;
             }
         }
         else if (strcmp(tipo, "CTE_FLOAT") == 0)
         {
+            printf("g\n");
             if (strcmp(tabla->data.tipo, "CTE_FLOAT") == 0 &&
                 tabla->data.valor.valor_var_float == valor_var_float)
             {
+                printf("h\n");
                 return 1;
             }
         }
 
         if (tabla->next == NULL)
         {
+            printf("i\n");
             break;
         }
+
+        printf("j\n");
         tabla = tabla->next;
     }
 
+    printf("k\n");
     t_data *data = crearDatos(nombre, tipo, valor_string, valor_var_int, valor_var_float);
     if (data == NULL)
     {
+        printf("l\n");
         return 1;
     }
 
+    printf("m\n");
     t_simbolo *nuevo = (t_simbolo *)malloc(sizeof(t_simbolo));
     if (nuevo == NULL)
     {
+        printf("n\n");
         free(data);
         return 2;
     }
 
+    printf("o\n");
     nuevo->data = *data;
     nuevo->next = NULL;
 
     if (tabla_simbolos.primero == NULL)
     {
+        printf("p\n");
         tabla_simbolos.primero = nuevo;
     }
     else
     {
+        printf("q\n");
         tabla->next = nuevo;
     }
 
+    printf("r\n");
     return 0;
 }
 
