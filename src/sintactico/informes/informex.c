@@ -2,7 +2,7 @@
 #include "./informes.h"
 #include "../../utils.h"
 
-void print_sintactico(const char *produccion, const char *no_terminal)
+void print_sintactico(const char *no_terminal, const char *produccion)
 {
     printf(
         COLOR_MAGENTA "[SINTACTICO]" COLOR_RESET " " COLOR_WHITE "%s -> %s\n", no_terminal, produccion);

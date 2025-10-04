@@ -1,7 +1,7 @@
 #ifndef INFORMES_H
 #define INFORMES_H
 
-void print_sintactico(const char *produccion, const char *no_terminal);
+void print_sintactico(const char *no_terminal, const char *produccion);
 void informar_error_sintactico(
     int nro_linea,
     const char *terminal);
