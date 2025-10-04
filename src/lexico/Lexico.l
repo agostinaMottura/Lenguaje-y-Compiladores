@@ -4,21 +4,9 @@
 #include <string.h>
 #include <math.h>
 #include <errno.h>
-
 #include "y.tab.h"
+#include "./src/lexico/validaciones/validaciones.h"
 FILE  *yyin;
-
-
-/*Definicion para validaciones*/
-#define MAX_STRING 50
-
-#define MAX_INT 65535
-#define MAX_INT_LENGTH 5
-#define MAX_INT_BITS 16
-
-#define MAX_FLOAT_BITS 32
-#define COTA_INFERIOR_FLOAT 1.17549e-38f
-#define COTA_SUPERIOR_FLOAT 3.40282e+38f
 
 
 // Definicion de colores ANSI
@@ -46,16 +34,6 @@ void print_lexico(const char* type) {
 
 int yyerror(const char *s);
 void informar_error_lexico(const char *mensaje_error, const char *cadena, const char *aclaracion);
-
-typedef struct {
-    int es_valido;
-    char mensaje_error[100];
-    char aclaracion[100];
-} ResultadoValidacion;
-
-ResultadoValidacion es_string_valido(char cadena[]);
-ResultadoValidacion es_float_valido(char* cadena);
-ResultadoValidacion es_int_valido(char* cadena);
 
 %}
 
@@ -235,87 +213,6 @@ COMENTARIO \#\+.*\+\#
 %%
 
 /* Funciones para validar los tipos de datos */
-
-ResultadoValidacion es_string_valido(char cadena[])
-{
-    ResultadoValidacion resultado;
-    int largo = strlen(cadena);
-
-    if(largo > MAX_STRING)
-    {
-        resultado.es_valido = 0;
-        sprintf(resultado.aclaracion, "Se permite un maximo de %d caracteres", MAX_STRING);
-        sprintf(resultado.mensaje_error, "Cadena de texto supera el maximo de caracteres permitido");
-        return resultado;
-    }
-
-    resultado.es_valido = 1;
-    return resultado;
-}
-
-ResultadoValidacion es_float_valido(char* cadena) {
-    ResultadoValidacion resultado;
-    char* endptr;
-    errno = 0;
-    double numero = strtod(cadena, &endptr); // strtod convierte la cadena a double y deja en endptr un puntero al primer carácter que no pudo convertir.
-
-    if (*endptr != '\0') {
-        resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Formato de float invalido");
-        sprintf(resultado.aclaracion, "Debe ser un numero decimal");
-        return resultado;
-    }
-
-    float numero_float = (float)numero;
-
-    if (numero_float < COTA_INFERIOR_FLOAT || numero_float > COTA_SUPERIOR_FLOAT) {
-        resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Float fuera de rango");
-        sprintf(resultado.aclaracion, "Floats validos entre %.5e y %.5e", COTA_INFERIOR_FLOAT, COTA_SUPERIOR_FLOAT);
-        return resultado;
-    }
-
-    if (errno == ERANGE) {
-        resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Float fuera de rango");
-        sprintf(resultado.aclaracion, "Floats validos hasta %d bits", MAX_FLOAT_BITS);
-        return resultado;
-    }
-
-    if (isnan(numero_float)) {
-        resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Float no es un numero (NaN)");
-        sprintf(resultado.aclaracion, "Debe ser un numero decimal valido");
-        return resultado;
-    }
-
-    resultado.es_valido = 1;
-    return resultado;
-}
-
-ResultadoValidacion es_int_valido(char* cadena)
-{
-    ResultadoValidacion resultado;
-    int longitud = strlen(cadena);
-    if (longitud > MAX_INT_LENGTH) {
-        resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Entero supera la longitud maxima permitida");
-        sprintf(resultado.aclaracion, "Maximo %d caracteres", MAX_INT_LENGTH);
-        return resultado;
-    }
-    
-    long numero_long = atol(cadena);
-    if(numero_long > MAX_INT) {
-        resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Entero fuera de rango");
-        sprintf(resultado.aclaracion, "Enteros validos hasta %d", MAX_INT);
-        return resultado;
-    }
-
-    resultado.es_valido = 1;
-    return resultado;
-}
-
 
 void informar_error_lexico(const char *mensaje_error, const char *cadena, const char *aclaracion)
 {
