@@ -5,50 +5,62 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define VALOR_COLUMNA_NOMBRE "NOMBRE"
+#define VALOR_COLUMNA_TIPO_DATO "TIPO_DATO"
+#define VALOR_COLUMNA_VALOR "VALOR"
+#define VALOR_COLUMNA_LONGITUD "LONGITUD"
+
+#define VALOR_NULL_STRING "--NULL--"
+#define VALOR_CTE_STRING "CTE_STRING"
+#define VALOR_CTE_INT "CTE_INT"
+#define VALOR_CTE_FLOAT "CTE_FLOAT"
+
+#define MAX_ID_LONGITUD 55
+
 typedef enum
 {
-    STRING,
-    INT,
-    FLOAT,
-    ID,
-    CTE_STRING,
-    CTE_INT,
-    CTE_FLOAT
-} TipoDato;
+    TIPO_DATO_DESCONOCIDO,
+    TIPO_DATO_CTE_STRING,
+    TIPO_DATO_CTE_INT,
+    TIPO_DATO_CTE_FLOAT
+} t_tipo_dato;
 
 /* --- Estructura de la tabla de simbolos --- */
 
 typedef struct
 {
     char *nombre;
-    TipoDato tipo;
+    t_tipo_dato tipo_dato;
     char *valor;
     int longitud;
-} t_data;
+} t_dato;
 
-typedef struct s_simbolo
+typedef struct nodo
 {
-    t_data data;
-    struct s_simbolo *next;
-} t_simbolo;
-
-typedef struct
-{
-    t_simbolo *primero;
-} t_tabla;
+    t_dato dato;
+    struct nodo *siguiente;
+} t_nodo;
 
 typedef struct
 {
-    char cadena[55];
-} t_nombresId;
+    t_nodo *primero;
+} t_tabla_simbolos;
+
+typedef struct
+{
+    char cadena[MAX_ID_LONGITUD];
+} t_nombre_id;
 
 // Variables globales
-extern t_tabla tabla_simbolos;
+extern t_tabla_simbolos tabla_simbolos;
 
 // Declaración de funciones
 void crear_tabla_simbolos();
-int insertar_tabla_simbolos(const char *, const char *, const char *, int, float);
-t_data *crearDatos(const char *, const char *, const char *, int, float);
+int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const char *valor);
+t_dato *crearDatos(
+    const char *nombre,
+    t_tipo_dato tipo_dato,
+    const char *valor);
 void guardar_tabla_simbolos();
 
 #endif // TABLA_SIMBOLOS_H

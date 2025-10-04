@@ -9,6 +9,8 @@
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils.h"
 
+#define MAX_IDS_DECLARADOS 10
+
 int yystopparser=0;
 FILE  *yyin;
 
@@ -17,14 +19,14 @@ int yylex();
 
 // Declaracion variables tabla de simbolos 
 int i=0;
-char tipo_dato[10];
+t_tipo_dato tipo_dato; // char tipo_dato[10];
 int cant_id = 0;
 char nombre_id[55];
 int constante_aux_int;
 float constante_aux_float;
 char constante_aux_string[55];
 char aux_string[55];
-t_nombresId t_ids[10];
+t_nombre_id ids_declarados[MAX_IDS_DECLARADOS];
 
 %}
 
@@ -163,7 +165,7 @@ declaracion_var:
     print_sintactico("declaracion_var", "lista_ids DOS_PUNTOS tipo");
     for(i=0;i<cant_id;i++)
       {
-        insertar_tabla_simbolos(t_ids[i].cadena, tipo_dato, "", 0, 0);
+        insertar_tabla_simbolos(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, NULL);
       }
     cant_id=0;
    }
@@ -172,12 +174,12 @@ declaracion_var:
 lista_ids:
   ID {
     print_sintactico("lista_ids", "ID");
-    strcpy(t_ids[cant_id].cadena, $1);
+    strcpy(ids_declarados[cant_id].cadena, $1);
     cant_id++;
   }
   | lista_ids COMA ID {
     print_sintactico("lista_ids", "lista_ids COMA ID");
-    strcpy(t_ids[cant_id].cadena, $3);
+    strcpy(ids_declarados[cant_id].cadena, $3);
     cant_id++;
   }
   ;
@@ -185,22 +187,19 @@ lista_ids:
 tipo:
   FLOAT {
     print_sintactico("tipo", "FLOAT");
-    strcpy(tipo_dato, "FLOAT");
   }
   | INT {
     print_sintactico("tipo", "INT");
-    strcpy(tipo_dato, "INT");
   }
   | STRING {
     print_sintactico("tipo", "STRING");
-    strcpy(tipo_dato, "STRING");
   }
   ;
 
 asignacion: 
   ID ASIGNACION expresion {
     print_sintactico("asignacion", "ID ASIGNACION expresion");
-    insertar_tabla_simbolos($1, "ID", "", 0, 0.0);
+    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, NULL);
   }
   ;
 
@@ -211,7 +210,7 @@ write:
 read:
   READ PARENTESIS_A ID PARENTESIS_C {
     print_sintactico("read", "READ PARENTESIS_A ID PARENTESIS_C");
-    insertar_tabla_simbolos($3, "ID", "", 0, 0.0);
+    insertar_tabla_simbolos($3, TIPO_DATO_DESCONOCIDO, NULL);
   }
   ;
 
@@ -278,51 +277,47 @@ termino:
 factor: 
   ID {
     print_sintactico("factor", "ID");
-    insertar_tabla_simbolos($1, "ID", "", 0, 0.0);
+    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, NULL);
   }
   | CTE_INT 
       {
         print_sintactico("factor", "CTE_INT");
-        constante_aux_int=$1;
-        sprintf(nombre_id, "%d", constante_aux_int);
-        insertar_tabla_simbolos(nombre_id, "CTE_INT", "", $1, 0.0);
+        sprintf(nombre_id, "%d", $1);
+        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_INT, nombre_id);
       }
   | CTE_FLOAT 
       {
         print_sintactico("factor", "CTE_FLOAT");
-        constante_aux_float=$1;
         sprintf(nombre_id, "%f", $1); 
-        insertar_tabla_simbolos(nombre_id, "CTE_FLOAT", "", 0, $1);
+        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_FLOAT, nombre_id);
       }
   | RESTA CTE_INT
       {
         print_sintactico("factor", "RESTA CTE_INT");
 
-        constante_aux_int=$2;
-        int cteneg = constante_aux_int * (-1);
-        sprintf(nombre_id, "%d", cteneg);
-        
-        insertar_tabla_simbolos(nombre_id, "CTE_INT", "", cteneg, 0.0);
+        int entero_negativo = $2 * (-1);
+        sprintf(nombre_id, "%d", entero_negativo);
+
+        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_INT, nombre_id);
       }
   | RESTA CTE_FLOAT
       {
-        constante_aux_float=$2;
-        float cteneg = constante_aux_float * (-1);
-        sprintf(nombre_id, "%f", cteneg);  
         print_sintactico("factor", "RESTA CTE_FLOAT");
-      
-        insertar_tabla_simbolos(nombre_id, "CTE_FLOAT", "", 0, cteneg);
+
+        float float_negativo = $2 * (-1);
+        sprintf(nombre_id, "%f", float_negativo);
+
+        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_FLOAT, nombre_id);
       }
   | RESTA ID
       {
         print_sintactico("factor", "RESTA ID");
-        insertar_tabla_simbolos($2, "ID", "", 0, 0.0);
+        insertar_tabla_simbolos($2, TIPO_DATO_DESCONOCIDO, NULL);
       }
   | CTE_STRING 
       {
         print_sintactico("factor", "CTE_STRING");
-        strcpy(constante_aux_string, $1);
-        insertar_tabla_simbolos($1, "CTE_STRING", $1, 0, 0.0);
+        insertar_tabla_simbolos($1, TIPO_DATO_CTE_STRING, $1);
       }
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("factor", "PARENTESIS_A expresion PARENTESIS_C");}
   | funcion_numerica {print_sintactico("factor", "funcion_numerica");}

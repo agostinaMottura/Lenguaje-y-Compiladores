@@ -1,187 +1,183 @@
 #include "tabla_simbolos.h"
 
 // Definición de la tabla de símbolos global
-t_tabla tabla_simbolos;
+t_tabla_simbolos tabla_simbolos;
 
+// Validaciones
+int es_cte(t_tipo_dato tipo)
+{
+    return (tipo == TIPO_DATO_CTE_STRING || tipo == TIPO_DATO_CTE_INT || tipo == TIPO_DATO_CTE_FLOAT);
+}
+
+int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_nodo *nodo)
+{
+    while (nodo)
+    {
+        if (strcmp(nodo->dato.nombre, nombre) == 0 &&
+            strcmp(nodo->dato.valor, valor) == 0)
+        {
+            return 1;
+        }
+        nodo = nodo->siguiente;
+    }
+
+    return 0;
+}
+
+// Mappers para la tabla de contenidos (tipos de datos)
+const char *from_tipo_dato_to_str(t_tipo_dato tipo_dato)
+{
+    switch (tipo_dato)
+    {
+    case TIPO_DATO_DESCONOCIDO:
+        return VALOR_NULL_STRING;
+    case TIPO_DATO_CTE_STRING:
+        return VALOR_CTE_STRING;
+    case TIPO_DATO_CTE_INT:
+        return VALOR_CTE_INT;
+    case TIPO_DATO_CTE_FLOAT:
+        return VALOR_CTE_FLOAT;
+    }
+}
+
+t_tipo_dato from_str_to_tipo_dato(const char *str)
+{
+    if (strcmp(str, VALOR_CTE_STRING) == 0)
+    {
+        return TIPO_DATO_CTE_STRING;
+    }
+
+    if (strcmp(str, VALOR_CTE_INT) == 0)
+    {
+        return TIPO_DATO_CTE_INT;
+    }
+
+    if (strcmp(str, VALOR_CTE_FLOAT) == 0)
+    {
+        return TIPO_DATO_CTE_FLOAT;
+    }
+
+    return TIPO_DATO_DESCONOCIDO;
+}
+
+// Valor
+const char *obtener_valor_para_almacenar_en_tabla_de_contenidos(const char *str)
+{
+    if (str == NULL)
+    {
+        return VALOR_NULL_STRING;
+    }
+
+    return str;
+}
+
+const char *obtener_valor_desde_la_tabla_de_contenidos(const char *str)
+{
+    if (strcmp(str, VALOR_NULL_STRING) == 0)
+    {
+        return NULL;
+    }
+
+    return str;
+}
+
+// Funciones propias de la tabla de simbolos
 void crear_tabla_simbolos()
 {
     tabla_simbolos.primero = NULL;
 }
 
-int insertar_tabla_simbolos(const char *nombre, const char *tipo,
-                            const char *valor_string, int valor_var_int,
-                            float valor_var_float)
+int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
 {
-    t_simbolo *tabla = tabla_simbolos.primero;
-    char nombreCTE[100] = "_";
-    strcat(nombreCTE, nombre);
-
-    while (tabla)
+    if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
     {
-        if (strcmp(tipo, "STRING") == 0 || strcmp(tipo, "INT") == 0 || strcmp(tipo, "FLOAT") == 0 || strcmp(tipo, "ID") == 0)
-        {
-            printf("a\n");
-            if (strcmp(tabla->data.nombre, nombre) == 0)
-            {
-                printf("b\n");
-                return 1;
-            }
-        }
-        else if (strcmp(tipo, "CTE_STRING") == 0)
-        {
-            printf("c\n");
-            if (strcmp(tabla->data.tipo, "CTE_STRING") == 0 &&
-                strcmp(tabla->data.valor.valor_var_str, valor_string) == 0)
-            {
-                printf("d\n");
-                return 1;
-            }
-        }
-        else if (strcmp(tipo, "CTE_INT") == 0)
-        {
-            printf("e\n");
-            if (strcmp(tabla->data.tipo, "CTE_INT") == 0 &&
-                tabla->data.valor.valor_var_int == valor_var_int)
-            {
-                printf("f\n");
-                return 1;
-            }
-        }
-        else if (strcmp(tipo, "CTE_FLOAT") == 0)
-        {
-            printf("g\n");
-            if (strcmp(tabla->data.tipo, "CTE_FLOAT") == 0 &&
-                tabla->data.valor.valor_var_float == valor_var_float)
-            {
-                printf("h\n");
-                return 1;
-            }
-        }
-
-        if (tabla->next == NULL)
-        {
-            printf("i\n");
-            break;
-        }
-
-        printf("j\n");
-        tabla = tabla->next;
-    }
-
-    printf("k\n");
-    t_data *data = crearDatos(nombre, tipo, valor_string, valor_var_int, valor_var_float);
-    if (data == NULL)
-    {
-        printf("l\n");
         return 1;
     }
 
-    printf("m\n");
-    t_simbolo *nuevo = (t_simbolo *)malloc(sizeof(t_simbolo));
-    if (nuevo == NULL)
+    t_dato *dato = crearDatos(nombre, tipo_dato, valor);
+    if (dato == NULL)
     {
-        printf("n\n");
-        free(data);
-        return 2;
+        printf("Error al crear datos\n");
+        return 0;
     }
 
-    printf("o\n");
-    nuevo->data = *data;
-    nuevo->next = NULL;
+    t_nodo *nodo = (t_nodo *)malloc(sizeof(t_nodo));
+    if (nodo == NULL)
+    {
+        free(dato);
+        printf("Error al crear nodo\n");
+        return 0;
+    }
+    nodo->dato = *dato;
+    nodo->siguiente = NULL;
 
     if (tabla_simbolos.primero == NULL)
     {
-        printf("p\n");
-        tabla_simbolos.primero = nuevo;
-    }
-    else
-    {
-        printf("q\n");
-        tabla->next = nuevo;
+        tabla_simbolos.primero = nodo;
+        return 1;
     }
 
-    printf("r\n");
-    return 0;
+    t_nodo *actual = tabla_simbolos.primero;
+    while (actual->siguiente != NULL)
+    {
+        actual = actual->siguiente;
+    }
+    actual->siguiente = nodo;
+
+    return 1;
 }
 
-t_data *crearDatos(const char *nombre, const char *tipo,
-                   const char *valString, int valor_var_int,
-                   float valor_var_float)
+t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
+                   const char *valor)
 {
-    t_data *data = (t_data *)calloc(1, sizeof(t_data));
-    if (data == NULL)
+    t_dato *dato = (t_dato *)calloc(1, sizeof(t_dato));
+    if (dato == NULL)
     {
         return NULL;
     }
 
-    data->tipo = (char *)malloc(sizeof(char) * (strlen(tipo) + 1));
-    if (data->tipo == NULL)
+    dato->tipo_dato = tipo_dato;
+
+    if (valor != NULL)
     {
-        free(data);
+        dato->valor = (char *)malloc(sizeof(char) * (strlen(valor) + 1));
+        if (dato->valor == NULL)
+        {
+            free(dato);
+            printf("Error al asignar memoria para el valor\n");
+            return NULL;
+        }
+        strcpy(dato->valor, valor);
+        dato->longitud = strlen(valor); // Hacer funcion de calcular_logitud
+    }
+
+    if (!es_cte(dato->tipo_dato))
+    {
+        dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
+        if (dato->nombre == NULL)
+        {
+            free(dato);
+            return NULL;
+        }
+        strcpy(dato->nombre, nombre);
+
+        return dato;
+    }
+
+    char nombre_cte[100] = "_";
+    strcat(nombre_cte, nombre);
+
+    dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre_cte) + 1));
+    if (dato->nombre == NULL)
+    {
+        free(dato->valor);
+        free(dato);
+        printf("Error al asignar memoria para el nombre\n");
         return NULL;
     }
-    strcpy(data->tipo, tipo);
 
-    if (strcmp(tipo, "STRING") == 0 || strcmp(tipo, "INT") == 0 || strcmp(tipo, "FLOAT") == 0 || strcmp(tipo, "ID") == 0)
-    {
-        data->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
-        if (data->nombre == NULL)
-        {
-            free(data->tipo);
-            free(data);
-            return NULL;
-        }
-        strcpy(data->nombre, nombre);
-        // Inicializar explícitamente el valor a cero para IDs
-        data->valor.valor_var_int = 0;
-        data->valor.valor_var_float = 0.0;
-        data->valor.valor_var_str = NULL;
-        data->longitud = 0;
-        return data;
-    }
-    else
-    {
-        char nombreCte[100] = "_";
-        strcat(nombreCte, nombre);
-
-        data->nombre = (char *)malloc(sizeof(char) * (strlen(nombreCte) + 1));
-        if (data->nombre == NULL)
-        {
-            free(data->tipo);
-            free(data);
-            return NULL;
-        }
-        strcpy(data->nombre, nombreCte);
-
-        if (strcmp(tipo, "CTE_STRING") == 0)
-        {
-            data->valor.valor_var_str = (char *)malloc(sizeof(char) * (strlen(valString) + 1));
-            if (data->valor.valor_var_str == NULL)
-            {
-                free(data->nombre);
-                free(data->tipo);
-                free(data);
-                return NULL;
-            }
-            strcpy(data->valor.valor_var_str, valString);
-            data->longitud = strlen(valString) - 2; // Restar comillas
-        }
-        else if (strcmp(tipo, "CTE_FLOAT") == 0)
-        {
-            data->valor.valor_var_float = valor_var_float;
-        }
-        else if (strcmp(tipo, "CTE_INT") == 0)
-        {
-            data->valor.valor_var_int = valor_var_int;
-        }
-
-        return data;
-    }
-
-    // En caso de algún error
-    free(data->tipo);
-    free(data);
-    return NULL;
+    strcpy(dato->nombre, nombre_cte);
+    return dato;
 }
 
 void guardar_tabla_simbolos()
@@ -199,82 +195,26 @@ void guardar_tabla_simbolos()
         return;
     }
 
-    fprintf(arch, "%-55s%-30s%-55s%-30s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
+    fprintf(arch, "%-55s%-30s%-55s%-30s\n",
+            VALOR_COLUMNA_NOMBRE,
+            VALOR_COLUMNA_TIPO_DATO,
+            VALOR_COLUMNA_VALOR,
+            VALOR_COLUMNA_LONGITUD);
 
-    t_simbolo *tabla = tabla_simbolos.primero;
+    t_nodo *nodo = tabla_simbolos.primero;
     char valor[100];
     char longitud[20];
 
-    while (tabla)
+    while (nodo)
     {
-        strcpy(valor, "--");
-        strcpy(longitud, "--");
+        fprintf(arch,
+                "%-55s%-30s%-55s%-30d\n",
+                nodo->dato.nombre,
+                from_tipo_dato_to_str(nodo->dato.tipo_dato),
+                obtener_valor_para_almacenar_en_tabla_de_contenidos(nodo->dato.valor),
+                nodo->dato.longitud);
 
-        if (strcmp(tabla->data.tipo, "INT") == 0 ||
-            strcmp(tabla->data.tipo, "FLOAT") == 0 ||
-            strcmp(tabla->data.tipo, "STRING") == 0)
-        {
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "--",
-                    "--",
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "ID") == 0)
-        {
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "--",
-                    "--",
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "CTE_INT") == 0)
-        {
-            sprintf(valor, "%d", tabla->data.valor.valor_var_int);
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "CTE_INT",
-                    valor,
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "CTE_FLOAT") == 0)
-        {
-            sprintf(valor, "%f", tabla->data.valor.valor_var_float);
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "CTE_FLOAT",
-                    valor,
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "CTE_STRING") == 0)
-        {
-            char aux_string[100];
-            if (strlen(tabla->data.valor.valor_var_str) >= 2)
-            {
-                strncpy(aux_string, tabla->data.valor.valor_var_str + 1,
-                        strlen(tabla->data.valor.valor_var_str) - 2);
-                aux_string[strlen(tabla->data.valor.valor_var_str) - 2] = '\0';
-
-                sprintf(longitud, "%d", (int)strlen(aux_string));
-
-                fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                        tabla->data.nombre,
-                        "CTE_STRING",
-                        aux_string,
-                        longitud);
-            }
-            else
-            {
-                fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                        tabla->data.nombre,
-                        "CTE_STRING",
-                        tabla->data.valor.valor_var_str,
-                        "0");
-            }
-        }
-
-        t_simbolo *temp = tabla;
-        tabla = tabla->next;
+        nodo = nodo->siguiente;
     }
 
     fclose(arch);
