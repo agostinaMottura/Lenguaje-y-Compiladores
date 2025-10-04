@@ -25,9 +25,9 @@ int insertar_tabla_simbolos(const char *nombre, const char *tipo,
                 return 1;
             }
         }
-        else if (strcmp(tipo, "CTE_STR") == 0)
+        else if (strcmp(tipo, "CTE_STRING") == 0)
         {
-            if (strcmp(tabla->data.tipo, "CTE_STR") == 0 &&
+            if (strcmp(tabla->data.tipo, "CTE_STRING") == 0 &&
                 strcmp(tabla->data.valor.valor_var_str, valor_string) == 0)
             {
                 return 1;
@@ -134,7 +134,7 @@ t_data *crearDatos(const char *nombre, const char *tipo,
         }
         strcpy(data->nombre, nombreCte);
 
-        if (strcmp(tipo, "CTE_STR") == 0)
+        if (strcmp(tipo, "CTE_STRING") == 0)
         {
             data->valor.valor_var_str = (char *)malloc(sizeof(char) * (strlen(valString) + 1));
             if (data->valor.valor_var_str == NULL)
@@ -227,7 +227,7 @@ void guardar_tabla_simbolos()
                 valor,
                 "--");
         }
-        else if (strcmp(tabla->data.tipo, "CTE_STR") == 0)
+        else if (strcmp(tabla->data.tipo, "CTE_STRING") == 0)
         {
             char aux_string[100];
             if (strlen(tabla->data.valor.valor_var_str) >= 2)
@@ -240,7 +240,7 @@ void guardar_tabla_simbolos()
 
                 fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                     tabla->data.nombre,
-                    "CTE_STR",
+                    "CTE_STRING",
                     aux_string,
                     longitud);
             }
@@ -248,7 +248,7 @@ void guardar_tabla_simbolos()
             {
                 fprintf(arch, "%-55s%-30s%-55s%-30s\n",
                     tabla->data.nombre,
-                    "CTE_STR",
+                    "CTE_STRING",
                     tabla->data.valor.valor_var_str,
                     "0");
             }
