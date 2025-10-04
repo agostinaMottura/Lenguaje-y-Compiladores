@@ -11,7 +11,12 @@ FILE  *yyin;
 
 /*Definicion para validaciones*/
 #define MAX_STRING 50
+
 #define MAX_INT 65535
+#define MAX_INT_LENGTH 5
+#define MAX_INT_BITS 16
+
+#define MAX_FLOAT_BITS 32
 #define COTA_INFERIOR_FLOAT 1.17549e-38f
 #define COTA_SUPERIOR_FLOAT 3.40282e+38f
 
@@ -207,14 +212,13 @@ void validacion_string(char cadena[])
     int largo = strlen(cadena);
     if(largo > MAX_STRING)
     {
-        char buffer[2]; 
-        sprintf(buffer, "%d", MAX_STRING);
-
-        char mensaje_caracteres_maximos[40];
-        strcpy(mensaje_caracteres_maximos, "Se permite un maximo de ");
-        strcat(mensaje_caracteres_maximos, buffer);
-        strcat(mensaje_caracteres_maximos, " caracteres");
-        informar_error_lexico("Cadena de texto supera el maximo de caracteres permitido", cadena, mensaje_caracteres_maximos);
+        char msg[40];
+        sprintf(msg, "Se permite un maximo de %d caracteres", MAX_STRING);
+        informar_error_lexico(
+            "Cadena de texto supera el maximo de caracteres permitido", 
+            cadena, 
+            msg
+        );
     }
 }
 
@@ -222,16 +226,28 @@ void validacion_float(char* cadena)
 {   
     char* endptr;
     errno = 0;
-    double numero = strtod(cadena, &endptr);
+    double numero = strtod(cadena, &endptr); // strtod convierte la cadena a double y deja en endptr un puntero al primer carácter que no pudo convertir.
     
     if (*endptr != '\0') {
         informar_error_lexico("Formato de float invalido", cadena, "Debe ser un numero decimal");
     }
     
     float numero_float = (float)numero;
+
+    if (numero_float < COTA_INFERIOR_FLOAT || numero_float > COTA_SUPERIOR_FLOAT) {
+        char msg[50];
+        sprintf(msg, "Floats validos entre %.5e y %.5e", COTA_INFERIOR_FLOAT, COTA_SUPERIOR_FLOAT);
+        informar_error_lexico("Float fuera de rango", cadena, msg);
+    }
     
-    if (errno == ERANGE || isnan(numero_float) || isinf(numero_float)) {
-        informar_error_lexico("Flotante fuera de rango", cadena, "Floats validos hasta 32 bits");
+    if (errno == ERANGE) {
+        char msg[50];
+        sprintf(msg, "Floats validos hasta %d bits", MAX_FLOAT_BITS);
+        informar_error_lexico("Float fuera de rango", cadena, msg);
+    }
+
+    if (isnan(numero_float)) {
+        informar_error_lexico("Float no es un numero (NaN)", cadena, "Debe ser un numero decimal valido");
     }
 }
 
@@ -239,13 +255,21 @@ void validacion_int(char* cadena)
 {
     int longitud = strlen(cadena);
     
-    if (longitud > 5) {
-        informar_error_lexico("Entero supera la longitud maxima permitida", cadena, "Enteros validos hasta 16 bits");
+    if (longitud > MAX_INT_LENGTH) {
+        char msg[50];
+        sprintf(msg, "Enteros validos hasta %d bits", MAX_INT_BITS);
+        informar_error_lexico(
+            "Entero supera la longitud maxima permitida", 
+            cadena, 
+            msg
+        );
     }
     
     long numero_long = atol(cadena);
     if(numero_long > MAX_INT) {
-        informar_error_lexico("Entero fuera de rango", cadena, "Enteros validos hasta 65535");
+        char msg[50];
+        sprintf(msg, "Enteros validos hasta %d", MAX_INT);
+        informar_error_lexico("Entero fuera de rango", cadena, msg);
     }
 }
 
