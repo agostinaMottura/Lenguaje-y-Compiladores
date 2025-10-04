@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h"
-#include "tabla_simbolos.h"
+#include "./src/tabla-simbolos/tabla_simbolos.h"
 
 // Definicion de colores ANSI
 #define COLOR_RESET   "\033[0m"
