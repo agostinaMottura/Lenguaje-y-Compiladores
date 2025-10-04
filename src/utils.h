@@ -12,4 +12,6 @@
 #define COLOR_BOLD "\033[1m"
 #define COLOR_NARANJA "\x1B[38;2;255;128;0m"
 
+void print_error(const char *message);
+
 #endif // UTILS_H
