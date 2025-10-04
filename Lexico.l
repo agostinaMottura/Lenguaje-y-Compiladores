@@ -33,6 +33,8 @@ FILE  *yyin;
 #define COLOR_BOLD    "\033[1m"
 #define COLOR_NARANJA  "\x1B[38;2;255;128;0m"
 
+
+
 // Contador de tokens para mejor seguimiento
 static int token_count = 0;
 
@@ -45,10 +47,15 @@ void print_lexico(const char* type) {
 int yyerror(const char *s);
 void informar_error_lexico(const char *mensaje_error, const char *cadena, const char *aclaracion);
 
-// Prototipos de funciones de validación
-void validacion_string(char cadena[]);
-void validacion_float(char* cadena);
-void validacion_int(char* cadena);
+typedef struct {
+    int es_valido;
+    char mensaje_error[100];
+    char aclaracion[100];
+} ResultadoValidacion;
+
+ResultadoValidacion es_string_valido(char cadena[]);
+ResultadoValidacion es_float_valido(char* cadena);
+ResultadoValidacion es_int_valido(char* cadena);
 
 %}
 
@@ -177,19 +184,34 @@ COMENTARIO \#\+.*\+\#
 {PUNTO_Y_COMA}      {print_lexico("Punto y Coma"); return PUNTO_Y_COMA;}
 
 {CTE_STRING}	{
-                    validacion_string(yytext); 
+                    ResultadoValidacion res = es_string_valido(yytext);
+                    if (!res.es_valido) {
+                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        exit(1);
+                    }
+
                     print_lexico("Constante String");
                     strcpy(yylval.cadena, yytext);
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {
-                    validacion_float(yytext);
+                    ResultadoValidacion res = es_float_valido(yytext);
+                    if (!res.es_valido) {
+                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        exit(1);
+                    }
+
                     print_lexico("Constante Float");
                     yylval.flotante = atof(yytext);
                     return CTE_FLOAT;
                 }    	
 {CTE_INT}	    {
-                    validacion_int(yytext);
+                    ResultadoValidacion res = es_int_valido(yytext);
+                    if (!res.es_valido) {
+                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        exit(1);
+                    }
+
                     print_lexico("Constante Int");
                     yylval.entero = atoi(yytext);
                     return CTE_INT;
@@ -201,77 +223,99 @@ COMENTARIO \#\+.*\+\#
                     return ID;
                 }
 
-{INVALIDO}  { informar_error_lexico("Caracter desconocido", yytext, "Caracter no permitido en el lenguaje");}
+{INVALIDO}  { 
+                informar_error_lexico(
+                    "Caracter desconocido", 
+                    yytext, 
+                    "Caracter no permitido en el lenguaje"
+                );
+                exit(1);
+            }
 
 %%
 
 /* Funciones para validar los tipos de datos */
 
-void validacion_string(char cadena[])
+ResultadoValidacion es_string_valido(char cadena[])
 {
+    ResultadoValidacion resultado;
     int largo = strlen(cadena);
+
     if(largo > MAX_STRING)
     {
-        char msg[40];
-        sprintf(msg, "Se permite un maximo de %d caracteres", MAX_STRING);
-        informar_error_lexico(
-            "Cadena de texto supera el maximo de caracteres permitido", 
-            cadena, 
-            msg
-        );
+        resultado.es_valido = 0;
+        sprintf(resultado.aclaracion, "Se permite un maximo de %d caracteres", MAX_STRING);
+        sprintf(resultado.mensaje_error, "Cadena de texto supera el maximo de caracteres permitido");
+        return resultado;
     }
+
+    resultado.es_valido = 1;
+    return resultado;
 }
 
-void validacion_float(char* cadena)
-{   
+ResultadoValidacion es_float_valido(char* cadena) {
+    ResultadoValidacion resultado;
     char* endptr;
     errno = 0;
     double numero = strtod(cadena, &endptr); // strtod convierte la cadena a double y deja en endptr un puntero al primer carácter que no pudo convertir.
-    
+
     if (*endptr != '\0') {
-        informar_error_lexico("Formato de float invalido", cadena, "Debe ser un numero decimal");
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Formato de float invalido");
+        sprintf(resultado.aclaracion, "Debe ser un numero decimal");
+        return resultado;
     }
-    
+
     float numero_float = (float)numero;
 
     if (numero_float < COTA_INFERIOR_FLOAT || numero_float > COTA_SUPERIOR_FLOAT) {
-        char msg[50];
-        sprintf(msg, "Floats validos entre %.5e y %.5e", COTA_INFERIOR_FLOAT, COTA_SUPERIOR_FLOAT);
-        informar_error_lexico("Float fuera de rango", cadena, msg);
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Float fuera de rango");
+        sprintf(resultado.aclaracion, "Floats validos entre %.5e y %.5e", COTA_INFERIOR_FLOAT, COTA_SUPERIOR_FLOAT);
+        return resultado;
     }
-    
+
     if (errno == ERANGE) {
-        char msg[50];
-        sprintf(msg, "Floats validos hasta %d bits", MAX_FLOAT_BITS);
-        informar_error_lexico("Float fuera de rango", cadena, msg);
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Float fuera de rango");
+        sprintf(resultado.aclaracion, "Floats validos hasta %d bits", MAX_FLOAT_BITS);
+        return resultado;
     }
 
     if (isnan(numero_float)) {
-        informar_error_lexico("Float no es un numero (NaN)", cadena, "Debe ser un numero decimal valido");
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Float no es un numero (NaN)");
+        sprintf(resultado.aclaracion, "Debe ser un numero decimal valido");
+        return resultado;
     }
+
+    resultado.es_valido = 1;
+    return resultado;
 }
 
-void validacion_int(char* cadena)
+ResultadoValidacion es_int_valido(char* cadena)
 {
+    ResultadoValidacion resultado;
     int longitud = strlen(cadena);
-    
     if (longitud > MAX_INT_LENGTH) {
-        char msg[50];
-        sprintf(msg, "Enteros validos hasta %d bits", MAX_INT_BITS);
-        informar_error_lexico(
-            "Entero supera la longitud maxima permitida", 
-            cadena, 
-            msg
-        );
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Entero supera la longitud maxima permitida");
+        sprintf(resultado.aclaracion, "Maximo %d caracteres", MAX_INT_LENGTH);
+        return resultado;
     }
     
     long numero_long = atol(cadena);
     if(numero_long > MAX_INT) {
-        char msg[50];
-        sprintf(msg, "Enteros validos hasta %d", MAX_INT);
-        informar_error_lexico("Entero fuera de rango", cadena, msg);
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Entero fuera de rango");
+        sprintf(resultado.aclaracion, "Enteros validos hasta %d", MAX_INT);
+        return resultado;
     }
+
+    resultado.es_valido = 1;
+    return resultado;
 }
+
 
 void informar_error_lexico(const char *mensaje_error, const char *cadena, const char *aclaracion)
 {
@@ -281,5 +325,4 @@ void informar_error_lexico(const char *mensaje_error, const char *cadena, const 
     printf(COLOR_RED "[ERROR LEXICO] %s: %s" COLOR_RESET "\n",mensaje_error, cadena);
     printf(COLOR_RED "[ERROR LEXICO] Aclaracion: %s" COLOR_RESET "\n",aclaracion);
     printf(COLOR_RED "[ERROR LEXICO] ===============================================================" COLOR_RESET "\n");
-    exit(1);
 }
