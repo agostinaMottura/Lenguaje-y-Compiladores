@@ -17,6 +17,14 @@ void procesar_token(const char* terminal) {
     print_lexico(nro_token, yylineno, terminal, yytext);
 }
 
+const char* obtener_string_sin_comillas(const char* str)
+{
+    char *literal = strdup(str + 1);
+    literal[strlen(literal) - 1] = '\0';
+
+    return literal;
+}
+
 int yyerror(const char *s);
 
 %}
@@ -153,7 +161,7 @@ COMENTARIO \#\+.*\+\#
                     }
 
                     procesar_token("CTE_STRING");
-                    strcpy(yylval.cadena, yytext);
+                    strcpy(yylval.cadena, obtener_string_sin_comillas(yytext));
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {

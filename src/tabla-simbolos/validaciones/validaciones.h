@@ -1,0 +1,4 @@
+#ifndef VALIDACIONES_H
+#define VALIDACIONES_H
+
+#endif // VALIDACIONES_H
