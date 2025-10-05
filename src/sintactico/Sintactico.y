@@ -175,7 +175,7 @@ declaracion_var:
     informes_sintactico_imprimir_mensaje("declaracion_var", "lista_ids DOS_PUNTOS tipo");
     for(i=0;i<cant_id;i++)
       {
-        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
       }
     cant_id=0;
    }
@@ -209,7 +209,7 @@ tipo:
 asignacion: 
   ID ASIGNACION expresion {
     informes_sintactico_imprimir_mensaje("asignacion", "ID ASIGNACION expresion");
-    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
 
@@ -220,7 +220,7 @@ write:
 read:
   READ PARENTESIS_A ID PARENTESIS_C {
     informes_sintactico_imprimir_mensaje("read", "READ PARENTESIS_A ID PARENTESIS_C");
-    tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+    tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
 
@@ -287,7 +287,7 @@ termino:
 factor: 
   ID {
     informes_sintactico_imprimir_mensaje("factor", "ID");
-    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   | CTE_INT 
       {
@@ -318,7 +318,7 @@ factor:
   | RESTA ID
       {
         informes_sintactico_imprimir_mensaje("factor", "RESTA ID");
-        tabla_simbolos_insertar_dato($2, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+        tabla_simbolos_insertar_dato($2, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
       }
   | CTE_STRING 
       {
