@@ -9,10 +9,10 @@ t_validaciones_lexico_resultado_validacion validaciones_lexico_es_string_valido(
     t_validaciones_lexico_resultado_validacion resultado;
     int largo = strlen(cadena);
 
-    if (largo > MAX_STRING_LONGITUD)
+    if (largo > VALIDACIONES_LEXICO_MAX_LONGITUD_STRING)
     {
         resultado.es_valido = 0;
-        sprintf(resultado.aclaracion, "Se permite un maximo de %d caracteres", MAX_STRING_LONGITUD);
+        sprintf(resultado.aclaracion, "Se permite un maximo de %d caracteres", VALIDACIONES_LEXICO_MAX_LONGITUD_STRING);
         sprintf(resultado.mensaje_error, "Cadena de texto supera el maximo de caracteres permitido");
         return resultado;
     }
