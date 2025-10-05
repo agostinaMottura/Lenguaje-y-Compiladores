@@ -1,5 +1,5 @@
-#ifndef VALIDACIONES_H
-#define VALIDACIONES_H
+#ifndef VALIDACIONES_LEXICO_H
+#define VALIDACIONES_LEXICO_H
 
 #define MAX_MSG_ERROR_LONGITUD 100
 
@@ -22,4 +22,4 @@ ResultadoValidacion es_string_valido(char cadena[]);
 ResultadoValidacion es_float_valido(char *cadena);
 ResultadoValidacion es_int_valido(char *cadena);
 
-#endif // VALIDACIONES_H
+#endif // VALIDACIONES_LEXICO_H

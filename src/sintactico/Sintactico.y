@@ -6,8 +6,11 @@
 #include <string.h>
 #include "y.tab.h"
 #include "./src/tabla-simbolos/tabla_simbolos.h"
+#include "./src/tabla-simbolos/tipo-dato/tipo_dato.h"
+#include "./src/tabla-simbolos/valores/valores.h"
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils.h"
+
 
 #define MAX_IDS_DECLARADOS 10
 #define MAX_STRING_LONGITUD_ID 55
@@ -167,7 +170,7 @@ declaracion_var:
     print_sintactico("declaracion_var", "lista_ids DOS_PUNTOS tipo");
     for(i=0;i<cant_id;i++)
       {
-        insertar_tabla_simbolos(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
+        insertar_tabla_simbolos(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
       }
     cant_id=0;
    }
@@ -201,7 +204,7 @@ tipo:
 asignacion: 
   ID ASIGNACION expresion {
     print_sintactico("asignacion", "ID ASIGNACION expresion");
-    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
+    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
   }
   ;
 
@@ -212,7 +215,7 @@ write:
 read:
   READ PARENTESIS_A ID PARENTESIS_C {
     print_sintactico("read", "READ PARENTESIS_A ID PARENTESIS_C");
-    insertar_tabla_simbolos($3, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
+    insertar_tabla_simbolos($3, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
   }
   ;
 
@@ -279,7 +282,7 @@ termino:
 factor: 
   ID {
     print_sintactico("factor", "ID");
-    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
+    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
   }
   | CTE_INT 
       {
@@ -310,7 +313,7 @@ factor:
   | RESTA ID
       {
         print_sintactico("factor", "RESTA ID");
-        insertar_tabla_simbolos($2, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
+        insertar_tabla_simbolos($2, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
       }
   | CTE_STRING 
       {

@@ -4,26 +4,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "./tipo-dato/tipo_dato.h"
 
 #define VALOR_COLUMNA_NOMBRE "NOMBRE"
 #define VALOR_COLUMNA_TIPO_DATO "TIPO_DATO"
 #define VALOR_COLUMNA_VALOR "VALOR"
 #define VALOR_COLUMNA_LONGITUD "LONGITUD"
 
-#define VALOR_NULL_STRING "--NULL--"
-#define VALOR_CTE_STRING "CTE_STRING"
-#define VALOR_CTE_INT "CTE_INT"
-#define VALOR_CTE_FLOAT "CTE_FLOAT"
+// #define VALOR_NULL_STRING "--NULL--"
+// #define VALOR_CTE_STRING "CTE_STRING"
+// #define VALOR_CTE_INT "CTE_INT"
+// #define VALOR_CTE_FLOAT "CTE_FLOAT"
 
 #define MAX_ID_LONGITUD 55
-
-typedef enum
-{
-    TIPO_DATO_DESCONOCIDO,
-    TIPO_DATO_CTE_STRING,
-    TIPO_DATO_CTE_INT,
-    TIPO_DATO_CTE_FLOAT
-} t_tipo_dato;
 
 /* --- Estructura de la tabla de simbolos --- */
 

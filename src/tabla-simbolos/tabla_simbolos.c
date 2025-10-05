@@ -1,14 +1,10 @@
 #include "tabla_simbolos.h"
+#include "./valores/valores.h"
 
 // Definición de la tabla de símbolos global
 t_tabla_simbolos tabla_simbolos;
 
 // Validaciones
-int es_cte(t_tipo_dato tipo)
-{
-    return (tipo == TIPO_DATO_CTE_STRING || tipo == TIPO_DATO_CTE_INT || tipo == TIPO_DATO_CTE_FLOAT);
-}
-
 int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_nodo *nodo)
 {
     while (nodo)
@@ -22,63 +18,6 @@ int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_
     }
 
     return 0;
-}
-
-// Mappers para la tabla de contenidos (tipos de datos)
-const char *from_tipo_dato_to_str(t_tipo_dato tipo_dato)
-{
-    switch (tipo_dato)
-    {
-    case TIPO_DATO_DESCONOCIDO:
-        return VALOR_NULL_STRING;
-    case TIPO_DATO_CTE_STRING:
-        return VALOR_CTE_STRING;
-    case TIPO_DATO_CTE_INT:
-        return VALOR_CTE_INT;
-    case TIPO_DATO_CTE_FLOAT:
-        return VALOR_CTE_FLOAT;
-    }
-}
-
-t_tipo_dato from_str_to_tipo_dato(const char *str)
-{
-    if (strcmp(str, VALOR_CTE_STRING) == 0)
-    {
-        return TIPO_DATO_CTE_STRING;
-    }
-
-    if (strcmp(str, VALOR_CTE_INT) == 0)
-    {
-        return TIPO_DATO_CTE_INT;
-    }
-
-    if (strcmp(str, VALOR_CTE_FLOAT) == 0)
-    {
-        return TIPO_DATO_CTE_FLOAT;
-    }
-
-    return TIPO_DATO_DESCONOCIDO;
-}
-
-// Valor
-const char *obtener_valor_para_almacenar_en_tabla_de_contenidos(const char *str)
-{
-    if (str == NULL)
-    {
-        return VALOR_NULL_STRING;
-    }
-
-    return str;
-}
-
-const char *obtener_valor_desde_la_tabla_de_contenidos(const char *str)
-{
-    if (strcmp(str, VALOR_NULL_STRING) == 0)
-    {
-        return NULL;
-    }
-
-    return str;
 }
 
 // Funciones propias de la tabla de simbolos
@@ -152,7 +91,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
         dato->longitud = strlen(valor); // Hacer funcion de calcular_logitud
     }
 
-    if (!es_cte(dato->tipo_dato))
+    if (!tipo_dato_es_constante(dato->tipo_dato))
     {
         dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
         if (dato->nombre == NULL)
@@ -213,8 +152,8 @@ void guardar_tabla_simbolos()
         fprintf(arch,
                 "%-55s%-30s%-55s%-30d\n",
                 nodo->dato.nombre,
-                from_tipo_dato_to_str(nodo->dato.tipo_dato),
-                obtener_valor_para_almacenar_en_tabla_de_contenidos(nodo->dato.valor),
+                tipo_dato_obtener_valor(nodo->dato.tipo_dato),
+                valores_obtener_para_almacenar(nodo->dato.valor),
                 nodo->dato.longitud);
 
         nodo = nodo->siguiente;
