@@ -1,6 +1,7 @@
 #include "tabla_simbolos.h"
 #include "./valores/valores.h"
 #include "./informes/informes.h"
+#include "../utils.h"
 
 // Definición de la tabla de símbolos global
 t_tabla_simbolos tabla_simbolos;
@@ -32,7 +33,7 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
 {
     if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
     {
-        char mensaje[256];
+        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Elmento duplicado. (%s: %s | %s: %s)",
@@ -45,7 +46,7 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
     t_dato *dato = crearDatos(nombre, tipo_dato, valor);
     if (dato == NULL)
     {
-        char mensaje[256];
+        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Error al crear el dato. (%s: %s | %s: %d | %s: %s)",
@@ -64,7 +65,7 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
         free(dato->valor);
         free(dato);
 
-        char mensaje[256];
+        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Error al crear el nodo. (%s: %s | %s: %d | %s: %s)",
@@ -100,7 +101,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     t_dato *dato = (t_dato *)calloc(1, sizeof(t_dato));
     if (dato == NULL)
     {
-        char mensaje[256];
+        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Memoria insuficiente para crear el dato. (%s: %s | %s: %d | %s: %s)",
@@ -119,7 +120,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     {
         free(dato);
 
-        char mensaje[256];
+        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Memoria insuficiente para crear el valor del dato. (%s: %s | %s: %d | %s: %s)",
@@ -141,7 +142,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
             free(dato->valor);
             free(dato);
 
-            char mensaje[256];
+            char mensaje[MAX_STRING_MENSAJE_LONGITUD];
             sprintf(
                 mensaje,
                 "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
@@ -166,7 +167,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
         free(dato->valor);
         free(dato);
 
-        char mensaje[256];
+        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
