@@ -172,7 +172,7 @@ COMENTARIO \#\+.*\+\#
                     }
 
                     procesar_token("CTE_FLOAT");
-                    yylval.flotante = atof(yytext);
+                    strcpy(yylval.cadena, yytext);
                     return CTE_FLOAT;
                 }    	
 {CTE_INT}	    {
@@ -183,7 +183,7 @@ COMENTARIO \#\+.*\+\#
                     }
 
                     procesar_token("CTE_INT");
-                    yylval.entero = atoi(yytext);
+                    strcpy(yylval.cadena, yytext);
                     return CTE_INT;
                 } 
 

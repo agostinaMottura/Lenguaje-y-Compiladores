@@ -91,7 +91,6 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
 {
     if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
     {
-        printf("El nombre ya existe en la tabla de simbolos\n");
         return 1;
     }
 

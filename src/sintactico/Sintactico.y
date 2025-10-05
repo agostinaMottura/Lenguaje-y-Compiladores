@@ -10,6 +10,18 @@
 #include "./src/utils.h"
 
 #define MAX_IDS_DECLARADOS 10
+#define MAX_STRING_LONGITUD_ID 55
+
+
+const char* obtener_string_numero_negativo(const char *nro)
+{
+  static char str[MAX_STRING_LONGITUD_ID];
+
+  strcat(str, "-");
+  strcat(str, nro);
+
+  return str;
+}
 
 int yystopparser=0;
 FILE  *yyin;
@@ -19,26 +31,16 @@ int yylex();
 
 // Declaracion variables tabla de simbolos 
 int i=0;
-t_tipo_dato tipo_dato; // char tipo_dato[10];
 int cant_id = 0;
-char nombre_id[55];
-int constante_aux_int;
-float constante_aux_float;
-char constante_aux_string[55];
-char aux_string[55];
+
 t_nombre_id ids_declarados[MAX_IDS_DECLARADOS];
 
 %}
-
 %union {
-    int entero;
-    float flotante;
-    char cadena[100];
+    char cadena[55]; // Bison no me deja poner una macro aca :(
 }
 
-%type <cadena> CTE_STRING ID
-%type <entero> CTE_INT
-%type <flotante> CTE_FLOAT
+%type <cadena> CTE_STRING ID CTE_INT CTE_FLOAT
 
 /* Palabras reservadas */
 %token IF
@@ -282,32 +284,28 @@ factor:
   | CTE_INT 
       {
         print_sintactico("factor", "CTE_INT");
-        sprintf(nombre_id, "%d", $1);
-        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_INT, nombre_id);
+        insertar_tabla_simbolos($1, TIPO_DATO_CTE_INT, $1);
       }
   | CTE_FLOAT 
       {
         print_sintactico("factor", "CTE_FLOAT");
-        sprintf(nombre_id, "%f", $1); 
-        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_FLOAT, nombre_id);
+        insertar_tabla_simbolos($1, TIPO_DATO_CTE_FLOAT, $1);
       }
   | RESTA CTE_INT
       {
         print_sintactico("factor", "RESTA CTE_INT");
 
-        int entero_negativo = $2 * (-1);
-        sprintf(nombre_id, "%d", entero_negativo);
+        const char* nro_negativo = obtener_string_numero_negativo($2); 
 
-        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_INT, nombre_id);
+        insertar_tabla_simbolos(nro_negativo, TIPO_DATO_CTE_INT, nro_negativo);
       }
   | RESTA CTE_FLOAT
       {
         print_sintactico("factor", "RESTA CTE_FLOAT");
 
-        float float_negativo = $2 * (-1);
-        sprintf(nombre_id, "%f", float_negativo);
+        const char* nro_negativo = obtener_string_numero_negativo($2); 
 
-        insertar_tabla_simbolos(nombre_id, TIPO_DATO_CTE_FLOAT, nombre_id);
+        insertar_tabla_simbolos(nro_negativo, TIPO_DATO_CTE_FLOAT, nro_negativo);
       }
   | RESTA ID
       {
