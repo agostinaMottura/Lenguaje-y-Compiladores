@@ -91,6 +91,7 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
 {
     if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
     {
+        printf("El nombre ya existe en la tabla de simbolos\n");
         return 1;
     }
 
@@ -133,6 +134,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     t_dato *dato = (t_dato *)calloc(1, sizeof(t_dato));
     if (dato == NULL)
     {
+        printf("No hay memoria suficiente para crear el dato\n");
         return NULL;
     }
 
@@ -156,6 +158,8 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
         dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
         if (dato->nombre == NULL)
         {
+            printf("No hay memoria suficiente para almacenar el nombre del nuevo dato\n");
+            free(dato->valor);
             free(dato);
             return NULL;
         }
@@ -172,7 +176,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     {
         free(dato->valor);
         free(dato);
-        printf("Error al asignar memoria para el nombre\n");
+        printf("No hay memoria suficiente para almacenar el nombre del nuevo dato\n");
         return NULL;
     }
 

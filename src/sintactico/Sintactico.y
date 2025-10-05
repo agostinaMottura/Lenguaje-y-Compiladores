@@ -165,7 +165,7 @@ declaracion_var:
     print_sintactico("declaracion_var", "lista_ids DOS_PUNTOS tipo");
     for(i=0;i<cant_id;i++)
       {
-        insertar_tabla_simbolos(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, NULL);
+        insertar_tabla_simbolos(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
       }
     cant_id=0;
    }
@@ -199,7 +199,7 @@ tipo:
 asignacion: 
   ID ASIGNACION expresion {
     print_sintactico("asignacion", "ID ASIGNACION expresion");
-    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, NULL);
+    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
   }
   ;
 
@@ -210,7 +210,7 @@ write:
 read:
   READ PARENTESIS_A ID PARENTESIS_C {
     print_sintactico("read", "READ PARENTESIS_A ID PARENTESIS_C");
-    insertar_tabla_simbolos($3, TIPO_DATO_DESCONOCIDO, NULL);
+    insertar_tabla_simbolos($3, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
   }
   ;
 
@@ -277,7 +277,7 @@ termino:
 factor: 
   ID {
     print_sintactico("factor", "ID");
-    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, NULL);
+    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
   }
   | CTE_INT 
       {
@@ -312,7 +312,7 @@ factor:
   | RESTA ID
       {
         print_sintactico("factor", "RESTA ID");
-        insertar_tabla_simbolos($2, TIPO_DATO_DESCONOCIDO, NULL);
+        insertar_tabla_simbolos($2, TIPO_DATO_DESCONOCIDO, VALOR_NULL_STRING);
       }
   | CTE_STRING 
       {
