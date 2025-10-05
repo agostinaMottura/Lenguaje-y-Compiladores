@@ -43,6 +43,8 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
     t_nodo *nodo = (t_nodo *)malloc(sizeof(t_nodo));
     if (nodo == NULL)
     {
+        free(dato->nombre);
+        free(dato->valor);
         free(dato);
         printf("Error al crear nodo\n");
         return 0;
@@ -78,18 +80,15 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
 
     dato->tipo_dato = tipo_dato;
 
-    if (valor != NULL)
+    dato->valor = (char *)malloc(sizeof(char) * (strlen(valor) + 1));
+    if (dato->valor == NULL)
     {
-        dato->valor = (char *)malloc(sizeof(char) * (strlen(valor) + 1));
-        if (dato->valor == NULL)
-        {
-            free(dato);
-            printf("Error al asignar memoria para el valor\n");
-            return NULL;
-        }
-        strcpy(dato->valor, valor);
-        dato->longitud = strlen(valor); // Hacer funcion de calcular_logitud
+        free(dato);
+        printf("Error al asignar memoria para el valor\n");
+        return NULL;
     }
+    strcpy(dato->valor, valor);
+    dato->longitud = strlen(valor);
 
     if (!tipo_dato_es_constante(dato->tipo_dato))
     {
