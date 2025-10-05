@@ -154,7 +154,7 @@ COMENTARIO \#\+.*\+\#
 {PUNTO_Y_COMA}      {procesar_token("PUNTO_Y_COMA"); return PUNTO_Y_COMA;}
 
 {CTE_STRING}	{
-                    ResultadoValidacion res = es_string_valido(yytext);
+                    t_validaciones_lexico_resultado_validacion res = validaciones_lexico_es_string_valido(yytext);
                     if (!res.es_valido) {
                         informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
@@ -165,7 +165,7 @@ COMENTARIO \#\+.*\+\#
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {
-                    ResultadoValidacion res = es_float_valido(yytext);
+                    t_validaciones_lexico_resultado_validacion res = validaciones_lexico_es_float_valido(yytext);
                     if (!res.es_valido) {
                         informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
@@ -176,7 +176,7 @@ COMENTARIO \#\+.*\+\#
                     return CTE_FLOAT;
                 }    	
 {CTE_INT}	    {
-                    ResultadoValidacion res = es_int_valido(yytext);
+                    t_validaciones_lexico_resultado_validacion res = validaciones_lexico_es_int_valido(yytext);
                     if (!res.es_valido) {
                         informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
