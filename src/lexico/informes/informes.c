@@ -9,7 +9,7 @@ void print_lexico(
     const char *lexema)
 {
     printf(
-        COLOR_CYAN "[LEXICO]" COLOR_RESET " " COLOR_YELLOW "Token #%d" COLOR_RESET " | " COLOR_WHITE "Linea %d" COLOR_RESET " | " COLOR_GREEN "%s" COLOR_RESET " | " COLOR_NARANJA "Valor: %s" COLOR_RESET "\n",
+        UTILS_COLOR_CYAN "[LEXICO]" UTILS_COLOR_RESET " " UTILS_COLOR_YELLOW "Token #%d" UTILS_COLOR_RESET " | " UTILS_COLOR_WHITE "Linea %d" UTILS_COLOR_RESET " | " UTILS_COLOR_GREEN "%s" UTILS_COLOR_RESET " | " UTILS_COLOR_NARANJA "Valor: %s" UTILS_COLOR_RESET "\n",
 
         nro_token,
         nro_linea,

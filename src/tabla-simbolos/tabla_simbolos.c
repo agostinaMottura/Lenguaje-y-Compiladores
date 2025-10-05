@@ -23,36 +23,37 @@ int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_
 }
 
 // Funciones propias de la tabla de simbolos
-void crear_tabla_simbolos()
+void tabla_simbolos_crear()
 {
     tabla_simbolos.primero = NULL;
     informes_tabla_simbolos_imprimir_mensaje("Tabla de simbolos creada con exito");
 }
 
-int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
+int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
 {
     if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
     {
-        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Elmento duplicado. (%s: %s | %s: %s)",
-            VALOR_COLUMNA_NOMBRE, nombre, VALOR_COLUMNA_VALOR, valor);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
         return 1;
     }
 
-    t_dato *dato = crearDatos(nombre, tipo_dato, valor);
+    t_dato *dato = tabla_simbolos_crear_dato(nombre, tipo_dato, valor);
     if (dato == NULL)
     {
-        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Error al crear el dato. (%s: %s | %s: %d | %s: %s)",
-            VALOR_COLUMNA_NOMBRE, nombre,
-            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
-            VALOR_COLUMNA_VALOR, valor);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
         return 0;
@@ -65,13 +66,13 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
         free(dato->valor);
         free(dato);
 
-        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Error al crear el nodo. (%s: %s | %s: %d | %s: %s)",
-            VALOR_COLUMNA_NOMBRE, nombre,
-            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
-            VALOR_COLUMNA_VALOR, valor);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
         return 0;
@@ -95,19 +96,19 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
     return 1;
 }
 
-t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
-                   const char *valor)
+t_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato tipo_dato,
+                                  const char *valor)
 {
     t_dato *dato = (t_dato *)calloc(1, sizeof(t_dato));
     if (dato == NULL)
     {
-        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Memoria insuficiente para crear el dato. (%s: %s | %s: %d | %s: %s)",
-            VALOR_COLUMNA_NOMBRE, nombre,
-            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
-            VALOR_COLUMNA_VALOR, valor);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
         return NULL;
@@ -120,13 +121,13 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     {
         free(dato);
 
-        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Memoria insuficiente para crear el valor del dato. (%s: %s | %s: %d | %s: %s)",
-            VALOR_COLUMNA_NOMBRE, nombre,
-            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
-            VALOR_COLUMNA_VALOR, valor);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
         return NULL;
@@ -142,13 +143,13 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
             free(dato->valor);
             free(dato);
 
-            char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+            char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
             sprintf(
                 mensaje,
                 "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
-                VALOR_COLUMNA_NOMBRE, nombre,
-                VALOR_COLUMNA_TIPO_DATO, tipo_dato,
-                VALOR_COLUMNA_VALOR, valor);
+                TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+                TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+                TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
             informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
             return NULL;
@@ -158,7 +159,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
         return dato;
     }
 
-    char nombre_cte[100] = "_";
+    char nombre_cte[TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD] = "_";
     strcat(nombre_cte, nombre);
 
     dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre_cte) + 1));
@@ -167,13 +168,13 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
         free(dato->valor);
         free(dato);
 
-        char mensaje[MAX_STRING_MENSAJE_LONGITUD];
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
             "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
-            VALOR_COLUMNA_NOMBRE, nombre,
-            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
-            VALOR_COLUMNA_VALOR, valor);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
 
         return NULL;
@@ -183,7 +184,7 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     return dato;
 }
 
-void guardar_tabla_simbolos()
+void tabla_simbolos_guardar()
 {
     FILE *arch;
 
@@ -201,14 +202,14 @@ void guardar_tabla_simbolos()
     }
 
     fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-            VALOR_COLUMNA_NOMBRE,
-            VALOR_COLUMNA_TIPO_DATO,
-            VALOR_COLUMNA_VALOR,
-            VALOR_COLUMNA_LONGITUD);
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD);
 
     t_nodo *nodo = tabla_simbolos.primero;
-    char valor[100];
-    char longitud[20];
+    char valor[TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD];
+    char longitud[TABLA_SIMBOLOS_MAX_VALOR_LONGITUD];
 
     while (nodo)
     {

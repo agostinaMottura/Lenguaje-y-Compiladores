@@ -6,12 +6,15 @@
 #include <string.h>
 #include "./tipo-dato/tipo_dato.h"
 
-#define VALOR_COLUMNA_NOMBRE "NOMBRE"
-#define VALOR_COLUMNA_TIPO_DATO "TIPO_DATO"
-#define VALOR_COLUMNA_VALOR "VALOR"
-#define VALOR_COLUMNA_LONGITUD "LONGITUD"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE "NOMBRE"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO "TIPO_DATO"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR "VALOR"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD "LONGITUD"
 
-#define MAX_ID_LONGITUD 55
+// Esto no va aca
+#define TABLA_SIMBOLOS_MAX_VALOR_LONGITUD 20
+
+#define TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD 100
 
 /* --- Estructura de la tabla de simbolos --- */
 
@@ -34,21 +37,16 @@ typedef struct
     t_nodo *primero;
 } t_tabla_simbolos;
 
-typedef struct
-{
-    char cadena[MAX_ID_LONGITUD];
-} t_nombre_id;
-
 // Variables globales
 extern t_tabla_simbolos tabla_simbolos;
 
 // Declaración de funciones
-void crear_tabla_simbolos();
-int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const char *valor);
-t_dato *crearDatos(
+void tabla_simbolos_crear();
+int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor);
+t_dato *tabla_simbolos_crear_dato(
     const char *nombre,
     t_tipo_dato tipo_dato,
     const char *valor);
-void guardar_tabla_simbolos();
+void tabla_simbolos_guardar();
 
 #endif // TABLA_SIMBOLOS_H

@@ -16,6 +16,11 @@
 #define MAX_STRING_LONGITUD_ID 55
 
 
+typedef struct
+{
+    char cadena[MAX_IDS_DECLARADOS];
+} t_nombre_id;
+
 const char* obtener_string_numero_negativo(const char *nro)
 {
   static char str[MAX_STRING_LONGITUD_ID];
@@ -170,7 +175,7 @@ declaracion_var:
     print_sintactico("declaracion_var", "lista_ids DOS_PUNTOS tipo");
     for(i=0;i<cant_id;i++)
       {
-        insertar_tabla_simbolos(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
       }
     cant_id=0;
    }
@@ -204,7 +209,7 @@ tipo:
 asignacion: 
   ID ASIGNACION expresion {
     print_sintactico("asignacion", "ID ASIGNACION expresion");
-    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
   }
   ;
 
@@ -215,7 +220,7 @@ write:
 read:
   READ PARENTESIS_A ID PARENTESIS_C {
     print_sintactico("read", "READ PARENTESIS_A ID PARENTESIS_C");
-    insertar_tabla_simbolos($3, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+    tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
   }
   ;
 
@@ -282,17 +287,17 @@ termino:
 factor: 
   ID {
     print_sintactico("factor", "ID");
-    insertar_tabla_simbolos($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
   }
   | CTE_INT 
       {
         print_sintactico("factor", "CTE_INT");
-        insertar_tabla_simbolos($1, TIPO_DATO_CTE_INT, $1);
+        tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_INT, $1);
       }
   | CTE_FLOAT 
       {
         print_sintactico("factor", "CTE_FLOAT");
-        insertar_tabla_simbolos($1, TIPO_DATO_CTE_FLOAT, $1);
+        tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_FLOAT, $1);
       }
   | RESTA CTE_INT
       {
@@ -300,7 +305,7 @@ factor:
 
         const char* nro_negativo = obtener_string_numero_negativo($2); 
 
-        insertar_tabla_simbolos(nro_negativo, TIPO_DATO_CTE_INT, nro_negativo);
+        tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_INT, nro_negativo);
       }
   | RESTA CTE_FLOAT
       {
@@ -308,17 +313,17 @@ factor:
 
         const char* nro_negativo = obtener_string_numero_negativo($2); 
 
-        insertar_tabla_simbolos(nro_negativo, TIPO_DATO_CTE_FLOAT, nro_negativo);
+        tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_FLOAT, nro_negativo);
       }
   | RESTA ID
       {
         print_sintactico("factor", "RESTA ID");
-        insertar_tabla_simbolos($2, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
+        tabla_simbolos_insertar_dato($2, TIPO_DATO_DESCONOCIDO, VALOR_NULL);
       }
   | CTE_STRING 
       {
         print_sintactico("factor", "CTE_STRING");
-        insertar_tabla_simbolos($1, TIPO_DATO_CTE_STRING, $1);
+        tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_STRING, $1);
       }
   | PARENTESIS_A expresion PARENTESIS_C {print_sintactico("factor", "PARENTESIS_A expresion PARENTESIS_C");}
   | funcion_numerica {print_sintactico("factor", "funcion_numerica");}
@@ -332,16 +337,16 @@ int main(int argc, char *argv[])
     {
         char msg[100];
         sprintf(msg, "No se puede abrir el archivo: %s", argv[1]);
-        print_error(msg);
+        utils_print_error(msg);
         return 1;
     }
     else
     {   
-        crear_tabla_simbolos();
+        tabla_simbolos_crear();
 
         yyparse();        
 
-        guardar_tabla_simbolos();
+        tabla_simbolos_guardar();
     }
 	fclose(yyin);
     return 0;
