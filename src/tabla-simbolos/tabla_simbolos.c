@@ -7,7 +7,7 @@
 t_tabla_simbolos tabla_simbolos;
 
 // Validaciones
-int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_nodo *nodo)
+int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_tabla_simbolos_nodo *nodo)
 {
     while (nodo)
     {
@@ -44,7 +44,7 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
         return 1;
     }
 
-    t_dato *dato = tabla_simbolos_crear_dato(nombre, tipo_dato, valor);
+    t_tabla_simbolos_dato *dato = tabla_simbolos_crear_dato(nombre, tipo_dato, valor);
     if (dato == NULL)
     {
         char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
@@ -59,7 +59,7 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
         return 0;
     }
 
-    t_nodo *nodo = (t_nodo *)malloc(sizeof(t_nodo));
+    t_tabla_simbolos_nodo *nodo = (t_tabla_simbolos_nodo *)malloc(sizeof(t_tabla_simbolos_nodo));
     if (nodo == NULL)
     {
         free(dato->nombre);
@@ -86,7 +86,7 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
         return 1;
     }
 
-    t_nodo *actual = tabla_simbolos.primero;
+    t_tabla_simbolos_nodo *actual = tabla_simbolos.primero;
     while (actual->siguiente != NULL)
     {
         actual = actual->siguiente;
@@ -96,10 +96,10 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
     return 1;
 }
 
-t_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato tipo_dato,
-                                  const char *valor)
+t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato tipo_dato,
+                                                 const char *valor)
 {
-    t_dato *dato = (t_dato *)calloc(1, sizeof(t_dato));
+    t_tabla_simbolos_dato *dato = (t_tabla_simbolos_dato *)calloc(1, sizeof(t_tabla_simbolos_dato));
     if (dato == NULL)
     {
         char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
@@ -207,7 +207,7 @@ void tabla_simbolos_guardar()
             TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR,
             TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD);
 
-    t_nodo *nodo = tabla_simbolos.primero;
+    t_tabla_simbolos_nodo *nodo = tabla_simbolos.primero;
     char valor[TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD];
     char longitud[TABLA_SIMBOLOS_MAX_VALOR_LONGITUD];
 

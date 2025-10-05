@@ -24,17 +24,17 @@ typedef struct
     t_tipo_dato tipo_dato;
     char *valor;
     int longitud;
-} t_dato;
+} t_tabla_simbolos_dato;
 
-typedef struct nodo
+typedef struct tabla_simbolos_nodo
 {
-    t_dato dato;
-    struct nodo *siguiente;
-} t_nodo;
+    t_tabla_simbolos_dato dato;
+    struct tabla_simbolos_nodo *siguiente;
+} t_tabla_simbolos_nodo;
 
 typedef struct
 {
-    t_nodo *primero;
+    t_tabla_simbolos_nodo *primero;
 } t_tabla_simbolos;
 
 // Variables globales
@@ -43,7 +43,7 @@ extern t_tabla_simbolos tabla_simbolos;
 // Declaración de funciones
 void tabla_simbolos_crear();
 int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor);
-t_dato *tabla_simbolos_crear_dato(
+t_tabla_simbolos_dato *tabla_simbolos_crear_dato(
     const char *nombre,
     t_tipo_dato tipo_dato,
     const char *valor);
