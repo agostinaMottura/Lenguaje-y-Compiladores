@@ -1,5 +1,6 @@
 #include "tabla_simbolos.h"
 #include "./valores/valores.h"
+#include "./informes/informes.h"
 
 // Definición de la tabla de símbolos global
 t_tabla_simbolos tabla_simbolos;
@@ -24,19 +25,35 @@ int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_
 void crear_tabla_simbolos()
 {
     tabla_simbolos.primero = NULL;
+    informes_tabla_simbolos_imprimir_mensaje("Tabla de simbolos creada con exito");
 }
 
 int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
 {
     if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
     {
+        char mensaje[256];
+        sprintf(
+            mensaje,
+            "Elmento duplicado. (%s: %s | %s: %s)",
+            VALOR_COLUMNA_NOMBRE, nombre, VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
         return 1;
     }
 
     t_dato *dato = crearDatos(nombre, tipo_dato, valor);
     if (dato == NULL)
     {
-        printf("Error al crear datos\n");
+        char mensaje[256];
+        sprintf(
+            mensaje,
+            "Error al crear el dato. (%s: %s | %s: %d | %s: %s)",
+            VALOR_COLUMNA_NOMBRE, nombre,
+            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
         return 0;
     }
 
@@ -46,7 +63,16 @@ int insertar_tabla_simbolos(const char *nombre, t_tipo_dato tipo_dato, const cha
         free(dato->nombre);
         free(dato->valor);
         free(dato);
-        printf("Error al crear nodo\n");
+
+        char mensaje[256];
+        sprintf(
+            mensaje,
+            "Error al crear el nodo. (%s: %s | %s: %d | %s: %s)",
+            VALOR_COLUMNA_NOMBRE, nombre,
+            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
         return 0;
     }
     nodo->dato = *dato;
@@ -74,7 +100,15 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     t_dato *dato = (t_dato *)calloc(1, sizeof(t_dato));
     if (dato == NULL)
     {
-        printf("No hay memoria suficiente para crear el dato\n");
+        char mensaje[256];
+        sprintf(
+            mensaje,
+            "Memoria insuficiente para crear el dato. (%s: %s | %s: %d | %s: %s)",
+            VALOR_COLUMNA_NOMBRE, nombre,
+            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
         return NULL;
     }
 
@@ -84,7 +118,16 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     if (dato->valor == NULL)
     {
         free(dato);
-        printf("Error al asignar memoria para el valor\n");
+
+        char mensaje[256];
+        sprintf(
+            mensaje,
+            "Memoria insuficiente para crear el valor del dato. (%s: %s | %s: %d | %s: %s)",
+            VALOR_COLUMNA_NOMBRE, nombre,
+            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
         return NULL;
     }
     strcpy(dato->valor, valor);
@@ -95,9 +138,18 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
         dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
         if (dato->nombre == NULL)
         {
-            printf("No hay memoria suficiente para almacenar el nombre del nuevo dato\n");
             free(dato->valor);
             free(dato);
+
+            char mensaje[256];
+            sprintf(
+                mensaje,
+                "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
+                VALOR_COLUMNA_NOMBRE, nombre,
+                VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+                VALOR_COLUMNA_VALOR, valor);
+            informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
             return NULL;
         }
         strcpy(dato->nombre, nombre);
@@ -113,7 +165,16 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
     {
         free(dato->valor);
         free(dato);
-        printf("No hay memoria suficiente para almacenar el nombre del nuevo dato\n");
+
+        char mensaje[256];
+        sprintf(
+            mensaje,
+            "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
+            VALOR_COLUMNA_NOMBRE, nombre,
+            VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
         return NULL;
     }
 
@@ -124,14 +185,16 @@ t_dato *crearDatos(const char *nombre, t_tipo_dato tipo_dato,
 void guardar_tabla_simbolos()
 {
     FILE *arch;
+
     if ((arch = fopen("symbol-table.txt", "wt")) == NULL)
     {
-        printf("\nNo se pudo crear la tabla de simbolos.\n\n");
+        informes_tabla_simbolos_imprimir_mensaje("Error al guardar la tabla de simbolos");
         return;
     }
-    else if (tabla_simbolos.primero == NULL)
+
+    if (tabla_simbolos.primero == NULL)
     {
-        printf("\nLa tabla de simbolos está vacía.\n\n");
+        informes_tabla_simbolos_imprimir_mensaje("La tabla de simbolos está vacia");
         fclose(arch);
         return;
     }
@@ -159,5 +222,5 @@ void guardar_tabla_simbolos()
     }
 
     fclose(arch);
-    printf("\nTabla de simbolos guardada correctamente.\n\n");
+    informes_tabla_simbolos_imprimir_mensaje("Guardado completo");
 }

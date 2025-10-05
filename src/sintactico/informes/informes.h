@@ -1,5 +1,5 @@
-#ifndef INFORMES_H
-#define INFORMES_H
+#ifndef INFORMES_SINTACTICO_H
+#define INFORMES_SINTACTICO_H
 
 void print_sintactico(const char *no_terminal, const char *produccion);
 void informar_error_sintactico(
@@ -7,4 +7,4 @@ void informar_error_sintactico(
     const char *terminal);
 void informar_error_generico(const char *mensaje);
 
-#endif // INFORMES_H
+#endif // INFORMES_SINTACTICO_H
