@@ -14,7 +14,7 @@ static int nro_token = 0;
 
 void procesar_token(const char* terminal) {
     nro_token++;
-    print_lexico(nro_token, yylineno, terminal, yytext);
+    informes_lexico_imprimir_mensaje(nro_token, yylineno, terminal, yytext);
 }
 
 const char* obtener_string_sin_comillas(const char* str)
@@ -156,7 +156,7 @@ COMENTARIO \#\+.*\+\#
 {CTE_STRING}	{
                     ResultadoValidacion res = es_string_valido(yytext);
                     if (!res.es_valido) {
-                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
                     }
 
@@ -167,7 +167,7 @@ COMENTARIO \#\+.*\+\#
 {CTE_FLOAT}	    {
                     ResultadoValidacion res = es_float_valido(yytext);
                     if (!res.es_valido) {
-                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
                     }
 
@@ -178,7 +178,7 @@ COMENTARIO \#\+.*\+\#
 {CTE_INT}	    {
                     ResultadoValidacion res = es_int_valido(yytext);
                     if (!res.es_valido) {
-                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
                     }
 
@@ -194,7 +194,7 @@ COMENTARIO \#\+.*\+\#
                 }
 
 {INVALIDO}  { 
-                informar_error_lexico(
+                informes_lexico_imprimir_error(
                     "Caracter desconocido", 
                     yytext, 
                     "Caracter no permitido en el lenguaje"

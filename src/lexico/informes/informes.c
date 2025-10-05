@@ -2,7 +2,7 @@
 #include "../../utils.h"
 #include "./informes.h"
 
-void print_lexico(
+void informes_lexico_imprimir_mensaje(
     int nro_token,
     int nro_linea,
     const char *terminal,
@@ -17,7 +17,7 @@ void print_lexico(
         lexema);
 }
 
-void informar_error_lexico(const char *mensaje, const char *lexema, const char *detalle)
+void informes_lexico_imprimir_error(const char *mensaje, const char *lexema, const char *detalle)
 {
     fprintf(stderr, "Error léxico: %s\n", mensaje);
     fprintf(stderr, "Lexema: %s\n", lexema);
