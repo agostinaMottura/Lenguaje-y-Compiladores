@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "stdio.h": "c",
-        "*.gitignore": "c",
-        "no_terminales.h": "c"
-    }
-}
