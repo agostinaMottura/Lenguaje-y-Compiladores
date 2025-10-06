@@ -7,6 +7,8 @@
 #include "y.tab.h"
 #include "./src/lexico/validaciones/validaciones.h"
 #include "./src/lexico/informes/informes.h"
+#include "./src/utils.h"
+
 FILE  *yyin;
 
 // Contador de tokens para mejor seguimiento
@@ -15,14 +17,6 @@ static int nro_token = 0;
 void procesar_token(const char* terminal) {
     nro_token++;
     informes_lexico_imprimir_mensaje(nro_token, yylineno, terminal, yytext);
-}
-
-const char* obtener_string_sin_comillas(const char* str)
-{
-    char *literal = strdup(str + 1);
-    literal[strlen(literal) - 1] = '\0';
-
-    return literal;
 }
 
 int yyerror(const char *s);
@@ -161,7 +155,7 @@ COMENTARIO \#\+.*\+\#
                     }
 
                     procesar_token("CTE_STRING");
-                    strcpy(yylval.cadena, obtener_string_sin_comillas(yytext));
+                    strcpy(yylval.cadena, utils_obtener_string_sin_comillas(yytext));
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {

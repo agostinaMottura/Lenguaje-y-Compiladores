@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
     {
         char msg[100];
         sprintf(msg, "No se puede abrir el archivo: %s", argv[1]);
-        utils_print_error(msg);
+        utils_imprimir_error(msg);
         return 1;
     }
     else

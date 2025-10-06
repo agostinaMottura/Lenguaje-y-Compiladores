@@ -14,6 +14,6 @@
 
 #define UTILS_MAX_STRING_MENSAJE_LONGITUD 256
 
-void utils_print_error(const char *message);
-
+void utils_imprimir_error(const char *mensaje);
+const char *utils_obtener_string_sin_comillas(const char *str);
 #endif // UTILS_H
