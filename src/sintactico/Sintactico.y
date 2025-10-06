@@ -11,6 +11,7 @@
 #include "./src/tabla-simbolos/valores/valores.h"
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils/utils.h"
+#include "./src/simbolos/no-terminales/no_terminales.h"
 
 
 int yystopparser=0;
@@ -95,66 +96,66 @@ t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
 %%
 programa:
-  instrucciones {informes_sintactico_imprimir_mensaje("programa", "instrucciones");}
+  instrucciones {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PROGRAMA, "instrucciones");}
   ;
 
 instrucciones:
-  instrucciones sentencia {informes_sintactico_imprimir_mensaje("instrucciones", "instrucciones sentencia");}
-  |sentencia {informes_sintactico_imprimir_mensaje("instrucciones", "sentencia");}
+  instrucciones sentencia {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "instrucciones sentencia");}
+  |sentencia {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "sentencia");}
   ;
 
 sentencia:  	   
-  asignacion {informes_sintactico_imprimir_mensaje("sentencia", "asignacion");}
-  | write {informes_sintactico_imprimir_mensaje("sentencia", "write");}
-  | read {informes_sintactico_imprimir_mensaje("sentencia", "read");}
-  | ciclo {informes_sintactico_imprimir_mensaje("sentencia", "ciclo");}
-  | if {informes_sintactico_imprimir_mensaje("sentencia", "if");}
-  | declaracion {informes_sintactico_imprimir_mensaje("sentencia", "declaracion");}
-  | funcion {informes_sintactico_imprimir_mensaje("sentencia", "funcion");}
+  asignacion {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "asignacion");}
+  | write {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "write");}
+  | read {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "read");}
+  | ciclo {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "ciclo");}
+  | if {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "if");}
+  | declaracion {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "declaracion");}
+  | funcion {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "funcion");}
   ;
 
 funcion:
-  funcion_numerica {informes_sintactico_imprimir_mensaje("funcion", "funcion_numerica");}
-  | funcion_booleana {informes_sintactico_imprimir_mensaje("funcion", "funcion_booleana");}
+  funcion_numerica {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FUNCION, "funcion_numerica");}
+  | funcion_booleana {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FUNCION, "funcion_booleana");}
   ;
 
 funcion_numerica:
-  triangleAreaMaximum {informes_sintactico_imprimir_mensaje("funcion_numerica", "triangleAreaMaximum");}
+  triangleAreaMaximum {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FUNCION_NUMERICA, "triangleAreaMaximum");}
   ;
 
 funcion_booleana:
-  isZero {informes_sintactico_imprimir_mensaje("funcion_booleana", "isZero");}
+  isZero {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FUNCION_BOOLEANA, "isZero");}
   ;
 
 isZero:
-  IS_ZERO PARENTESIS_A expresion PARENTESIS_C {informes_sintactico_imprimir_mensaje("isZero", "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");}
+  IS_ZERO PARENTESIS_A expresion PARENTESIS_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_IS_ZERO, "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");}
   ;
 
 triangleAreaMaximum:
-  TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C {informes_sintactico_imprimir_mensaje("triangleAreaMaximum", "TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C");}
+  TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TRIANGLE_AREA_MAXIMUM, "TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C");}
   ;
   
 triangulo:
-  CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C {informes_sintactico_imprimir_mensaje("triangulo", "CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C");}
+  CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TRIANGULO, "CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C");}
   ;
 
 coordenada:
-  expresion COMA expresion {informes_sintactico_imprimir_mensaje("coordenada", "expresion COMA expresion");}
+  expresion COMA expresion {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_COORDENADA, "expresion COMA expresion");}
   ;
 
 declaracion:
-  INIT LLAVES_A lista_declaraciones LLAVES_C {informes_sintactico_imprimir_mensaje("declaracion", "INIT LLAVES_A lista_declaraciones LLAVES_C");}
+  INIT LLAVES_A lista_declaraciones LLAVES_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_DECLARACION, "INIT LLAVES_A lista_declaraciones LLAVES_C");}
   ;
 
 lista_declaraciones:
-  declaracion_var {informes_sintactico_imprimir_mensaje("lista_declaraciones", "declaracion_var");}
-  | lista_declaraciones declaracion_var {informes_sintactico_imprimir_mensaje("lista_declaraciones", "lista_declaraciones declaracion_var");}
+  declaracion_var {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_DECLARACIONES, "declaracion_var");}
+  | lista_declaraciones declaracion_var {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_DECLARACIONES, "lista_declaraciones declaracion_var");}
   ;
 
 declaracion_var:
   lista_ids DOS_PUNTOS tipo
    {
-    informes_sintactico_imprimir_mensaje("declaracion_var", "lista_ids DOS_PUNTOS tipo");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_DECLARACION_VAR, "lista_ids DOS_PUNTOS tipo");
     for(i=0;i<cant_id;i++)
       {
         tabla_simbolos_insertar_dato(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
@@ -165,12 +166,12 @@ declaracion_var:
 
 lista_ids:
   ID {
-    informes_sintactico_imprimir_mensaje("lista_ids", "ID");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_IDS, "ID");
     strcpy(ids_declarados[cant_id].cadena, $1);
     cant_id++;
   }
   | lista_ids COMA ID {
-    informes_sintactico_imprimir_mensaje("lista_ids", "lista_ids COMA ID");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_IDS, "lista_ids COMA ID");
     strcpy(ids_declarados[cant_id].cadena, $3);
     cant_id++;
   }
@@ -178,112 +179,112 @@ lista_ids:
 
 tipo:
   FLOAT {
-    informes_sintactico_imprimir_mensaje("tipo", "FLOAT");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "FLOAT");
   }
   | INT {
-    informes_sintactico_imprimir_mensaje("tipo", "INT");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "INT");
   }
   | STRING {
-    informes_sintactico_imprimir_mensaje("tipo", "STRING");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "STRING");
   }
   ;
 
 asignacion: 
   ID ASIGNACION expresion {
-    informes_sintactico_imprimir_mensaje("asignacion", "ID ASIGNACION expresion");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
     tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
 
 write:
-  WRITE PARENTESIS_A expresion PARENTESIS_C {informes_sintactico_imprimir_mensaje("write", "WRITE PARENTESIS_A expresion PARENTESIS_C");}
+  WRITE PARENTESIS_A expresion PARENTESIS_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_WRITE, "WRITE PARENTESIS_A expresion PARENTESIS_C");}
   ;
 
 read:
   READ PARENTESIS_A ID PARENTESIS_C {
-    informes_sintactico_imprimir_mensaje("read", "READ PARENTESIS_A ID PARENTESIS_C");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_READ, "READ PARENTESIS_A ID PARENTESIS_C");
     tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
 
 ciclo:
-  WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {informes_sintactico_imprimir_mensaje("ciclo", "WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");}
+  WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CICLO, "WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");}
   ;
 
 if:
-  bloque_if {informes_sintactico_imprimir_mensaje("if", "bloque_if");}
-  | bloque_if else {informes_sintactico_imprimir_mensaje("if", "bloque_if else");}
+  bloque_if {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_IF, "bloque_if");}
+  | bloque_if else {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_IF, "bloque_if else");}
   ;
 
 bloque_if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {informes_sintactico_imprimir_mensaje("bloque_if", "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");}
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_BLOQUE_IF, "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");}
   ;
 
 else:
-   ELSE bloque_if {informes_sintactico_imprimir_mensaje("else", "ELSE bloque_if");}
-  | ELSE LLAVES_A instrucciones LLAVES_C {informes_sintactico_imprimir_mensaje("else", "ELSE LLAVES_A instrucciones LLAVES_C");}
+   ELSE bloque_if {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ELSE, "ELSE bloque_if");}
+  | ELSE LLAVES_A instrucciones LLAVES_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ELSE, "ELSE LLAVES_A instrucciones LLAVES_C");}
   ;
 
 condicional:
-  condicion_compuesta {informes_sintactico_imprimir_mensaje("condicional", "condicion_compuesta");}
+  condicion_compuesta {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICIONAL, "condicion_compuesta");}
   ;
 
 condicion_compuesta:
-  condicion_unaria {informes_sintactico_imprimir_mensaje("condicion_compuesta", "condicion_unaria");}
-  | condicion_compuesta AND condicion_unaria {informes_sintactico_imprimir_mensaje("condicion_compuesta", "condicion_compuesta AND condicion_unaria");}
-  | condicion_compuesta OR condicion_unaria {informes_sintactico_imprimir_mensaje("condicion_compuesta", "condicion_compuesta OR condicion_unaria");}
+  condicion_unaria {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, "condicion_unaria");}
+  | condicion_compuesta AND condicion_unaria {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, "condicion_compuesta AND condicion_unaria");}
+  | condicion_compuesta OR condicion_unaria {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, "condicion_compuesta OR condicion_unaria");}
   ;
 
 condicion_unaria:
-  NOT condicion_unaria {informes_sintactico_imprimir_mensaje("condicion_unaria", "NOT condicion_unaria");}
-  | predicado {informes_sintactico_imprimir_mensaje("condicion_unaria", "predicado");}
+  NOT condicion_unaria {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICION_UNARIA, "NOT condicion_unaria");}
+  | predicado {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICION_UNARIA, "predicado");}
   ;
 
 predicado:
-  expresion operador_comparacion expresion {informes_sintactico_imprimir_mensaje("predicado", "expresion operador_comparacion expresion");}
-  | PARENTESIS_A condicional PARENTESIS_C {informes_sintactico_imprimir_mensaje("predicado", "PARENTESIS_A condicional PARENTESIS_C");}
-  | funcion_booleana {informes_sintactico_imprimir_mensaje("predicado", "funcion_booleana");}
+  expresion operador_comparacion expresion {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PREDICADO, "expresion operador_comparacion expresion");}
+  | PARENTESIS_A condicional PARENTESIS_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PREDICADO, "PARENTESIS_A condicional PARENTESIS_C");}
+  | funcion_booleana {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PREDICADO, "funcion_booleana");}
   ;
 
 operador_comparacion:
-  MAYOR {informes_sintactico_imprimir_mensaje("operador_comparacion", "MAYOR");}
-  | MAYOR_IGUAL {informes_sintactico_imprimir_mensaje("operador_comparacion", "MAYOR_IGUAL");}
-  | MENOR_IGUAL {informes_sintactico_imprimir_mensaje("operador_comparacion", "MENOR_IGUAL");}
-  | MENOR {informes_sintactico_imprimir_mensaje("operador_comparacion", "MENOR");}
-  | IGUAL {informes_sintactico_imprimir_mensaje("operador_comparacion", "IGUAL");}
-  | DISTINTO {informes_sintactico_imprimir_mensaje("operador_comparacion", "DISTINTO");}
+  MAYOR {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR");}
+  | MAYOR_IGUAL {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR_IGUAL");}
+  | MENOR_IGUAL {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MENOR_IGUAL");}
+  | MENOR {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MENOR");}
+  | IGUAL {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "IGUAL");}
+  | DISTINTO {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "DISTINTO");}
 ;
 
 expresion:
-  expresion SUMA termino {informes_sintactico_imprimir_mensaje("expresion", "expresion SUMA termino");}
-  |expresion RESTA termino {informes_sintactico_imprimir_mensaje("expresion", "expresion RESTA termino");}
-  |termino {informes_sintactico_imprimir_mensaje("expresion", "termino");}
+  expresion SUMA termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");}
+  |expresion RESTA termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");}
+  |termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion");}
   ;
 
 termino: 
-  termino MULTIPLICACION factor {informes_sintactico_imprimir_mensaje("termino", "termino MULTIPLICACION factor");}
-  |termino DIVISION factor {informes_sintactico_imprimir_mensaje("termino", "termino DIVISION factor");}
-  |factor {informes_sintactico_imprimir_mensaje("termino", "factor");}
+  termino MULTIPLICACION factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");}
+  |termino DIVISION factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");}
+  |factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "factor");}
   ;
 
 factor: 
   ID {
-    informes_sintactico_imprimir_mensaje("factor", "ID");
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "ID");
     tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   | CTE_INT 
       {
-        informes_sintactico_imprimir_mensaje("factor", "CTE_INT");
+        informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_INT");
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_INT, $1);
       }
   | CTE_FLOAT 
       {
-        informes_sintactico_imprimir_mensaje("factor", "CTE_FLOAT");
+        informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_FLOAT");
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_FLOAT, $1);
       }
   | RESTA CTE_INT
       {
-        informes_sintactico_imprimir_mensaje("factor", "RESTA CTE_INT");
+        informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "RESTA CTE_INT");
 
         const char* nro_negativo = utils_obtener_string_numero_negativo($2); 
 
@@ -291,7 +292,7 @@ factor:
       }
   | RESTA CTE_FLOAT
       {
-        informes_sintactico_imprimir_mensaje("factor", "RESTA CTE_FLOAT");
+        informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "RESTA CTE_FLOAT");
 
         const char* nro_negativo = utils_obtener_string_numero_negativo($2); 
 
@@ -299,16 +300,16 @@ factor:
       }
   | RESTA ID
       {
-        informes_sintactico_imprimir_mensaje("factor", "RESTA ID");
+        informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "RESTA ID");
         tabla_simbolos_insertar_dato($2, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
       }
   | CTE_STRING 
       {
-        informes_sintactico_imprimir_mensaje("factor", "CTE_STRING");
+        informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_STRING");
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_STRING, $1);
       }
-  | PARENTESIS_A expresion PARENTESIS_C {informes_sintactico_imprimir_mensaje("factor", "PARENTESIS_A expresion PARENTESIS_C");}
-  | funcion_numerica {informes_sintactico_imprimir_mensaje("factor", "funcion_numerica");}
+  | PARENTESIS_A expresion PARENTESIS_C {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "PARENTESIS_A expresion PARENTESIS_C");}
+  | funcion_numerica {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "funcion_numerica");}
   ;
 
 %%
