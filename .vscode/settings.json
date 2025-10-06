@@ -2,6 +2,8 @@
     "files.associations": {
         "stdio.h": "c",
         "*.gitignore": "c",
-        "no_terminales.h": "c"
+        "no_terminales.h": "c",
+        "utils.h": "c",
+        "informes.h": "c"
     }
 }

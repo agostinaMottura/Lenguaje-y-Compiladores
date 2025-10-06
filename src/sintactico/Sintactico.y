@@ -12,6 +12,7 @@
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils/utils.h"
 #include "./src/simbolos/no-terminales/no_terminales.h"
+#include "./src/semantico/arbol-sintactico/arbol_sintactico.h"
 
 
 int yystopparser=0;
@@ -326,10 +327,12 @@ int main(int argc, char *argv[])
     else
     {   
         tabla_simbolos_crear();
+        arbol_sintactico_crear();
 
         yyparse();        
 
         tabla_simbolos_guardar();
+        arbol_sintactico_eliminar_memoria();
     }
 	fclose(yyin);
     return 0;
