@@ -2,10 +2,11 @@
 #include "./informes.h"
 #include "../../utils/utils.h"
 
-void informes_sintactico_imprimir_mensaje(const char *no_terminal, const char *produccion)
+void informes_sintactico_imprimir_mensaje(t_simbolos_no_terminales no_terminal, const char *produccion)
 {
+    const char *no_terminal_valor = simbolos_no_terminales_obtener_valor(no_terminal);
     printf(
-        UTILS_COLOR_MAGENTA "[SINTACTICO]" UTILS_COLOR_RESET " " UTILS_COLOR_WHITE "%s -> %s\n", no_terminal, produccion);
+        UTILS_COLOR_MAGENTA "[SINTACTICO]" UTILS_COLOR_RESET " " UTILS_COLOR_WHITE "%s -> %s\n", no_terminal_valor, produccion);
 }
 
 void informes_sintactico_imprimir_error(
