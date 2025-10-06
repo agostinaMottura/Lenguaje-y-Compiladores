@@ -1,263 +1,227 @@
 #include "tabla_simbolos.h"
+#include "./valores/valores.h"
+#include "./informes/informes.h"
+#include "../utils/utils.h"
+#include "../validaciones/validaciones.h"
 
 // Definición de la tabla de símbolos global
-t_tabla tabla_simbolos;
+t_tabla_simbolos tabla_simbolos;
 
-void crear_tabla_simbolos()
+// Validaciones
+int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_tabla_simbolos_nodo *nodo)
 {
-    tabla_simbolos.primero = NULL;
-}
-
-int insertar_tabla_simbolos(const char *nombre, const char *tipo,
-                            const char *valor_string, int valor_var_int,
-                            float valor_var_float)
-{
-    t_simbolo *tabla = tabla_simbolos.primero;
-    char nombreCTE[100] = "_";
-    strcat(nombreCTE, nombre);
-
-    while (tabla)
+    while (nodo)
     {
-        if (strcmp(tipo, "STRING") == 0 || strcmp(tipo, "INT") == 0 || strcmp(tipo, "FLOAT") == 0 || strcmp(tipo, "ID") == 0)
+        if (strcmp(nodo->dato.nombre, nombre) == 0 &&
+            strcmp(nodo->dato.valor, valor) == 0)
         {
-            if (strcmp(tabla->data.nombre, nombre) == 0)
-            {
-                return 1;
-            }
+            return 1;
         }
-        else if (strcmp(tipo, "CTE_STRING") == 0)
-        {
-            if (strcmp(tabla->data.tipo, "CTE_STRING") == 0 &&
-                strcmp(tabla->data.valor.valor_var_str, valor_string) == 0)
-            {
-                return 1;
-            }
-        }
-        else if (strcmp(tipo, "CTE_INT") == 0)
-        {
-            if (strcmp(tabla->data.tipo, "CTE_INT") == 0 &&
-                tabla->data.valor.valor_var_int == valor_var_int)
-            {
-                return 1;
-            }
-        }
-        else if (strcmp(tipo, "CTE_FLOAT") == 0)
-        {
-            if (strcmp(tabla->data.tipo, "CTE_FLOAT") == 0 &&
-                tabla->data.valor.valor_var_float == valor_var_float)
-            {
-                return 1;
-            }
-        }
-
-        if (tabla->next == NULL)
-        {
-            break;
-        }
-        tabla = tabla->next;
-    }
-
-    t_data *data = crearDatos(nombre, tipo, valor_string, valor_var_int, valor_var_float);
-    if (data == NULL)
-    {
-        return 1;
-    }
-
-    t_simbolo *nuevo = (t_simbolo *)malloc(sizeof(t_simbolo));
-    if (nuevo == NULL)
-    {
-        free(data);
-        return 2;
-    }
-
-    nuevo->data = *data;
-    nuevo->next = NULL;
-
-    if (tabla_simbolos.primero == NULL)
-    {
-        tabla_simbolos.primero = nuevo;
-    }
-    else
-    {
-        tabla->next = nuevo;
+        nodo = nodo->siguiente;
     }
 
     return 0;
 }
 
-t_data *crearDatos(const char *nombre, const char *tipo,
-                   const char *valString, int valor_var_int,
-                   float valor_var_float)
+// Funciones propias de la tabla de simbolos
+void tabla_simbolos_crear()
 {
-    t_data *data = (t_data *)calloc(1, sizeof(t_data));
-    if (data == NULL)
-    {
-        return NULL;
-    }
-
-    data->tipo = (char *)malloc(sizeof(char) * (strlen(tipo) + 1));
-    if (data->tipo == NULL)
-    {
-        free(data);
-        return NULL;
-    }
-    strcpy(data->tipo, tipo);
-
-    if (strcmp(tipo, "STRING") == 0 || strcmp(tipo, "INT") == 0 || strcmp(tipo, "FLOAT") == 0 || strcmp(tipo, "ID") == 0)
-    {
-        data->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
-        if (data->nombre == NULL)
-        {
-            free(data->tipo);
-            free(data);
-            return NULL;
-        }
-        strcpy(data->nombre, nombre);
-        // Inicializar explícitamente el valor a cero para IDs
-        data->valor.valor_var_int = 0;
-        data->valor.valor_var_float = 0.0;
-        data->valor.valor_var_str = NULL;
-        data->longitud = 0;
-        return data;
-    }
-    else
-    {
-        char nombreCte[100] = "_";
-        strcat(nombreCte, nombre);
-
-        data->nombre = (char *)malloc(sizeof(char) * (strlen(nombreCte) + 1));
-        if (data->nombre == NULL)
-        {
-            free(data->tipo);
-            free(data);
-            return NULL;
-        }
-        strcpy(data->nombre, nombreCte);
-
-        if (strcmp(tipo, "CTE_STRING") == 0)
-        {
-            data->valor.valor_var_str = (char *)malloc(sizeof(char) * (strlen(valString) + 1));
-            if (data->valor.valor_var_str == NULL)
-            {
-                free(data->nombre);
-                free(data->tipo);
-                free(data);
-                return NULL;
-            }
-            strcpy(data->valor.valor_var_str, valString);
-            data->longitud = strlen(valString) - 2; // Restar comillas
-        }
-        else if (strcmp(tipo, "CTE_FLOAT") == 0)
-        {
-            data->valor.valor_var_float = valor_var_float;
-        }
-        else if (strcmp(tipo, "CTE_INT") == 0)
-        {
-            data->valor.valor_var_int = valor_var_int;
-        }
-
-        return data;
-    }
-
-    // En caso de algún error
-    free(data->tipo);
-    free(data);
-    return NULL;
+    tabla_simbolos.primero = NULL;
+    informes_tabla_simbolos_imprimir_mensaje("Tabla de simbolos creada con exito");
 }
 
-void guardar_tabla_simbolos()
+int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
+{
+    if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
+    {
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+        sprintf(
+            mensaje,
+            "Elmento duplicado. (%s: %s | %s: %s)",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+        return 1;
+    }
+
+    t_tabla_simbolos_dato *dato = tabla_simbolos_crear_dato(nombre, tipo_dato, valor);
+    if (dato == NULL)
+    {
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+        sprintf(
+            mensaje,
+            "Error al crear el dato. (%s: %s | %s: %d | %s: %s)",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+        return 0;
+    }
+
+    t_tabla_simbolos_nodo *nodo = (t_tabla_simbolos_nodo *)malloc(sizeof(t_tabla_simbolos_nodo));
+    if (nodo == NULL)
+    {
+        free(dato->nombre);
+        free(dato->valor);
+        free(dato);
+
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+        sprintf(
+            mensaje,
+            "Error al crear el nodo. (%s: %s | %s: %d | %s: %s)",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+        return 0;
+    }
+    nodo->dato = *dato;
+    nodo->siguiente = NULL;
+
+    if (tabla_simbolos.primero == NULL)
+    {
+        tabla_simbolos.primero = nodo;
+        return 1;
+    }
+
+    t_tabla_simbolos_nodo *actual = tabla_simbolos.primero;
+    while (actual->siguiente != NULL)
+    {
+        actual = actual->siguiente;
+    }
+    actual->siguiente = nodo;
+
+    return 1;
+}
+
+t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato tipo_dato,
+                                                 const char *valor)
+{
+    t_tabla_simbolos_dato *dato = (t_tabla_simbolos_dato *)calloc(1, sizeof(t_tabla_simbolos_dato));
+    if (dato == NULL)
+    {
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+        sprintf(
+            mensaje,
+            "Memoria insuficiente para crear el dato. (%s: %s | %s: %d | %s: %s)",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+        return NULL;
+    }
+
+    dato->tipo_dato = tipo_dato;
+
+    dato->valor = (char *)malloc(sizeof(char) * (strlen(valor) + 1));
+    if (dato->valor == NULL)
+    {
+        free(dato);
+
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+        sprintf(
+            mensaje,
+            "Memoria insuficiente para crear el valor del dato. (%s: %s | %s: %d | %s: %s)",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+        return NULL;
+    }
+    strcpy(dato->valor, valor);
+    dato->longitud = strlen(valor);
+
+    if (!tipo_dato_es_constante(dato->tipo_dato))
+    {
+        dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
+        if (dato->nombre == NULL)
+        {
+            free(dato->valor);
+            free(dato);
+
+            char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+            sprintf(
+                mensaje,
+                "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
+                TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+                TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+                TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+            informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+            return NULL;
+        }
+        strcpy(dato->nombre, nombre);
+
+        return dato;
+    }
+
+    char nombre_cte[VALIDACIONES_MAX_LONGITUD_STRING + 1] = "_";
+    strcat(nombre_cte, nombre);
+
+    dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre_cte) + 1));
+    if (dato->nombre == NULL)
+    {
+        free(dato->valor);
+        free(dato);
+
+        char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
+        sprintf(
+            mensaje,
+            "Memoria insuficiente para crear el nombre del dato. (%s: %s | %s: %d | %s: %s)",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO, tipo_dato,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
+        informes_tabla_simbolos_imprimir_mensaje(mensaje);
+
+        return NULL;
+    }
+
+    strcpy(dato->nombre, nombre_cte);
+    return dato;
+}
+
+void tabla_simbolos_guardar()
 {
     FILE *arch;
+
     if ((arch = fopen("symbol-table.txt", "wt")) == NULL)
     {
-        printf("\nNo se pudo crear la tabla de simbolos.\n\n");
+        informes_tabla_simbolos_imprimir_mensaje("Error al guardar la tabla de simbolos");
         return;
     }
-    else if (tabla_simbolos.primero == NULL)
+
+    if (tabla_simbolos.primero == NULL)
     {
-        printf("\nLa tabla de simbolos está vacía.\n\n");
+        informes_tabla_simbolos_imprimir_mensaje("La tabla de simbolos está vacia");
         fclose(arch);
         return;
     }
 
-    fprintf(arch, "%-55s%-30s%-55s%-30s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
+    fprintf(arch, "%-55s%-30s%-55s%-30s\n",
+            TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR,
+            TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD);
 
-    t_simbolo *tabla = tabla_simbolos.primero;
-    char valor[100];
-    char longitud[20];
+    t_tabla_simbolos_nodo *nodo = tabla_simbolos.primero;
 
-    while (tabla)
+    while (nodo)
     {
-        strcpy(valor, "--");
-        strcpy(longitud, "--");
+        fprintf(arch,
+                "%-55s%-30s%-55s%-30d\n",
+                nodo->dato.nombre,
+                tipo_dato_obtener_valor(nodo->dato.tipo_dato),
+                valores_obtener_para_almacenar(nodo->dato.valor),
+                nodo->dato.longitud);
 
-        if (strcmp(tabla->data.tipo, "INT") == 0 ||
-            strcmp(tabla->data.tipo, "FLOAT") == 0 ||
-            strcmp(tabla->data.tipo, "STRING") == 0)
-        {
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "--",
-                    "--",
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "ID") == 0)
-        {
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "--",
-                    "--",
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "CTE_INT") == 0)
-        {
-            sprintf(valor, "%d", tabla->data.valor.valor_var_int);
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "CTE_INT",
-                    valor,
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "CTE_FLOAT") == 0)
-        {
-            sprintf(valor, "%f", tabla->data.valor.valor_var_float);
-            fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                    tabla->data.nombre,
-                    "CTE_FLOAT",
-                    valor,
-                    "--");
-        }
-        else if (strcmp(tabla->data.tipo, "CTE_STRING") == 0)
-        {
-            char aux_string[100];
-            if (strlen(tabla->data.valor.valor_var_str) >= 2)
-            {
-                strncpy(aux_string, tabla->data.valor.valor_var_str + 1,
-                        strlen(tabla->data.valor.valor_var_str) - 2);
-                aux_string[strlen(tabla->data.valor.valor_var_str) - 2] = '\0';
-
-                sprintf(longitud, "%d", (int)strlen(aux_string));
-
-                fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                        tabla->data.nombre,
-                        "CTE_STRING",
-                        aux_string,
-                        longitud);
-            }
-            else
-            {
-                fprintf(arch, "%-55s%-30s%-55s%-30s\n",
-                        tabla->data.nombre,
-                        "CTE_STRING",
-                        tabla->data.valor.valor_var_str,
-                        "0");
-            }
-        }
-
-        t_simbolo *temp = tabla;
-        tabla = tabla->next;
+        nodo = nodo->siguiente;
     }
 
     fclose(arch);
-    printf("\nTabla de simbolos guardada correctamente.\n\n");
+    informes_tabla_simbolos_imprimir_mensaje("Guardado completo");
 }

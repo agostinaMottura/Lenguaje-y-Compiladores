@@ -5,16 +5,18 @@
 #include <math.h>
 #include <errno.h>
 #include "y.tab.h"
-#include "./src/lexico/validaciones/validaciones.h"
+#include "./src/validaciones/validaciones.h"
 #include "./src/lexico/informes/informes.h"
+#include "./src/utils/utils.h"
+
 FILE  *yyin;
 
 // Contador de tokens para mejor seguimiento
 static int nro_token = 0;
 
-void procesar_token(const char* terminal) {
+void lexico_procesar_token(const char* terminal) {
     nro_token++;
-    print_lexico(nro_token, yylineno, terminal, yytext);
+    informes_lexico_imprimir_mensaje(nro_token, yylineno, terminal, yytext);
 }
 
 int yyerror(const char *s);
@@ -101,92 +103,92 @@ COMENTARIO \#\+.*\+\#
 
 {ESPACIOS}       {}
 
-{INIT}              {procesar_token("INIT"); return INIT;}
-{FLOAT}             {procesar_token("FLOAT"); return FLOAT;}
-{INT}               {procesar_token("INT"); return INT;}
-{STRING}            {procesar_token("STRING"); return STRING;}
+{INIT}              {lexico_procesar_token("INIT"); return INIT;}
+{FLOAT}             {lexico_procesar_token("FLOAT"); return FLOAT;}
+{INT}               {lexico_procesar_token("INT"); return INT;}
+{STRING}            {lexico_procesar_token("STRING"); return STRING;}
 
-{IF}                {procesar_token("IF"); return IF;}
-{ELSE}              {procesar_token("ELSE"); return ELSE;}
-{WHILE}             {procesar_token("WHILE"); return WHILE;}
-{READ}              {procesar_token("READ"); return READ;}
-{WRITE}             {procesar_token("WRITE"); return WRITE;}
+{IF}                {lexico_procesar_token("IF"); return IF;}
+{ELSE}              {lexico_procesar_token("ELSE"); return ELSE;}
+{WHILE}             {lexico_procesar_token("WHILE"); return WHILE;}
+{READ}              {lexico_procesar_token("READ"); return READ;}
+{WRITE}             {lexico_procesar_token("WRITE"); return WRITE;}
 
-{TRIANGLE_AREA_MAXIMUM} {procesar_token("TRIANGLE_AREA_MAXIMUM"); return TRIANGLE_AREA_MAXIMUM;}
-{IS_ZERO}               {procesar_token("IS_ZERO"); return IS_ZERO;}
+{TRIANGLE_AREA_MAXIMUM} {lexico_procesar_token("TRIANGLE_AREA_MAXIMUM"); return TRIANGLE_AREA_MAXIMUM;}
+{IS_ZERO}               {lexico_procesar_token("IS_ZERO"); return IS_ZERO;}
 
-{AND}               {procesar_token("AND"); return AND;}
-{OR}                {procesar_token("OR"); return OR;}
-{NOT}               {procesar_token("NOT"); return NOT;}
+{AND}               {lexico_procesar_token("AND"); return AND;}
+{OR}                {lexico_procesar_token("OR"); return OR;}
+{NOT}               {lexico_procesar_token("NOT"); return NOT;}
 
-{MAYOR}             {procesar_token("MAYOR"); return MAYOR;}
-{MENOR}             {procesar_token("MENOR"); return MENOR;}
-{MAYOR_IGUAL}       {procesar_token("MAYOR_IGUAL"); return MAYOR_IGUAL;}
-{MENOR_IGUAL}       {procesar_token("MENOR_IGUAL"); return MENOR_IGUAL;}
-{IGUAL}             {procesar_token("IGUAL"); return IGUAL;}
-{DISTINTO}          {procesar_token("DISTINTO"); return DISTINTO;}
+{MAYOR}             {lexico_procesar_token("MAYOR"); return MAYOR;}
+{MENOR}             {lexico_procesar_token("MENOR"); return MENOR;}
+{MAYOR_IGUAL}       {lexico_procesar_token("MAYOR_IGUAL"); return MAYOR_IGUAL;}
+{MENOR_IGUAL}       {lexico_procesar_token("MENOR_IGUAL"); return MENOR_IGUAL;}
+{IGUAL}             {lexico_procesar_token("IGUAL"); return IGUAL;}
+{DISTINTO}          {lexico_procesar_token("DISTINTO"); return DISTINTO;}
 
-{SUMA}		        {procesar_token("SUMA"); return SUMA;}
-{ASIGNACION}		{procesar_token("ASIGNACION"); return ASIGNACION;}
-{MULTIPLICACION}	{procesar_token("MULTIPLICACION"); return MULTIPLICACION;}
-{RESTA}		        {procesar_token("RESTA"); return RESTA;}
-{DIVISION}		    {procesar_token("DIVISION"); return DIVISION;}
+{SUMA}		        {lexico_procesar_token("SUMA"); return SUMA;}
+{ASIGNACION}		{lexico_procesar_token("ASIGNACION"); return ASIGNACION;}
+{MULTIPLICACION}	{lexico_procesar_token("MULTIPLICACION"); return MULTIPLICACION;}
+{RESTA}		        {lexico_procesar_token("RESTA"); return RESTA;}
+{DIVISION}		    {lexico_procesar_token("DIVISION"); return DIVISION;}
 
-{PARENTESIS_A}		{procesar_token("PARENTESIS_A"); return PARENTESIS_A;}
-{PARENTESIS_C}		{procesar_token("PARENTESIS_C"); return PARENTESIS_C;}
+{PARENTESIS_A}		{lexico_procesar_token("PARENTESIS_A"); return PARENTESIS_A;}
+{PARENTESIS_C}		{lexico_procesar_token("PARENTESIS_C"); return PARENTESIS_C;}
 
-{LLAVES_A}          {procesar_token("LLAVES_A"); return LLAVES_A;}
-{LLAVES_C}          {procesar_token("LLAVES_C"); return LLAVES_C;}
+{LLAVES_A}          {lexico_procesar_token("LLAVES_A"); return LLAVES_A;}
+{LLAVES_C}          {lexico_procesar_token("LLAVES_C"); return LLAVES_C;}
 
-{CORCHETE_A}        {procesar_token("CORCHETE_A"); return CORCHETE_A;}
-{CORCHETE_C}        {procesar_token("CORCHETE_C"); return CORCHETE_C;}
+{CORCHETE_A}        {lexico_procesar_token("CORCHETE_A"); return CORCHETE_A;}
+{CORCHETE_C}        {lexico_procesar_token("CORCHETE_C"); return CORCHETE_C;}
 
-{DOS_PUNTOS}        {procesar_token("DOS_PUNTOS"); return DOS_PUNTOS;}
-{COMA}              {procesar_token("COMA"); return COMA;}
-{PUNTO_Y_COMA}      {procesar_token("PUNTO_Y_COMA"); return PUNTO_Y_COMA;}
+{DOS_PUNTOS}        {lexico_procesar_token("DOS_PUNTOS"); return DOS_PUNTOS;}
+{COMA}              {lexico_procesar_token("COMA"); return COMA;}
+{PUNTO_Y_COMA}      {lexico_procesar_token("PUNTO_Y_COMA"); return PUNTO_Y_COMA;}
 
 {CTE_STRING}	{
-                    ResultadoValidacion res = es_string_valido(yytext);
+                    t_validaciones_resultado_validacion res = validaciones_es_string_valido(yytext);
                     if (!res.es_valido) {
-                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
                     }
 
-                    procesar_token("CTE_STRING");
-                    strcpy(yylval.cadena, yytext);
+                    lexico_procesar_token("CTE_STRING");
+                    strcpy(yylval.cadena, utils_obtener_string_sin_comillas(yytext));
                     return CTE_STRING;
                 }
 {CTE_FLOAT}	    {
-                    ResultadoValidacion res = es_float_valido(yytext);
+                    t_validaciones_resultado_validacion res = validaciones_es_float_valido(yytext);
                     if (!res.es_valido) {
-                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
                     }
 
-                    procesar_token("CTE_FLOAT");
-                    yylval.flotante = atof(yytext);
+                    lexico_procesar_token("CTE_FLOAT");
+                    strcpy(yylval.cadena, yytext);
                     return CTE_FLOAT;
                 }    	
 {CTE_INT}	    {
-                    ResultadoValidacion res = es_int_valido(yytext);
+                    t_validaciones_resultado_validacion res = validaciones_es_int_valido(yytext);
                     if (!res.es_valido) {
-                        informar_error_lexico(res.mensaje_error, yytext, res.aclaracion);
+                        informes_lexico_imprimir_error(res.mensaje_error, yytext, res.aclaracion);
                         exit(1);
                     }
 
-                    procesar_token("CTE_INT");
-                    yylval.entero = atoi(yytext);
+                    lexico_procesar_token("CTE_INT");
+                    strcpy(yylval.cadena, yytext);
                     return CTE_INT;
                 } 
 
 {ID}			{
-                    procesar_token("ID"); 
+                    lexico_procesar_token("ID"); 
                     strcpy(yylval.cadena, yytext);
                     return ID;
                 }
 
 {INVALIDO}  { 
-                informar_error_lexico(
+                informes_lexico_imprimir_error(
                     "Caracter desconocido", 
                     yytext, 
                     "Caracter no permitido en el lenguaje"

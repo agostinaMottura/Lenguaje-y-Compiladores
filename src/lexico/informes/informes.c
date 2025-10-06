@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include "../../utils.h"
+#include "../../utils/utils.h"
 #include "./informes.h"
 
-void print_lexico(
+void informes_lexico_imprimir_mensaje(
     int nro_token,
     int nro_linea,
     const char *terminal,
     const char *lexema)
 {
     printf(
-        COLOR_CYAN "[LEXICO]" COLOR_RESET " " COLOR_YELLOW "Token #%d" COLOR_RESET " | " COLOR_WHITE "Linea %d" COLOR_RESET " | " COLOR_GREEN "%s" COLOR_RESET " | " COLOR_NARANJA "Valor: %s" COLOR_RESET "\n",
+        UTILS_COLOR_CYAN "[LEXICO]" UTILS_COLOR_RESET " " UTILS_COLOR_YELLOW "Token #%d" UTILS_COLOR_RESET " | " UTILS_COLOR_WHITE "Linea %d" UTILS_COLOR_RESET " | " UTILS_COLOR_GREEN "%s" UTILS_COLOR_RESET " | " UTILS_COLOR_NARANJA "Valor: %s" UTILS_COLOR_RESET "\n",
 
         nro_token,
         nro_linea,
@@ -17,7 +17,7 @@ void print_lexico(
         lexema);
 }
 
-void informar_error_lexico(const char *mensaje, const char *lexema, const char *detalle)
+void informes_lexico_imprimir_error(const char *mensaje, const char *lexema, const char *detalle)
 {
     fprintf(stderr, "Error léxico: %s\n", mensaje);
     fprintf(stderr, "Lexema: %s\n", lexema);

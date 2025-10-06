@@ -4,43 +4,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "./tipo-dato/tipo_dato.h"
 
-/* --- Estructura de la tabla de simbolos --- */
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE "NOMBRE"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_TIPO_DATO "TIPO_DATO"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR "VALOR"
+#define TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD "LONGITUD"
 
 typedef struct
 {
     char *nombre;
-    char *tipo;
-    union Valor{
-        int valor_var_int;
-        float valor_var_float;
-        char *valor_var_str;
-    }valor;
+    t_tipo_dato tipo_dato;
+    char *valor;
     int longitud;
-}t_data;
+} t_tabla_simbolos_dato;
 
-typedef struct s_simbolo
+typedef struct tabla_simbolos_nodo
 {
-    t_data data;
-    struct s_simbolo *next;
-}t_simbolo;
+    t_tabla_simbolos_dato dato;
+    struct tabla_simbolos_nodo *siguiente;
+} t_tabla_simbolos_nodo;
 
 typedef struct
 {
-    t_simbolo *primero;
-}t_tabla;
-
-typedef struct{
-    char cadena[55];
-}t_nombresId;
+    t_tabla_simbolos_nodo *primero;
+} t_tabla_simbolos;
 
 // Variables globales
-extern t_tabla tabla_simbolos;
+extern t_tabla_simbolos tabla_simbolos;
 
 // Declaración de funciones
-void crear_tabla_simbolos();
-int insertar_tabla_simbolos(const char*, const char*, const char*, int, float);
-t_data* crearDatos(const char*, const char*, const char*, int, float);
-void guardar_tabla_simbolos();
+void tabla_simbolos_crear();
+int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor);
+t_tabla_simbolos_dato *tabla_simbolos_crear_dato(
+    const char *nombre,
+    t_tipo_dato tipo_dato,
+    const char *valor);
+void tabla_simbolos_guardar();
 
 #endif // TABLA_SIMBOLOS_H
