@@ -11,13 +11,6 @@
 #define TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR "VALOR"
 #define TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD "LONGITUD"
 
-// Esto no va aca
-#define TABLA_SIMBOLOS_MAX_VALOR_LONGITUD 20
-
-#define TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD 100
-
-/* --- Estructura de la tabla de simbolos --- */
-
 typedef struct
 {
     char *nombre;

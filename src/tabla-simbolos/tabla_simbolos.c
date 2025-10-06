@@ -2,6 +2,7 @@
 #include "./valores/valores.h"
 #include "./informes/informes.h"
 #include "../utils.h"
+#include "../validaciones/validaciones.h"
 
 // Definición de la tabla de símbolos global
 t_tabla_simbolos tabla_simbolos;
@@ -159,7 +160,7 @@ t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato
         return dato;
     }
 
-    char nombre_cte[TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD] = "_";
+    char nombre_cte[VALIDACIONES_MAX_LONGITUD_STRING + 1] = "_";
     strcat(nombre_cte, nombre);
 
     dato->nombre = (char *)malloc(sizeof(char) * (strlen(nombre_cte) + 1));
@@ -208,8 +209,6 @@ void tabla_simbolos_guardar()
             TABLA_SIMBOLOS_VALOR_COLUMNA_LONGITUD);
 
     t_tabla_simbolos_nodo *nodo = tabla_simbolos.primero;
-    char valor[TABLA_SIMBOLOS_MAX_STRING_NOMBRE_LONGITUD];
-    char longitud[TABLA_SIMBOLOS_MAX_VALOR_LONGITUD];
 
     while (nodo)
     {
