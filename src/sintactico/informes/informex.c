@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "./informes.h"
-#include "../../utils.h"
+#include "../../utils/utils.h"
 
 void informes_sintactico_imprimir_mensaje(const char *no_terminal, const char *produccion)
 {

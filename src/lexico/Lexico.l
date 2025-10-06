@@ -7,7 +7,7 @@
 #include "y.tab.h"
 #include "./src/validaciones/validaciones.h"
 #include "./src/lexico/informes/informes.h"
-#include "./src/utils.h"
+#include "./src/utils/utils.h"
 
 FILE  *yyin;
 

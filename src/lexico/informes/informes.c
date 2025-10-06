@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../../utils.h"
+#include "../../utils/utils.h"
 #include "./informes.h"
 
 void informes_lexico_imprimir_mensaje(

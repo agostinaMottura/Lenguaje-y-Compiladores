@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../../utils.h"
+#include "../../utils/utils.h"
 #include "./informes.h"
 
 void informes_tabla_simbolos_imprimir_mensaje(const char *mensaje)

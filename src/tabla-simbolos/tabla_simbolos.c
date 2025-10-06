@@ -1,7 +1,7 @@
 #include "tabla_simbolos.h"
 #include "./valores/valores.h"
 #include "./informes/informes.h"
-#include "../utils.h"
+#include "../utils/utils.h"
 #include "../validaciones/validaciones.h"
 
 // Definición de la tabla de símbolos global

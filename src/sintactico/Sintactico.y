@@ -10,7 +10,7 @@
 #include "./src/tabla-simbolos/tipo-dato/tipo_dato.h"
 #include "./src/tabla-simbolos/valores/valores.h"
 #include "./src/sintactico/informes/informes.h"
-#include "./src/utils.h"
+#include "./src/utils/utils.h"
 
 
 int yystopparser=0;

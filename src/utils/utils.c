@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "./validaciones/validaciones.h"
+#include "../validaciones/validaciones.h"
 #include "./utils.h"
 
 void utils_imprimir_error(const char *mensaje)
