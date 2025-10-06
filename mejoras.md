@@ -1,7 +1,7 @@
 # Mejoras
-[] Separar el main.c del archivo Sintactico.y
-    -> Dejar solo en el Sintactico.y las reglas gramaticales (elementos no terminales)
-    
+[] Separar el `main.c` del archivo `Sintactico.y`
+    -> Dejar solo en el `Sintactico.y` las reglas gramaticales (elementos no terminales)
+
 > Estas mejoras son secundarias, no hacen tanta falta.
 
 [] Parametrizar todos los elementos terminales y no terminales
