@@ -11,7 +11,7 @@ void arbol_sintactico_crear()
     arbol_sintactico = malloc(sizeof(t_arbol_sintactico_nodo));
     if (arbol_sintactico == NULL)
     {
-        informes_arbol_sintactico_imprimir_error("No hay memoria suficiente para crear el arbol");
+        informes_arbol_sintactico_imprimir_error("No hay memoria suficiente para crear el Arbol Sintactico");
         exit(1);
     }
 
@@ -34,7 +34,7 @@ t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(t_simbolos_terminales termi
     hoja->hoja_der = NULL;
     hoja->hoja_izq = NULL;
 
-    informes_arbol_sintactico_imprimir_mensaje("Se creo la hoja correctamente");
+    informes_arbol_sintactico_imprimir_mensaje("Hoja creada con exito");
 
     return hoja;
 }
@@ -55,7 +55,7 @@ t_arbol_sintactico_nodo *arbol_sintactico_crear_nodo(
     nodo->hoja_izq = hoja_izq;
     nodo->hoja_der = hoja_der;
 
-    informes_arbol_sintactico_imprimir_mensaje("Se creo el nodo correctamente");
+    informes_arbol_sintactico_imprimir_mensaje("Nodo creado con exito");
 
     return nodo;
 }
