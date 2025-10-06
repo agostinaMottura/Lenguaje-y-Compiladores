@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "./terminales.h"
 #include "../../utils/utils.h"
@@ -61,7 +63,10 @@ const char *simbolos_terminales_obtener_valor(t_simbolos_terminales terminal)
         return valores[terminal];
 
     char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];
-    sprintf("No existe un valor definido para el Simbolo Terminal %d", terminal);
+    sprintf(
+        mensaje,
+        "No existe un valor definido para el Simbolo Terminal %d",
+        terminal);
 
     utils_imprimir_error(mensaje);
     exit(1);
@@ -76,7 +81,7 @@ t_simbolos_terminales simbolos_terminales_obtener_desde_string(const char *str)
     }
 
     char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];
-    sprintf("No existe Simbolo Terminal para el valor %s", str);
+    sprintf(mensaje, "No existe Simbolo Terminal para el valor %s", str);
 
     utils_imprimir_error(mensaje);
 

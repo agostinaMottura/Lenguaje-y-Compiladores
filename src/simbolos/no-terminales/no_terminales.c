@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "./no_terminales.h"
 #include "../../utils/utils.h"
@@ -41,7 +43,10 @@ const char *simbolos_no_terminales_obtener_valor(t_simbolos_no_terminales no_ter
         return valores[no_terminal];
 
     char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];
-    sprintf("No existe un valor definido para el Simbolo No Terminal %d", no_terminal);
+    sprintf(
+        mensaje,
+        "No existe un valor definido para el Simbolo No Terminal %d",
+        no_terminal);
 
     utils_imprimir_error(mensaje);
     exit(1);
@@ -56,7 +61,10 @@ t_simbolos_no_terminales simbolos_no_terminales_obtener_desde_string(const char 
     }
 
     char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];
-    sprintf("No existe Simbolo No Terminal para el valor %s", str);
+    sprintf(
+        mensaje,
+        "No existe Simbolo No Terminal para el valor %s",
+        str);
 
     utils_imprimir_error(mensaje);
 
