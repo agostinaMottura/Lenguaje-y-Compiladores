@@ -4,15 +4,15 @@
 #include <math.h>
 #include "./validaciones.h"
 
-t_validaciones_lexico_resultado_validacion validaciones_lexico_es_string_valido(char cadena[])
+t_validaciones_resultado_validacion validaciones_es_string_valido(char cadena[])
 {
-    t_validaciones_lexico_resultado_validacion resultado;
+    t_validaciones_resultado_validacion resultado;
     int largo = strlen(cadena);
 
-    if (largo > VALIDACIONES_LEXICO_MAX_LONGITUD_STRING)
+    if (largo > VALIDACIONES_MAX_LONGITUD_STRING)
     {
         resultado.es_valido = 0;
-        sprintf(resultado.aclaracion, "Se permite un maximo de %d caracteres", VALIDACIONES_LEXICO_MAX_LONGITUD_STRING);
+        sprintf(resultado.aclaracion, "Se permite un maximo de %d caracteres", VALIDACIONES_MAX_LONGITUD_STRING);
         sprintf(resultado.mensaje_error, "Cadena de texto supera el maximo de caracteres permitido");
         return resultado;
     }
@@ -21,9 +21,9 @@ t_validaciones_lexico_resultado_validacion validaciones_lexico_es_string_valido(
     return resultado;
 }
 
-t_validaciones_lexico_resultado_validacion validaciones_lexico_es_float_valido(char *cadena)
+t_validaciones_resultado_validacion validaciones_es_float_valido(char *cadena)
 {
-    t_validaciones_lexico_resultado_validacion resultado;
+    t_validaciones_resultado_validacion resultado;
     char *endptr;
     double numero = strtod(cadena, &endptr); // strtod convierte la cadena a double y deja en endptr un puntero al primer carácter que no pudo convertir.
 
@@ -37,11 +37,11 @@ t_validaciones_lexico_resultado_validacion validaciones_lexico_es_float_valido(c
 
     float numero_float = (float)numero;
 
-    if (numero_float < VALIDACIONES_LEXICO_MIN_VALOR_FLOAT || numero_float > VALIDACIONES_LEXICO_MAX_VALOR_FLOAT)
+    if (numero_float < VALIDACIONES_MIN_VALOR_FLOAT || numero_float > VALIDACIONES_MAX_VALOR_FLOAT)
     {
         resultado.es_valido = 0;
         sprintf(resultado.mensaje_error, "Float fuera de rango");
-        sprintf(resultado.aclaracion, "Floats validos entre %.5e y %.5e", VALIDACIONES_LEXICO_MIN_VALOR_FLOAT, VALIDACIONES_LEXICO_MAX_VALOR_FLOAT);
+        sprintf(resultado.aclaracion, "Floats validos entre %.5e y %.5e", VALIDACIONES_MIN_VALOR_FLOAT, VALIDACIONES_MAX_VALOR_FLOAT);
         return resultado;
     }
 
@@ -57,24 +57,24 @@ t_validaciones_lexico_resultado_validacion validaciones_lexico_es_float_valido(c
     return resultado;
 }
 
-t_validaciones_lexico_resultado_validacion validaciones_lexico_es_int_valido(char *cadena)
+t_validaciones_resultado_validacion validaciones_es_int_valido(char *cadena)
 {
-    t_validaciones_lexico_resultado_validacion resultado;
+    t_validaciones_resultado_validacion resultado;
     int longitud = strlen(cadena);
-    if (longitud > VALIDACIONES_LEXICO_MAX_LONGITUD_INT)
+    if (longitud > VALIDACIONES_MAX_LONGITUD_INT)
     {
         resultado.es_valido = 0;
         sprintf(resultado.mensaje_error, "Entero supera la longitud maxima permitida");
-        sprintf(resultado.aclaracion, "Maximo %d caracteres", VALIDACIONES_LEXICO_MAX_LONGITUD_INT);
+        sprintf(resultado.aclaracion, "Maximo %d caracteres", VALIDACIONES_MAX_LONGITUD_INT);
         return resultado;
     }
 
     long numero_long = atol(cadena);
-    if (numero_long > VALIDACIONES_LEXICO_MAX_VALOR_INT)
+    if (numero_long > VALIDACIONES_MAX_VALOR_INT)
     {
         resultado.es_valido = 0;
         sprintf(resultado.mensaje_error, "Entero fuera de rango");
-        sprintf(resultado.aclaracion, "Enteros validos hasta %d", VALIDACIONES_LEXICO_MAX_VALOR_INT);
+        sprintf(resultado.aclaracion, "Enteros validos hasta %d", VALIDACIONES_MAX_VALOR_INT);
         return resultado;
     }
 

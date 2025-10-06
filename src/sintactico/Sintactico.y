@@ -5,31 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h"
+#include "./src/validaciones/validaciones.h"
 #include "./src/tabla-simbolos/tabla_simbolos.h"
 #include "./src/tabla-simbolos/tipo-dato/tipo_dato.h"
 #include "./src/tabla-simbolos/valores/valores.h"
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils.h"
 
-
-#define MAX_IDS_DECLARADOS 10
-#define MAX_STRING_LONGITUD_ID 55
-
-
-typedef struct
-{
-    char cadena[MAX_IDS_DECLARADOS];
-} t_nombre_id;
-
-const char* obtener_string_numero_negativo(const char *nro)
-{
-  static char str[MAX_STRING_LONGITUD_ID];
-
-  strcat(str, "-");
-  strcat(str, nro);
-
-  return str;
-}
 
 int yystopparser=0;
 FILE  *yyin;
@@ -41,11 +23,11 @@ int yylex();
 int i=0;
 int cant_id = 0;
 
-t_nombre_id ids_declarados[MAX_IDS_DECLARADOS];
+t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
 %}
 %union {
-    char cadena[55]; // Bison no me deja poner una macro aca :(
+    char cadena[50]; // Bison no me deja poner una macro aca :(
 }
 
 %type <cadena> CTE_STRING ID CTE_INT CTE_FLOAT
@@ -303,7 +285,7 @@ factor:
       {
         informes_sintactico_imprimir_mensaje("factor", "RESTA CTE_INT");
 
-        const char* nro_negativo = obtener_string_numero_negativo($2); 
+        const char* nro_negativo = utils_obtener_string_numero_negativo($2); 
 
         tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_INT, nro_negativo);
       }
@@ -311,7 +293,7 @@ factor:
       {
         informes_sintactico_imprimir_mensaje("factor", "RESTA CTE_FLOAT");
 
-        const char* nro_negativo = obtener_string_numero_negativo($2); 
+        const char* nro_negativo = utils_obtener_string_numero_negativo($2); 
 
         tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_FLOAT, nro_negativo);
       }
@@ -335,9 +317,9 @@ int main(int argc, char *argv[])
 {
     if((yyin = fopen(argv[1], "rt"))==NULL)
     {
-        char msg[100];
-        sprintf(msg, "No se puede abrir el archivo: %s", argv[1]);
-        utils_imprimir_error(msg);
+        char mensaje[100];
+        sprintf(mensaje, "No se puede abrir el archivo: %s", argv[1]);
+        utils_imprimir_error(mensaje);
         return 1;
     }
     else
