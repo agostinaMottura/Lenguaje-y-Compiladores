@@ -12,6 +12,7 @@ typedef struct arbol_sintactico_nodo
     void *hoja_der;
 } t_arbol_sintactico_nodo;
 
+// Revisar si es necesario los lexemas o no
 t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(
     t_simbolos_terminales terminal,
     const char *lexema);

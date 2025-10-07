@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "../../utils/utils.h"
 #include "./arbol_sintactico.h"
 #include "./informes/informes.h"
@@ -21,7 +22,9 @@ void arbol_sintactico_crear()
     informes_arbol_sintactico_imprimir_mensaje("Arbol Sintactico creado con exito");
 }
 
-t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(t_simbolos_terminales terminal)
+t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(
+    t_simbolos_terminales terminal,
+    const char *lexema)
 {
     t_arbol_sintactico_nodo *hoja = malloc(sizeof(t_arbol_sintactico_nodo));
     if (hoja == NULL)
@@ -30,7 +33,16 @@ t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(t_simbolos_terminales termi
         exit(1);
     }
 
+    hoja->lexema = malloc(strlen(lexema) + 1);
+    if (hoja->lexema == NULL)
+    {
+        informes_arbol_sintactico_imprimir_error("No hay memoria suficiente para almacenar el lexema de la hoja");
+        free(hoja);
+        exit(1);
+    }
+
     hoja->terminal = terminal;
+    strcpy(hoja->lexema, lexema);
     hoja->hoja_der = NULL;
     hoja->hoja_izq = NULL;
 
@@ -41,6 +53,7 @@ t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(t_simbolos_terminales termi
 
 t_arbol_sintactico_nodo *arbol_sintactico_crear_nodo(
     t_simbolos_terminales terminal,
+    const char *lexema,
     t_arbol_sintactico_nodo *hoja_izq,
     t_arbol_sintactico_nodo *hoja_der)
 {
@@ -51,7 +64,16 @@ t_arbol_sintactico_nodo *arbol_sintactico_crear_nodo(
         exit(1);
     }
 
+    nodo->lexema = malloc(strlen(lexema) + 1);
+    if (nodo->lexema == NULL)
+    {
+        informes_arbol_sintactico_imprimir_error("No hay memoria suficiente para almacenar el lexema del nodo");
+        free(nodo);
+        exit(1);
+    }
+
     nodo->terminal = terminal;
+    strcpy(nodo->lexema, lexema);
     nodo->hoja_izq = hoja_izq;
     nodo->hoja_der = hoja_der;
 
@@ -74,5 +96,6 @@ void arbol_sintactico_eliminar_memoria_nodo(t_arbol_sintactico_nodo *nodo)
     arbol_sintactico_eliminar_memoria_nodo(nodo->hoja_izq);
     arbol_sintactico_eliminar_memoria_nodo(nodo->hoja_der);
 
+    free(nodo->lexema);
     free(nodo);
 }
