@@ -7,13 +7,17 @@
 typedef struct arbol_sintactico_nodo
 {
     t_simbolos_terminales terminal;
+    const char *lexema;
     void *hoja_izq;
     void *hoja_der;
 } t_arbol_sintactico_nodo;
 
-t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(t_simbolos_terminales terminal);
+t_arbol_sintactico_nodo *arbol_sintactico_crear_hoja(
+    t_simbolos_terminales terminal,
+    const char *lexema);
 t_arbol_sintactico_nodo *arbol_sintactico_crear_nodo(
     t_simbolos_terminales terminal,
+    const char *lexema,
     t_arbol_sintactico_nodo *hoja_izq,
     t_arbol_sintactico_nodo *hoja_der);
 
