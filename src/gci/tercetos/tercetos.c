@@ -20,6 +20,8 @@ gci_tercetos_agregar_terceto(
     const char *b,
     const char *c)
 {
+    informes_gci_tercetos_imprimir_mensaje("Se agrega un terceto");
+
     t_gci_tercetos_dato *nuevo_terceto = crear_terceto(a, b, c);
     if (nuevo_terceto == NULL)
     {
@@ -143,5 +145,4 @@ void liberar_memoria_terceto(t_gci_tercetos_dato *terceto)
     free(terceto->a);
     free(terceto->b);
     free(terceto->c);
-    free(terceto);
 }

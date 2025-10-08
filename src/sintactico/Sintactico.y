@@ -12,6 +12,7 @@
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils/utils.h"
 #include "./src/simbolos/no-terminales/no_terminales.h"
+#include "./src/simbolos/no-terminales/punteros/punteros.h"
 #include "./src/gci/tercetos/tercetos.h"
 
 
@@ -97,16 +98,28 @@ t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
 %%
 programa:
-  instrucciones {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PROGRAMA, "instrucciones");}
+  instrucciones 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PROGRAMA, "instrucciones");
+      punteros_simbolos_no_terminales_programa = punteros_simbolos_no_terminales_instrucciones;
+    }
   ;
 
 instrucciones:
   instrucciones sentencia {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "instrucciones sentencia");}
-  |sentencia {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "sentencia");}
+  |sentencia 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "sentencia");
+      punteros_simbolos_no_terminales_instrucciones = punteros_simbolos_no_terminales_sentencia;
+    }
   ;
 
 sentencia:  	   
-  asignacion {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "asignacion");}
+  asignacion 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "asignacion");
+      punteros_simbolos_no_terminales_sentencia = punteros_simbolos_no_terminales_asignacion;
+    }
   | write {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "write");}
   | read {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "read");}
   | ciclo {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_SENTENCIA, "ciclo");}
@@ -193,6 +206,11 @@ tipo:
 asignacion: 
   ID ASIGNACION expresion {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
+    punteros_simbolos_no_terminales_asignacion = gci_tercetos_agregar_terceto(
+      ":=",
+      $1,
+      punteros_simbolos_no_terminales_expresion
+    );
     tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
@@ -257,25 +275,50 @@ operador_comparacion:
 ;
 
 expresion:
-  expresion SUMA termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");}
+  expresion SUMA termino 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
+      punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
+        "+",
+        punteros_simbolos_no_terminales_expresion,
+        punteros_simbolos_no_terminales_termino
+      );
+    }
   |expresion RESTA termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");}
-  |termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion");}
+  |termino 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion");
+      punteros_simbolos_no_terminales_expresion = punteros_simbolos_no_terminales_termino;
+    }
   ;
 
 termino: 
-  termino MULTIPLICACION factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");}
+  termino MULTIPLICACION factor 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
+      punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
+        "*", 
+        punteros_simbolos_no_terminales_termino, 
+        punteros_simbolos_no_terminales_factor);
+    }
   |termino DIVISION factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");}
-  |factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "factor");}
+  |factor 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "factor");
+      punteros_simbolos_no_terminales_termino = punteros_simbolos_no_terminales_factor;
+    }
   ;
 
 factor: 
   ID {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "ID");
+    punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
     tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   | CTE_INT 
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_INT");
+        punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_INT, $1);
       }
   | CTE_FLOAT 
