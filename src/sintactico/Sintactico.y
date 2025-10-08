@@ -290,7 +290,15 @@ expresion:
         punteros_simbolos_no_terminales_termino
       );
     }
-  |expresion RESTA termino {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");}
+  |expresion RESTA termino 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
+      punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
+        "-",
+        punteros_simbolos_no_terminales_expresion,
+        punteros_simbolos_no_terminales_termino
+      );
+    }
   |termino 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion");
@@ -307,7 +315,14 @@ termino:
         punteros_simbolos_no_terminales_termino, 
         punteros_simbolos_no_terminales_factor);
     }
-  |termino DIVISION factor {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");}
+  |termino DIVISION factor 
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
+      punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
+        "/", 
+        punteros_simbolos_no_terminales_termino, 
+        punteros_simbolos_no_terminales_factor);
+    }
   |factor 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "factor");
