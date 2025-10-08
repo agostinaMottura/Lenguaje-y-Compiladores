@@ -8,7 +8,14 @@
 t_gci_tercetos_lista_tercetos lista_tercetos;
 int cantidad_tercetos_en_lista = 0;
 
-t_gci_tercetos_dato *gci_tercetos_agregar_terceto(
+void gci_tercetos_crear_lista()
+{
+    lista_tercetos.primero = NULL;
+    informes_gci_tercetos_imprimir_mensaje("Lista de tercetos creada correctamente");
+}
+
+t_gci_tercetos_dato *
+gci_tercetos_agregar_terceto(
     const char *a,
     const char *b,
     const char *c)
