@@ -1,5 +1,5 @@
 #include "tabla_simbolos.h"
-#include "./valores/valores.h"
+#include "../valores/valores.h"
 #include "./informes/informes.h"
 #include "../utils/utils.h"
 #include "../validaciones/validaciones.h"

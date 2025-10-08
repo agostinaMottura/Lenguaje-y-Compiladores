@@ -1,8 +1,6 @@
 #ifndef PUNTEROS_ARBOL_SINTACTICO_H
 #define PUNTEROS_ARBOL_SINTACTICO_H
 
-#include "../arbol_sintactico.h"
-
 extern void *punteros_simbolos_no_terminales_programa;
 extern void *punteros_simbolos_no_terminales_instrucciones;
 extern void *punteros_simbolos_no_terminales_sentencia;
