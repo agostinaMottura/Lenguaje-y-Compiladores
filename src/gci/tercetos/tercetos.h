@@ -1,7 +1,8 @@
 #ifndef GCI_TERCETOS_H
 #define GCI_TERCETOS_H
+#include <stdio.h>
 
-#define GCI_TECETOS_NOMBRE_ARCHIVO "gci-tercetos.txt"
+#define GCI_TECETOS_NOMBRE_ARCHIVO "intermediate-code.txt"
 
 typedef struct
 {
@@ -28,8 +29,8 @@ extern t_gci_tercetos_lista_tercetos lista_tercetos;
 void gci_tercetos_crear_lista();
 t_gci_tercetos_dato *gci_tercetos_agregar_terceto(
     const char *a,
-    const char *b,
-    const char *c);
+    void *b,
+    void *c);
 void gci_tercetos_guardar();
 
 // Funciones privadas
@@ -39,5 +40,7 @@ t_gci_tercetos_dato *crear_terceto(
     const char *c);
 void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo);
 void liberar_memoria_terceto(t_gci_tercetos_dato *terceto);
+void escribir_terceto_en_archivo(FILE *arch, t_gci_tercetos_nodo *nodo);
+char *obtener_indice_de_un_terceto(void *c);
 
 #endif // GCI_TERCETOS_H
