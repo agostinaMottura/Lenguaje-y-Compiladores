@@ -36,6 +36,7 @@ t_gci_tercetos_dato *crear_terceto(
     const char *a,
     const char *b,
     const char *c);
+void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo);
 void liberar_memoria_terceto(t_gci_tercetos_dato *terceto);
 
 #endif // GCI_TERCETOS_H

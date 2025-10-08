@@ -79,6 +79,7 @@ void gci_tercetos_guardar()
             valores_obtener_para_almacenar(nodo->dato.b),
             valores_obtener_para_almacenar(nodo->dato.c));
 
+        liberar_memoria_nodo(nodo);
         nodo = nodo->siguiente;
     }
 
@@ -122,6 +123,12 @@ t_gci_tercetos_dato *crear_terceto(
     nuevo_terceto->indice = cantidad_tercetos_en_lista;
 
     return nuevo_terceto;
+}
+
+void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo)
+{
+    liberar_memoria_terceto(&nodo->dato);
+    free(nodo);
 }
 
 void liberar_memoria_terceto(t_gci_tercetos_dato *terceto)
