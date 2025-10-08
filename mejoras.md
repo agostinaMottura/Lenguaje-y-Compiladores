@@ -1,4 +1,5 @@
 # Mejoras
+[] El Sintactico no debe acceder a la Tabla de Simbolos, lo debe hacer el Lexico y el GCI
 [] Separar el `main.c` del archivo `Sintactico.y`
     -> Dejar solo en el `Sintactico.y` las reglas gramaticales (elementos no terminales)
 
