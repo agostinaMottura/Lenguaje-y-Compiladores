@@ -12,7 +12,7 @@
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils/utils.h"
 #include "./src/simbolos/no-terminales/no_terminales.h"
-#include "./src/semantico/arbol-sintactico/arbol_sintactico.h"
+#include "./src/gci/tercetos/tercetos.h"
 
 
 int yystopparser=0;
@@ -327,12 +327,12 @@ int main(int argc, char *argv[])
     else
     {   
         tabla_simbolos_crear();
-        arbol_sintactico_crear();
+        gci_tercetos_crear_lista();
 
         yyparse();        
 
         tabla_simbolos_guardar();
-        arbol_sintactico_eliminar_memoria();
+        gci_tercetos_guardar();
     }
 	fclose(yyin);
     return 0;

@@ -25,6 +25,7 @@ typedef struct lista
 extern t_gci_tercetos_lista_tercetos lista_tercetos;
 
 // Funciones publicas
+void gci_tercetos_crear_lista();
 t_gci_tercetos_dato *gci_tercetos_agregar_terceto(
     const char *a,
     const char *b,
