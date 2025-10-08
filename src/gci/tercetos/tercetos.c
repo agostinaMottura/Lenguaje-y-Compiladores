@@ -17,12 +17,10 @@ void gci_tercetos_crear_lista()
 t_gci_tercetos_dato *
 gci_tercetos_agregar_terceto(
     const char *a,
-    const char *b,
-    const char *c)
+    void *b,
+    void *c)
 {
-    informes_gci_tercetos_imprimir_mensaje("Se agrega un terceto");
-
-    t_gci_tercetos_dato *nuevo_terceto = crear_terceto(a, b, c);
+    t_gci_tercetos_dato *nuevo_terceto = crear_terceto(a, obtener_valor_a_de_un_terceto(b), obtener_valor_a_de_un_terceto(c));
     if (nuevo_terceto == NULL)
     {
         informes_gci_tercetos_imprimir_error("No hay memoria suficiente para almacenar u nuevo terceto");
@@ -80,17 +78,11 @@ void gci_tercetos_guardar()
 
     while (nodo)
     {
-        fprintf(
-            arch,
-            "[%d]   (%s, %s, %s)\n",
-            nodo->dato.indice,
-            nodo->dato.a,
-            valores_obtener_para_almacenar(nodo->dato.b),
-            valores_obtener_para_almacenar(nodo->dato.c));
-
-        liberar_memoria_nodo(nodo);
+        escribir_terceto_en_archivo(arch, nodo);
         nodo = nodo->siguiente;
     }
+
+    liberar_memoria_nodo(nodo);
 
     fclose(arch);
     informes_gci_tercetos_imprimir_mensaje("Lista de tercetos almacenada correctametne");
@@ -136,8 +128,15 @@ t_gci_tercetos_dato *crear_terceto(
 
 void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo)
 {
+    if (nodo == NULL)
+        return;
+
+    t_gci_tercetos_nodo *siguiente = nodo->siguiente;
+
     liberar_memoria_terceto(&nodo->dato);
     free(nodo);
+
+    liberar_memoria_nodo(siguiente);
 }
 
 void liberar_memoria_terceto(t_gci_tercetos_dato *terceto)
@@ -145,4 +144,37 @@ void liberar_memoria_terceto(t_gci_tercetos_dato *terceto)
     free(terceto->a);
     free(terceto->b);
     free(terceto->c);
+}
+
+void escribir_terceto_en_archivo(FILE *arch, t_gci_tercetos_nodo *nodo)
+{
+    if (nodo->siguiente == NULL)
+    {
+        fprintf(
+            arch,
+            "[%d]   (%s, %s, %s)",
+            nodo->dato.indice,
+            nodo->dato.a,
+            valores_obtener_para_almacenar(nodo->dato.b),
+            valores_obtener_para_almacenar(nodo->dato.c));
+
+        return;
+    }
+
+    fprintf(
+        arch,
+        "[%d]   (%s, %s, %s)\n",
+        nodo->dato.indice,
+        nodo->dato.a,
+        valores_obtener_para_almacenar(nodo->dato.b),
+        valores_obtener_para_almacenar(nodo->dato.c));
+}
+
+char *obtener_valor_a_de_un_terceto(void *c)
+{
+    if (c == NULL)
+        return c;
+
+    t_gci_tercetos_dato *dato = (t_gci_tercetos_dato *)c;
+    return dato->a;
 }

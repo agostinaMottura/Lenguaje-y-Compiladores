@@ -25,6 +25,7 @@ int yylex();
 // Declaracion variables tabla de simbolos 
 int i=0;
 int cant_id = 0;
+t_gci_tercetos_dato* aux;
 
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
@@ -206,9 +207,14 @@ tipo:
 asignacion: 
   ID ASIGNACION expresion {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
+    aux = gci_tercetos_agregar_terceto(
+      $1,
+      NULL,
+      NULL
+    );
     punteros_simbolos_no_terminales_asignacion = gci_tercetos_agregar_terceto(
       ":=",
-      $1,
+      aux,
       punteros_simbolos_no_terminales_expresion
     );
     tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
