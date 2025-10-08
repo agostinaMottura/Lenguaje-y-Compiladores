@@ -1,4 +1,8 @@
 # Mejoras
+[] Tabla de Simbolos
+    [] Cambiar el nombre de la tabla de simbolos (tabla-simbolos.txt)
+    [] Crear un define con el nombre de la tabla de simbolos
+    [] Crear una funcion privada para que escriba la fila de una tabla
 [] El Sintactico no debe acceder a la Tabla de Simbolos, lo debe hacer el Lexico y el GCI
 [] Separar el `main.c` del archivo `Sintactico.y`
     -> Dejar solo en el `Sintactico.y` las reglas gramaticales (elementos no terminales)
