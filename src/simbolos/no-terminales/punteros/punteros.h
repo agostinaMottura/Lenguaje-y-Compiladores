@@ -1,0 +1,37 @@
+#ifndef PUNTEROS_ARBOL_SINTACTICO_H
+#define PUNTEROS_ARBOL_SINTACTICO_H
+
+#include "../arbol_sintactico.h"
+
+extern void *punteros_simbolos_no_terminales_programa;
+extern void *punteros_simbolos_no_terminales_instrucciones;
+extern void *punteros_simbolos_no_terminales_sentencia;
+extern void *punteros_simbolos_no_terminales_funcion;
+extern void *punteros_simbolos_no_terminales_funcion_numerica;
+extern void *punteros_simbolos_no_terminales_funcion_booleana;
+extern void *punteros_simbolos_no_terminales_isZero;
+extern void *punteros_simbolos_no_terminales_triangleAreaMaximum;
+extern void *punteros_simbolos_no_terminales_triangulo;
+extern void *punteros_simbolos_no_terminales_coordenada;
+extern void *punteros_simbolos_no_terminales_declaracion;
+extern void *punteros_simbolos_no_terminales_lista_declaraciones;
+extern void *punteros_simbolos_no_terminales_declaracion_var;
+extern void *punteros_simbolos_no_terminales_lista_ids;
+extern void *punteros_simbolos_no_terminales_tipo;
+extern void *punteros_simbolos_no_terminales_asignacion;
+extern void *punteros_simbolos_no_terminales_write;
+extern void *punteros_simbolos_no_terminales_read;
+extern void *punteros_simbolos_no_terminales_ciclo;
+extern void *punteros_simbolos_no_terminales_if;
+extern void *punteros_simbolos_no_terminales_bloque_if;
+extern void *punteros_simbolos_no_terminales_else;
+extern void *punteros_simbolos_no_terminales_condicional;
+extern void *punteros_simbolos_no_terminales_condicion_compuesta;
+extern void *punteros_simbolos_no_terminales_condicion_unaria;
+extern void *punteros_simbolos_no_terminales_predicado;
+extern void *punteros_simbolos_no_terminales_operador_comparacion;
+extern void *punteros_simbolos_no_terminales_expresion;
+extern void *punteros_simbolos_no_terminales_termino;
+extern void *punteros_simbolos_no_terminales_factor;
+
+#endif
