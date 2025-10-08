@@ -8,7 +8,7 @@
 #include "./src/validaciones/validaciones.h"
 #include "./src/tabla-simbolos/tabla_simbolos.h"
 #include "./src/tabla-simbolos/tipo-dato/tipo_dato.h"
-#include "./src/tabla-simbolos/valores/valores.h"
+#include "./src/valores/valores.h"
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils/utils.h"
 #include "./src/simbolos/no-terminales/no_terminales.h"

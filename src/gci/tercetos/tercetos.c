@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "../../tabla-simbolos/valores/valores.h"
+#include "../../valores/valores.h"
 #include "./informes/informes.h"
 #include "./tercetos.h"
 
