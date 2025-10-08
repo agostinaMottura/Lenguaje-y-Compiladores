@@ -4,6 +4,7 @@
 #include "../../valores/valores.h"
 #include "./informes/informes.h"
 #include "./tercetos.h"
+#include "../../validaciones/validaciones.h"
 
 t_gci_tercetos_lista_tercetos lista_tercetos;
 int cantidad_tercetos_en_lista = 0;
@@ -20,7 +21,7 @@ gci_tercetos_agregar_terceto(
     void *b,
     void *c)
 {
-    t_gci_tercetos_dato *nuevo_terceto = crear_terceto(a, obtener_valor_a_de_un_terceto(b), obtener_valor_a_de_un_terceto(c));
+    t_gci_tercetos_dato *nuevo_terceto = crear_terceto(a, obtener_indice_de_un_terceto(b), obtener_indice_de_un_terceto(c));
     if (nuevo_terceto == NULL)
     {
         informes_gci_tercetos_imprimir_error("No hay memoria suficiente para almacenar u nuevo terceto");
@@ -170,11 +171,21 @@ void escribir_terceto_en_archivo(FILE *arch, t_gci_tercetos_nodo *nodo)
         valores_obtener_para_almacenar(nodo->dato.c));
 }
 
-char *obtener_valor_a_de_un_terceto(void *c)
+char *obtener_indice_de_un_terceto(void *c)
 {
     if (c == NULL)
         return c;
 
     t_gci_tercetos_dato *dato = (t_gci_tercetos_dato *)c;
-    return dato->a;
+
+    char *valor = malloc(VALIDACIONES_MAX_LONGITUD_STRING);
+    if (valor == NULL)
+    {
+        informes_gci_tercetos_imprimir_error("No hay memoria suficiente para crear el string del indice");
+        exit(1);
+    }
+
+    sprintf(valor, "[%d]", dato->indice);
+
+    return valor;
 }
