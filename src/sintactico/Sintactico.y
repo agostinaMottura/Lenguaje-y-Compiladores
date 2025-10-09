@@ -14,6 +14,8 @@
 #include "./src/simbolos/no-terminales/no_terminales.h"
 #include "./src/simbolos/no-terminales/punteros/punteros.h"
 #include "./src/gci/tercetos/tercetos.h"
+#include "./src/pila/pila.h"
+#include "./src/cola/cola.h"
 
 
 int yystopparser=0;
@@ -21,6 +23,16 @@ FILE  *yyin;
 
 int yyerror(const char *s);
 int yylex();
+
+// Pilas
+t_pila *pila_factor;
+t_pila *pila_termino;
+t_pila *pila_expresion;
+t_pila *pila_comparacion;
+t_pila *pila_sumar_ultimos;
+
+// Colas
+t_cola *cola_tercetos;
 
 // Declaracion variables tabla de simbolos 
 int i=0;
@@ -657,6 +669,20 @@ factor:
 
 %%
 
+void crear_pilas_para_cada_no_terminal()
+{
+  pila_factor = pila_crear();
+  pila_termino = pila_crear();
+  pila_expresion = pila_crear();
+  pila_comparacion = pila_crear();
+  pila_sumar_ultimos = pila_crear();
+}
+
+void crear_cola_tercetos()
+{
+  cola_tercetos = cola_crear();
+}
+
 int main(int argc, char *argv[])
 {
     if((yyin = fopen(argv[1], "rt"))==NULL)
@@ -666,17 +692,19 @@ int main(int argc, char *argv[])
         utils_imprimir_error(mensaje);
         return 1;
     }
-    else
-    {   
-        tabla_simbolos_crear();
-        gci_tercetos_crear_lista();
 
-        yyparse();        
 
-        tabla_simbolos_guardar();
-        gci_tercetos_guardar();
-    }
-	fclose(yyin);
+    tabla_simbolos_crear();
+    crear_pilas_para_cada_no_terminal();
+    crear_cola_tercetos();
+    gci_tercetos_crear_lista();
+
+    yyparse();        
+
+    tabla_simbolos_guardar();
+    gci_tercetos_guardar();
+    
+	  fclose(yyin);
     return 0;
 }
 

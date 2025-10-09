@@ -3,10 +3,10 @@
 
 #include <stddef.h>
 
-typedef struct nodo
+typedef struct pila_nodo
 {
     void *dato;
-    struct nodo *siguiente;
+    struct pila_nodo *siguiente;
 } t_pila_nodo;
 
 typedef struct pila

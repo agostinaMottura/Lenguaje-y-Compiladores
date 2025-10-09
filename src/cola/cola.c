@@ -53,7 +53,7 @@ void cola_agregar(t_cola *cola, const void *dato, unsigned tamano)
     cola->ultimo = nodo;
 }
 
-void *cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado)
+void cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado)
 {
     t_cola_nodo *nodo = cola->primero;
     if (nodo == NULL)

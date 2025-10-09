@@ -1,3 +1,4 @@
-#+ Ejemplo que usa el profe +#
-#+ id1 := id2 * cte1 + cte2 +#
-a := b * 1 + 2
+if (a > b)
+{
+    c := 1
+}

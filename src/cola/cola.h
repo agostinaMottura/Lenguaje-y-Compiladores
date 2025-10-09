@@ -3,11 +3,11 @@
 
 #define COLA_MINIMO
 
-typedef struct nodo
+typedef struct cola_nodo
 {
     void *dato;
     unsigned tamano;
-    struct nodo *siguiente;
+    struct cola_nodo *siguiente;
 } t_cola_nodo;
 
 typedef struct
@@ -18,7 +18,7 @@ typedef struct
 
 t_cola *cola_crear();
 void cola_agregar(t_cola *cola, const void *dato, unsigned tamano);
-void *cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado);
+void cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado);
 
 void cola_vaciar(t_cola *cola);
 void cola_ver_primero(const t_cola *cola, void *destino, unsigned tamano_esperado);
