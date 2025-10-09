@@ -6,12 +6,12 @@
 typedef struct nodo
 {
     void *dato;
-    struct nodo *sig;
+    struct nodo *siguiente;
 } t_pila_nodo;
 
 typedef struct pila
 {
-    nodo *tope;
+    t_pila_nodo *tope;
 } t_pila;
 
 t_pila *pila_crear();

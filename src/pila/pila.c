@@ -34,7 +34,7 @@ void pila_apilar(t_pila *pila, void *dato, size_t tamano)
 
     memcpy(nodo->dato, dato, tamano);
 
-    nodo->sig = pila->tope;
+    nodo->siguiente = pila->tope;
     pila->tope = nodo;
 }
 
@@ -45,7 +45,7 @@ void *pila_desapilar(t_pila *pila)
 
     t_pila_nodo *nodo = pila->tope;
     void *dato = nodo->dato;
-    pila->tope = nodo->sig;
+    pila->tope = nodo->siguiente;
 
     free(nodo);
 
