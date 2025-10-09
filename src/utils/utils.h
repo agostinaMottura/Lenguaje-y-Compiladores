@@ -14,6 +14,8 @@
 
 #define UTILS_MAX_STRING_MENSAJE_LONGITUD 256
 
+#define MINIMO(X, Y) ((X) <= (Y) ? (X) : (Y))
+
 void utils_imprimir_error(const char *mensaje);
 const char *utils_obtener_string_sin_comillas(const char *str);
 const char *utils_obtener_string_numero_negativo(const char *nro);
