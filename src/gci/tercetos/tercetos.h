@@ -36,7 +36,7 @@ void gci_tercetos_actualizar(
     t_gci_tercetos_dato *nuevo_dato,
     t_gci_tercetos_dato *terceto_a_actualizar);
 void gci_tercetos_guardar();
-
+void gci_imprimir_terceto(void *terceto);
 // Funciones privadas
 t_gci_tercetos_dato *crear_terceto(
     const char *a,
@@ -46,5 +46,5 @@ void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo);
 void liberar_memoria_terceto(t_gci_tercetos_dato *terceto);
 void escribir_terceto_en_archivo(FILE *arch, t_gci_tercetos_nodo *nodo);
 char *obtener_indice_de_un_terceto(void *c);
-
+void *obtener_terceto_en_string(t_gci_tercetos_dato *dato, char *mensaje);
 #endif // GCI_TERCETOS_H

@@ -26,17 +26,12 @@ int yyerror(const char *s);
 int yylex();
 
 // Pilas
-t_pila *pila_factor;
-t_pila *pila_termino;
 t_pila *pila_expresion;
 t_pila *pila_comparacion;
-t_pila *pila_sumar_ultimos;
 t_pila *pila_nro_tercetos;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
 
-// Colas
-t_cola *cola_tercetos;
 
 // Declaracion variables tabla de simbolos 
 int i=0;
@@ -129,6 +124,7 @@ instrucciones:
   instrucciones sentencia 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "instrucciones sentencia");
+    // Como los tercetos los manejamos con una lista enlazada, no hace falta volver a asignar el puntero de instrucciones
   }
   |sentencia 
     {
@@ -316,8 +312,7 @@ lista_declaraciones:
         SIMBOLOS_NO_TERMINALES_LISTA_DECLARACIONES, 
         "lista_declaraciones declaracion_var");
 
-      // No hace falta crear un nuevo terceto
-      punteros_simbolos_no_terminales_lista_declaraciones = punteros_simbolos_no_terminales_declaracion_var;
+      // Como los tercetos los manejamos con una lista enlazada, no hace falta volver a asignar el puntero de lista_declaraciones
     }
   ;
 
@@ -342,7 +337,7 @@ declaracion_var:
    }
   ;
 
-lista_ids:
+lista_ids: // No aporta nada de valor al GCI esta regla no terminal, despues los asignamos todos juntos en declaracion_var
   ID 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_IDS, "ID");
@@ -491,7 +486,12 @@ bloque_if:
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
-  
+    
+    // punteros_simbolos_no_terminales_bloque_if = gci_tercetos_agregar_terceto(
+    //   SIMBOLOS_NO_TERMINALES_IF_VALOR,
+    //   punteros_simbolos_no_terminales_condicional,
+    //   punteros_simbolos_no_terminales_instrucciones
+    // );
   }
   ;
 
@@ -588,7 +588,7 @@ predicado:
                                                     primera_expresion, 
                                                     segunda_expresion);
       gci_tercetos_agregar_terceto(
-        comparador, 
+        comparador, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
         NULL, 
         NULL);
     }
@@ -607,7 +607,7 @@ predicado:
     }
   ;
 
-operador_comparacion:
+operador_comparacion: // No creo los GCI aca, sino que los creamos en el predicado
   MAYOR 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR");
@@ -778,19 +778,15 @@ factor:
 
 %%
 
-void crear_pilas_para_cada_no_terminal()
+void crear_pilas()
 {
-  pila_factor = pila_crear();
-  pila_termino = pila_crear();
   pila_expresion = pila_crear();
   pila_comparacion = pila_crear();
-  pila_sumar_ultimos = pila_crear();
+  pila_nro_tercetos = pila_crear();
+  pila_triangulo = pila_crear();
+  pila_coordenada = pila_crear();
 }
 
-void crear_cola_tercetos()
-{
-  cola_tercetos = cola_crear();
-}
 
 int main(int argc, char *argv[])
 {
@@ -804,8 +800,7 @@ int main(int argc, char *argv[])
 
 
     tabla_simbolos_crear();
-    crear_pilas_para_cada_no_terminal();
-    crear_cola_tercetos();
+    crear_pilas();
     gci_tercetos_crear_lista();
 
     yyparse();        

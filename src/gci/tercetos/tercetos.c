@@ -115,6 +115,18 @@ void gci_tercetos_guardar()
     informes_gci_tercetos_imprimir_mensaje("Lista de tercetos almacenada correctametne");
 }
 
+void gci_imprimir_terceto(void *terceto)
+{
+    if (terceto == NULL)
+        return;
+
+    t_gci_tercetos_dato *dato = (t_gci_tercetos_dato *)terceto;
+    char mensaje[100];
+    obtener_terceto_en_string(dato, mensaje);
+
+    printf("[GCI] %s\n", mensaje);
+}
+
 t_gci_tercetos_dato *crear_terceto(
     const char *a,
     const char *b,
@@ -216,15 +228,15 @@ char *obtener_indice_de_un_terceto(void *c)
     return valor;
 }
 
-// char *obtener_terceto_en_string(t_gci_tercetos_dato *dato)
-// {
-//     char mensaje[VALIDACIONES_MAX_LONGITUD_STRING];
-//     sprintf(mensaje,
-//             "[%d]   (%s, %s, %s)",
-//             dato->indice,
-//             dato->a,
-//             valores_obtener_para_almacenar(dato->b),
-//             valores_obtener_para_almacenar(dato->c));
+void *obtener_terceto_en_string(t_gci_tercetos_dato *dato, char *mensaje)
+{
+    // char mensaje[VALIDACIONES_MAX_LONGITUD_STRING];
+    sprintf(mensaje,
+            "[%d]   (%s, %s, %s)",
+            dato->indice,
+            dato->a,
+            valores_obtener_para_almacenar(dato->b),
+            valores_obtener_para_almacenar(dato->c));
 
-//     return mensaje;
-// }
+    return mensaje;
+}
