@@ -36,7 +36,8 @@ t_pila *pila_coordenada;
 t_cola_punteros *cola_saltos_comparacion;
 
 
-// Declaracion variables tabla de simbolos 
+// Declaracion variables tabla de simbolos
+int aux_hay_else = 0; 
 int i=0;
 int cant_id = 0;
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
@@ -49,6 +50,10 @@ t_gci_tercetos_dato* aux_terceto_salto_comparacion;
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
 %}
+
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE_PREC
+
 %union {
     char cadena[50]; // Bison no me deja poner una macro aca :(
 }
@@ -478,46 +483,52 @@ if:
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_IF, "bloque_if");
     punteros_simbolos_no_terminales_if = punteros_simbolos_no_terminales_bloque_if;
   }
-  | bloque_if else 
-  {
-    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_IF, "bloque_if else");
-    // TODO: Agregar punteros de tercetos
-  }
   ;
 
 bloque_if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C 
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C %prec LOWER_THAN_ELSE
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
-    void* terceto_salto_comparacion;
-    cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
+      void* terceto_salto_comparacion;
+      cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
 
-    // gci_tercetos_actualizar_indice(aux_terceto_salto_comparacion);
-    gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+      gci_tercetos_actualizar_indice(terceto_salto_comparacion);
   }
-  ;
-
-else:
-   ELSE bloque_if 
-   {
-    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ELSE, "ELSE bloque_if");
-    // TODO: Agregar punteros de tercetos
-   }
-  | ELSE LLAVES_A instrucciones LLAVES_C 
+  | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE 
     {
-      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ELSE, "ELSE LLAVES_A instrucciones LLAVES_C");
-      // TODO: Agregar punteros de tercetos
-      while(!pila_esta_vacia(pila_comparacion))
+      informes_sintactico_imprimir_mensaje(
+        SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
+        "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C");
+      
+        void* terceto_salto_comparacion;
+        cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
+
+        aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+          "BI",
+          NULL, 
+          NULL);
+
+        gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+
+
+      cola_punteros_agregar(cola_saltos_comparacion, aux_terceto_salto_comparacion);
+    } LLAVES_A instrucciones LLAVES_C
+    {
+      while(!cola_punteros_esta_vacia(cola_saltos_comparacion))
       {
-        void* comparacion = pila_desapilar(pila_comparacion);
-        gci_tercetos_actualizar(aux_terceto_if_else, comparacion);
+        void* terceto_salto_comparacion;
+        cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
+
+        gci_tercetos_actualizar_indice(terceto_salto_comparacion);
       }
-
-
     }
+  /* | ELSE bloque_if
+    {
+      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_BLOQUE_IF, "ELSE bloque_if");
+    } */
   ;
 
 condicional:

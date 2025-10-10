@@ -18,6 +18,11 @@ t_cola_punteros *cola_punteros_crear()
     return cola;
 }
 
+int cola_punteros_esta_vacia(t_cola_punteros *cola)
+{
+    return cola->primero == NULL;
+}
+
 void cola_punteros_agregar(t_cola_punteros *cola, void *dato)
 {
     t_cola_punteros_nodo *nodo = (t_cola_punteros_nodo *)malloc(sizeof(t_cola_punteros_nodo));

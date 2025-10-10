@@ -14,6 +14,7 @@ typedef struct
 } t_cola_punteros;
 
 t_cola_punteros *cola_punteros_crear();
+int cola_punteros_esta_vacia(t_cola_punteros *cola);
 void cola_punteros_agregar(t_cola_punteros *cola, void *dato);
 void cola_punteros_quitar(t_cola_punteros *cola, void **destino);
 
