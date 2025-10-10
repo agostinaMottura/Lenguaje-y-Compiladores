@@ -6,12 +6,20 @@
 #define TIPO_DATO_VALOR_CTE_INT "CTE_INT"
 #define TIPO_DATO_VALOR_CTE_FLOAT "CTE_FLOAT"
 
+#define TIPO_DATO_VALOR_STRING "STRING"
+#define TIPO_DATO_VALOR_INT "INT"
+#define TIPO_DATO_VALOR_FLOAT "FLOAT"
+
 typedef enum
 {
     TIPO_DATO_DESCONOCIDO,
     TIPO_DATO_CTE_STRING,
     TIPO_DATO_CTE_INT,
-    TIPO_DATO_CTE_FLOAT
+    TIPO_DATO_CTE_FLOAT,
+
+    TIPO_DATO_STRING,
+    TIPO_DATO_INT,
+    TIPO_DATO_FLOAT
 } t_tipo_dato;
 
 int tipo_dato_es_constante(t_tipo_dato tipo_dato);

@@ -15,13 +15,32 @@ void gci_tercetos_crear_lista()
     informes_gci_tercetos_imprimir_mensaje("Lista de tercetos creada correctamente");
 }
 
+t_gci_tercetos_dato *gci_tercetos_obtener_siguiente_indice()
+{
+    t_gci_tercetos_dato *nuevo_terceto = malloc(
+        sizeof(t_gci_tercetos_dato));
+    if (nuevo_terceto == NULL)
+    {
+        informes_gci_tercetos_imprimir_error("No hay memoria suficiente para crear un nuevo terceto");
+        exit(1);
+    }
+
+    nuevo_terceto->indice = cantidad_tercetos_en_lista + 1;
+
+    return nuevo_terceto;
+}
+
 t_gci_tercetos_dato *
 gci_tercetos_agregar_terceto(
     const char *a,
     void *b,
     void *c)
 {
-    t_gci_tercetos_dato *nuevo_terceto = crear_terceto(a, obtener_indice_de_un_terceto(b), obtener_indice_de_un_terceto(c));
+    t_gci_tercetos_dato *nuevo_terceto = crear_terceto(
+        a,
+        obtener_indice_de_un_terceto(b),
+        obtener_indice_de_un_terceto(c));
+
     if (nuevo_terceto == NULL)
     {
         informes_gci_tercetos_imprimir_error("No hay memoria suficiente para almacenar u nuevo terceto");
@@ -57,6 +76,13 @@ gci_tercetos_agregar_terceto(
     actual->siguiente = nuevo_nodo;
 
     return nuevo_terceto;
+}
+
+void gci_tercetos_actualizar(
+    t_gci_tercetos_dato *nuevo_dato,
+    t_gci_tercetos_dato *terceto_a_actualizar)
+{
+    terceto_a_actualizar->c = obtener_indice_de_un_terceto(nuevo_dato);
 }
 
 void gci_tercetos_guardar()
@@ -189,3 +215,16 @@ char *obtener_indice_de_un_terceto(void *c)
 
     return valor;
 }
+
+// char *obtener_terceto_en_string(t_gci_tercetos_dato *dato)
+// {
+//     char mensaje[VALIDACIONES_MAX_LONGITUD_STRING];
+//     sprintf(mensaje,
+//             "[%d]   (%s, %s, %s)",
+//             dato->indice,
+//             dato->a,
+//             valores_obtener_para_almacenar(dato->b),
+//             valores_obtener_para_almacenar(dato->c));
+
+//     return mensaje;
+// }

@@ -18,6 +18,12 @@ const char *tipo_dato_obtener_valor(t_tipo_dato tipo_dato)
         return TIPO_DATO_VALOR_CTE_INT;
     case TIPO_DATO_CTE_FLOAT:
         return TIPO_DATO_VALOR_CTE_FLOAT;
+    case TIPO_DATO_STRING:
+        return TIPO_DATO_VALOR_STRING;
+    case TIPO_DATO_INT:
+        return TIPO_DATO_VALOR_INT;
+    case TIPO_DATO_FLOAT:
+        return TIPO_DATO_VALOR_FLOAT;
     }
 }
 

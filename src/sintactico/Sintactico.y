@@ -11,6 +11,7 @@
 #include "./src/valores/valores.h"
 #include "./src/sintactico/informes/informes.h"
 #include "./src/utils/utils.h"
+#include "./src/simbolos/terminales/terminales.h"
 #include "./src/simbolos/no-terminales/no_terminales.h"
 #include "./src/simbolos/no-terminales/punteros/punteros.h"
 #include "./src/gci/tercetos/tercetos.h"
@@ -30,6 +31,9 @@ t_pila *pila_termino;
 t_pila *pila_expresion;
 t_pila *pila_comparacion;
 t_pila *pila_sumar_ultimos;
+t_pila *pila_nro_tercetos;
+t_pila *pila_triangulo;
+t_pila *pila_coordenada;
 
 // Colas
 t_cola *cola_tercetos;
@@ -37,7 +41,10 @@ t_cola *cola_tercetos;
 // Declaracion variables tabla de simbolos 
 int i=0;
 int cant_id = 0;
-t_gci_tercetos_dato* aux;
+size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
+char comparador[VALIDACIONES_MAX_LONGITUD_STRING];
+t_tipo_dato tipo_dato_aux;
+t_gci_tercetos_dato* aux_terceto_if_else;
 
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
@@ -119,7 +126,10 @@ programa:
   ;
 
 instrucciones:
-  instrucciones sentencia {informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "instrucciones sentencia");}
+  instrucciones sentencia 
+  {
+    informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "instrucciones sentencia");
+  }
   |sentencia 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_INSTRUCCIONES, "sentencia");
@@ -205,7 +215,11 @@ isZero:
         SIMBOLOS_NO_TERMINALES_IS_ZERO, 
         "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");
     
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_isZero = gci_tercetos_agregar_terceto(
+        SIMBOLOS_NO_TERMINALES_IS_ZERO_VALOR,
+        punteros_simbolos_no_terminales_expresion,
+        NULL
+      );
     }
   ;
 
@@ -216,7 +230,13 @@ triangleAreaMaximum:
       SIMBOLOS_NO_TERMINALES_TRIANGLE_AREA_MAXIMUM, 
       "TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C");
 
-    // TODO: Agregar punteros de tercetos
+    void* primer_triangulo = pila_desapilar(pila_triangulo);
+    void* segundo_triangulo = pila_desapilar(pila_triangulo);
+
+    punteros_simbolos_no_terminales_triangleAreaMaximum = gci_tercetos_agregar_terceto(
+      SIMBOLOS_NO_TERMINALES_TRIANGLE_AREA_MAXIMUM_VALOR, 
+      primer_triangulo, 
+      segundo_triangulo);
   }
   ;
   
@@ -227,7 +247,25 @@ triangulo:
         SIMBOLOS_NO_TERMINALES_TRIANGULO, 
         "CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C");
       
-      // TODO: Agregar punteros de tercetos
+      void* coordenada_x = pila_desapilar(pila_coordenada);
+      void* coordenada_y = pila_desapilar(pila_coordenada);
+      void* coordenada_z = pila_desapilar(pila_coordenada);
+
+      punteros_simbolos_no_terminales_triangulo = gci_tercetos_agregar_terceto(
+        SIMBOLOS_NO_TERMINALES_TRIANGULO_VALOR,
+        coordenada_x,
+        coordenada_y
+      );
+      punteros_simbolos_no_terminales_triangulo = gci_tercetos_agregar_terceto(
+        SIMBOLOS_NO_TERMINALES_TRIANGULO_VALOR,
+        punteros_simbolos_no_terminales_triangulo,
+        coordenada_z
+      );
+
+      pila_apilar(
+        pila_triangulo, 
+        punteros_simbolos_no_terminales_triangulo,
+        tamano_terceto);
     }
   ;
 
@@ -236,7 +274,18 @@ coordenada:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_COORDENADA, "expresion COMA expresion");
       
-      // TODO: Agregar punteros de tercetos
+      void* primera_expresion = pila_desapilar(pila_expresion);
+      void* segunda_expresion = pila_desapilar(pila_expresion);
+      punteros_simbolos_no_terminales_coordenada = gci_tercetos_agregar_terceto(
+        SIMBOLOS_NO_TERMINALES_COORDENADA_VALOR,
+        primera_expresion,
+        segunda_expresion
+      );
+
+      pila_apilar(
+        pila_coordenada, 
+        punteros_simbolos_no_terminales_coordenada, 
+       tamano_terceto);
     }
   ;
 
@@ -248,7 +297,7 @@ declaracion:
         "INIT LLAVES_A lista_declaraciones LLAVES_C"
       );
     
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_declaracion = punteros_simbolos_no_terminales_lista_declaraciones;
     }
   ;
 
@@ -267,7 +316,8 @@ lista_declaraciones:
         SIMBOLOS_NO_TERMINALES_LISTA_DECLARACIONES, 
         "lista_declaraciones declaracion_var");
 
-      // TODO: Agregar punteros de tercetos
+      // No hace falta crear un nuevo terceto
+      punteros_simbolos_no_terminales_lista_declaraciones = punteros_simbolos_no_terminales_declaracion_var;
     }
   ;
 
@@ -276,11 +326,17 @@ declaracion_var:
    {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_DECLARACION_VAR, "lista_ids DOS_PUNTOS tipo");
 
-    // TODO: Agregar punteros de tercetos
-
     for(i=0;i<cant_id;i++)
       {
-        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, tipo_dato_aux, VALORES_NULL);
+        void *terceto_id = gci_tercetos_agregar_terceto(
+          ids_declarados[i].cadena, 
+          NULL, 
+          NULL);
+        punteros_simbolos_no_terminales_declaracion_var = gci_tercetos_agregar_terceto(
+          SIMBOLOS_NO_TERMINALES_DECLARACION_VAR_VALOR, 
+          terceto_id, 
+          punteros_simbolos_no_terminales_tipo);
       }
     cant_id=0;
    }
@@ -291,16 +347,12 @@ lista_ids:
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_IDS, "ID");
     
-    // TODO: Agregar punteros de tercetos
-
     strcpy(ids_declarados[cant_id].cadena, $1);
     cant_id++;
   }
   | lista_ids COMA ID 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_IDS, "lista_ids COMA ID");
-      
-      // TODO: Agregar punteros de tercetos
       
       strcpy(ids_declarados[cant_id].cadena, $3);
       cant_id++;
@@ -311,20 +363,29 @@ tipo:
   FLOAT 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "FLOAT");
-
-    // TODO: Agregar punteros de tercetos
+    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
+      SIMBOLOS_TERMINALES_FLOAT_VALOR, 
+      NULL, 
+      NULL);
+    tipo_dato_aux = TIPO_DATO_FLOAT;
   }
   | INT 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "INT");
-
-    // TODO: Agregar punteros de tercetos
+    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
+      SIMBOLOS_TERMINALES_INT_VALOR, 
+      NULL, 
+      NULL);
+      tipo_dato_aux = TIPO_DATO_INT;
   }
   | STRING 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "STRING");
-
-    // TODO: Agregar punteros de tercetos
+    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
+      SIMBOLOS_TERMINALES_STRING_VALOR, 
+      NULL, 
+      NULL);
+    tipo_dato_aux = TIPO_DATO_STRING;
   }
   ;
 
@@ -332,13 +393,13 @@ asignacion:
   ID ASIGNACION expresion 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
-    aux = gci_tercetos_agregar_terceto(
+    t_gci_tercetos_dato* aux = gci_tercetos_agregar_terceto(
       $1,
       NULL,
       NULL
     );
     punteros_simbolos_no_terminales_asignacion = gci_tercetos_agregar_terceto(
-      ":=",
+      SIMBOLOS_TERMINALES_ASIGNACION_VALOR,
       aux,
       punteros_simbolos_no_terminales_expresion
     );
@@ -350,8 +411,11 @@ write:
   WRITE PARENTESIS_A expresion PARENTESIS_C 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_WRITE, "WRITE PARENTESIS_A expresion PARENTESIS_C");
-
-    // TODO: Agregar punteros de tercetos
+    punteros_simbolos_no_terminales_write = gci_tercetos_agregar_terceto(
+      SIMBOLOS_NO_TERMINALES_WRITE_VALOR,
+      punteros_simbolos_no_terminales_expresion,
+      NULL
+    );
   }
   ;
 
@@ -360,22 +424,54 @@ read:
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_READ, "READ PARENTESIS_A ID PARENTESIS_C");
     tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
-  
-    // TODO: Agregar punteros de tercetos
+
+    void* terceto_id = gci_tercetos_agregar_terceto(
+      $3,
+      NULL,
+      NULL
+    );
+    punteros_simbolos_no_terminales_read = gci_tercetos_agregar_terceto(
+      SIMBOLOS_NO_TERMINALES_READ_VALOR,
+      terceto_id,
+      NULL
+    );
   }
   ;
 
 ciclo:
-  WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C 
+  WHILE PARENTESIS_A
+  {
+    punteros_simbolos_no_terminales_ciclo = gci_tercetos_agregar_terceto(
+                                              "InicioCiclo", 
+                                              NULL, 
+                                              NULL);
+    pila_apilar(
+      pila_nro_tercetos, 
+      punteros_simbolos_no_terminales_ciclo, 
+     tamano_terceto);
+  } condicional PARENTESIS_C
+  {
+
+  } LLAVES_A instrucciones LLAVES_C 
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_CICLO, 
       "WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
   
-    // TODO: Agregar punteros de tercetos
+    // TODO: Revisar
+    void* terceto_a_actualizar = pila_desapilar(pila_nro_tercetos);
+    t_gci_tercetos_dato* siguiente_indice = gci_tercetos_obtener_siguiente_indice();
+    gci_tercetos_actualizar(siguiente_indice, terceto_a_actualizar);
+
+    gci_tercetos_agregar_terceto(
+      "BI",
+      NULL,
+      punteros_simbolos_no_terminales_ciclo
+    );
   }
   ;
 
+// TODO: Queda pendiente
 if:
   bloque_if 
   {
@@ -396,7 +492,6 @@ bloque_if:
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
   
-    // TODO: Agregar punteros de tercetos
   }
   ;
 
@@ -410,6 +505,13 @@ else:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ELSE, "ELSE LLAVES_A instrucciones LLAVES_C");
       // TODO: Agregar punteros de tercetos
+      while(!pila_esta_vacia(pila_comparacion))
+      {
+        void* comparacion = pila_desapilar(pila_comparacion);
+        gci_tercetos_actualizar(aux_terceto_if_else, comparacion);
+      }
+
+
     }
   ;
 
@@ -433,7 +535,10 @@ condicion_compuesta:
         SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, 
         "condicion_compuesta AND condicion_unaria");
     
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_condicion_compuesta = gci_tercetos_agregar_terceto(
+        SIMBOLOS_TERMINALES_AND_VALOR,
+        punteros_simbolos_no_terminales_condicion_compuesta,
+        punteros_simbolos_no_terminales_condicion_unaria);
     }
   | condicion_compuesta OR condicion_unaria 
     {
@@ -441,7 +546,10 @@ condicion_compuesta:
         SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, 
         "condicion_compuesta OR condicion_unaria");
 
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_condicion_compuesta = gci_tercetos_agregar_terceto(
+        SIMBOLOS_TERMINALES_OR_VALOR,
+        punteros_simbolos_no_terminales_condicion_compuesta,
+        punteros_simbolos_no_terminales_condicion_unaria);
     }
   ;
 
@@ -452,7 +560,11 @@ condicion_unaria:
       SIMBOLOS_NO_TERMINALES_CONDICION_UNARIA, 
       "NOT condicion_unaria");
 
-    // TODO: Agregar punteros de tercetos
+    
+    punteros_simbolos_no_terminales_condicion_unaria = gci_tercetos_agregar_terceto(
+        SIMBOLOS_TERMINALES_NOT_VALOR,
+        punteros_simbolos_no_terminales_condicion_unaria,
+        NULL);
   }
   | predicado 
     {
@@ -464,11 +576,21 @@ condicion_unaria:
 predicado:
   expresion operador_comparacion expresion 
     {
+      void* primera_expresion = pila_desapilar(pila_expresion);
+      void* segunda_expresion = pila_desapilar(pila_expresion);
+
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_PREDICADO, 
         "expresion operador_comparacion expresion");
 
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_predicado = gci_tercetos_agregar_terceto(
+                                                    "CMP", 
+                                                    primera_expresion, 
+                                                    segunda_expresion);
+      gci_tercetos_agregar_terceto(
+        comparador, 
+        NULL, 
+        NULL);
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {
@@ -476,7 +598,7 @@ predicado:
         SIMBOLOS_NO_TERMINALES_PREDICADO, 
         "PARENTESIS_A condicional PARENTESIS_C");
 
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_predicado = punteros_simbolos_no_terminales_condicional;
     }
   | funcion_booleana 
     {
@@ -489,57 +611,32 @@ operador_comparacion:
   MAYOR 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR");
-      punteros_simbolos_no_terminales_operador_comparacion = gci_tercetos_agregar_terceto(
-        ">",
-        punteros_simbolos_no_terminales_expresion,
-        punteros_simbolos_no_terminales_termino
-      );
+      strcpy(comparador, "BLE");
     }
   | MAYOR_IGUAL 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR_IGUAL");
-      punteros_simbolos_no_terminales_operador_comparacion = gci_tercetos_agregar_terceto(
-        ">=",
-        punteros_simbolos_no_terminales_expresion,
-        punteros_simbolos_no_terminales_termino
-      );
+      strcpy(comparador, "BLT");
     }
   | MENOR_IGUAL 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MENOR_IGUAL");
-
-      punteros_simbolos_no_terminales_operador_comparacion = gci_tercetos_agregar_terceto(
-        "<=",
-        punteros_simbolos_no_terminales_expresion,
-        punteros_simbolos_no_terminales_termino
-      );
+      strcpy(comparador, "BGT");
     }
   | MENOR 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MENOR");
-      punteros_simbolos_no_terminales_operador_comparacion = gci_tercetos_agregar_terceto(
-        "<",
-        punteros_simbolos_no_terminales_expresion,
-        punteros_simbolos_no_terminales_termino
-      );  
+      strcpy(comparador, "BGE");
     }
   | IGUAL 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "IGUAL");
-      punteros_simbolos_no_terminales_operador_comparacion = gci_tercetos_agregar_terceto(
-        "==",
-        punteros_simbolos_no_terminales_expresion,
-        punteros_simbolos_no_terminales_termino
-      );  
+      strcpy(comparador, "BNE");
     }
   | DISTINTO 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "DISTINTO");
-      punteros_simbolos_no_terminales_operador_comparacion = gci_tercetos_agregar_terceto(
-        "!=",
-        punteros_simbolos_no_terminales_expresion,
-        punteros_simbolos_no_terminales_termino
-      );  
+      strcpy(comparador, "BEQ");
     }
 ;
 
@@ -548,24 +645,36 @@ expresion:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
-        "+",
+        SIMBOLOS_TERMINALES_SUMA_VALOR,
         punteros_simbolos_no_terminales_expresion,
         punteros_simbolos_no_terminales_termino
       );
+      pila_apilar(
+        pila_expresion, 
+        punteros_simbolos_no_terminales_expresion, 
+       tamano_terceto);
     }
   |expresion RESTA termino 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
-        "-",
+        SIMBOLOS_TERMINALES_RESTA_VALOR,
         punteros_simbolos_no_terminales_expresion,
         punteros_simbolos_no_terminales_termino
       );
+      pila_apilar(
+        pila_expresion, 
+        punteros_simbolos_no_terminales_expresion, 
+       tamano_terceto);
     }
   |termino 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion");
       punteros_simbolos_no_terminales_expresion = punteros_simbolos_no_terminales_termino;
+      pila_apilar(
+        pila_expresion, 
+        punteros_simbolos_no_terminales_expresion, 
+       tamano_terceto);
     }
   ;
 
@@ -574,7 +683,7 @@ termino:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
-        "*", 
+        SIMBOLOS_TERMINALES_MULTIPLICACION_VALOR, 
         punteros_simbolos_no_terminales_termino, 
         punteros_simbolos_no_terminales_factor);
     }
@@ -582,7 +691,7 @@ termino:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
-        "/", 
+        SIMBOLOS_TERMINALES_DIVISION_VALOR, 
         punteros_simbolos_no_terminales_termino, 
         punteros_simbolos_no_terminales_factor);
     }
@@ -658,7 +767,7 @@ factor:
         SIMBOLOS_NO_TERMINALES_FACTOR, 
         "PARENTESIS_A expresion PARENTESIS_C");
         
-      // TODO: Agregar punteros de tercetos
+      punteros_simbolos_no_terminales_factor = punteros_simbolos_no_terminales_expresion;
     }
   | funcion_numerica 
     {
