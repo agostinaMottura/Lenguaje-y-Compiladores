@@ -16,7 +16,7 @@
 #include "./src/simbolos/no-terminales/punteros/punteros.h"
 #include "./src/gci/tercetos/tercetos.h"
 #include "./src/pila/pila.h"
-#include "./src/cola/cola.h"
+#include "./src/cola_punteros/cola_punteros.h"
 
 
 int yystopparser=0;
@@ -33,7 +33,7 @@ t_pila *pila_triangulo;
 t_pila *pila_coordenada;
 
 // Colas
-t_cola *cola_saltos_comparacion;
+t_cola_punteros *cola_saltos_comparacion;
 
 
 // Declaracion variables tabla de simbolos 
@@ -492,9 +492,11 @@ bloque_if:
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
-    // cola_quitar(cola_saltos_comparacion, terceto_salto_comparacion, tamano_terceto);
+    void* terceto_salto_comparacion;
+    cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
 
-    gci_tercetos_actualizar_indice(aux_terceto_salto_comparacion);
+    // gci_tercetos_actualizar_indice(aux_terceto_salto_comparacion);
+    gci_tercetos_actualizar_indice(terceto_salto_comparacion);
   }
   ;
 
@@ -594,7 +596,7 @@ predicado:
         salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
         NULL, 
         NULL);
-      cola_agregar(cola_saltos_comparacion, aux_terceto_salto_comparacion, tamano_terceto);
+      cola_punteros_agregar(cola_saltos_comparacion, aux_terceto_salto_comparacion);
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {
@@ -793,7 +795,7 @@ void crear_pilas()
 
 void crear_colas()
 {
-  cola_saltos_comparacion = cola_crear();
+  cola_saltos_comparacion = cola_punteros_crear();
 }
 
 
