@@ -1,7 +1,10 @@
 [0]   (a, --NULL--, --NULL--)
 [1]   (b, --NULL--, --NULL--)
 [2]   (CMP, [1], [0])
-[3]   (BGE, --NULL--, --NULL--) // [3]   (BGE, --NULL--, [7]) Buscar esto
+[3]   (BGE, --NULL--, [7])
 [4]   (1, --NULL--, --NULL--)
 [5]   (a, --NULL--, --NULL--)
 [6]   (ASIGNACION, [5], [4])
+[7]   (2, --NULL--, --NULL--)
+[8]   (c, --NULL--, --NULL--)
+[9]   (ASIGNACION, [8], [7])

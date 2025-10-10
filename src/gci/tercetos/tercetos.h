@@ -14,7 +14,7 @@ typedef struct
 
 typedef struct nodo
 {
-    t_gci_tercetos_dato dato;
+    t_gci_tercetos_dato *dato;
     struct nodo *siguiente;
 } t_gci_tercetos_nodo;
 
@@ -27,6 +27,8 @@ extern t_gci_tercetos_lista_tercetos lista_tercetos;
 
 // Funciones publicas
 void gci_tercetos_crear_lista();
+void gci_tercetos_actualizar_indice(void *terceto);
+
 t_gci_tercetos_dato *gci_tercetos_obtener_siguiente_indice();
 t_gci_tercetos_dato *gci_tercetos_agregar_terceto(
     const char *a,

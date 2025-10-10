@@ -17,7 +17,7 @@ typedef struct
 } t_cola;
 
 t_cola *cola_crear();
-void cola_agregar(t_cola *cola, const void *dato, unsigned tamano);
+void cola_agregar(t_cola *cola, void *dato, unsigned tamano);
 void cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado);
 
 void cola_vaciar(t_cola *cola);

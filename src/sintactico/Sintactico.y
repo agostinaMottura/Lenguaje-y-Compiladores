@@ -32,14 +32,19 @@ t_pila *pila_nro_tercetos;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
 
+// Colas
+t_cola *cola_saltos_comparacion;
+
 
 // Declaracion variables tabla de simbolos 
 int i=0;
 int cant_id = 0;
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
-char comparador[VALIDACIONES_MAX_LONGITUD_STRING];
+char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
 t_tipo_dato tipo_dato_aux;
+
 t_gci_tercetos_dato* aux_terceto_if_else;
+t_gci_tercetos_dato* aux_terceto_salto_comparacion;
 
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
@@ -487,11 +492,9 @@ bloque_if:
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
-    // punteros_simbolos_no_terminales_bloque_if = gci_tercetos_agregar_terceto(
-    //   SIMBOLOS_NO_TERMINALES_IF_VALOR,
-    //   punteros_simbolos_no_terminales_condicional,
-    //   punteros_simbolos_no_terminales_instrucciones
-    // );
+    // cola_quitar(cola_saltos_comparacion, terceto_salto_comparacion, tamano_terceto);
+
+    gci_tercetos_actualizar_indice(aux_terceto_salto_comparacion);
   }
   ;
 
@@ -587,10 +590,11 @@ predicado:
                                                     "CMP", 
                                                     primera_expresion, 
                                                     segunda_expresion);
-      gci_tercetos_agregar_terceto(
-        comparador, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
+      aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+        salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
         NULL, 
         NULL);
+      cola_agregar(cola_saltos_comparacion, aux_terceto_salto_comparacion, tamano_terceto);
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {
@@ -611,32 +615,32 @@ operador_comparacion: // No creo los GCI aca, sino que los creamos en el predica
   MAYOR 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR");
-      strcpy(comparador, "BLE");
+      strcpy(salto_comparacion, "BLE");
     }
   | MAYOR_IGUAL 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MAYOR_IGUAL");
-      strcpy(comparador, "BLT");
+      strcpy(salto_comparacion, "BLT");
     }
   | MENOR_IGUAL 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MENOR_IGUAL");
-      strcpy(comparador, "BGT");
+      strcpy(salto_comparacion, "BGT");
     }
   | MENOR 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "MENOR");
-      strcpy(comparador, "BGE");
+      strcpy(salto_comparacion, "BGE");
     }
   | IGUAL 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "IGUAL");
-      strcpy(comparador, "BNE");
+      strcpy(salto_comparacion, "BNE");
     }
   | DISTINTO 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_OPERADOR_COMPARACION, "DISTINTO");
-      strcpy(comparador, "BEQ");
+      strcpy(salto_comparacion, "BEQ");
     }
 ;
 
@@ -787,6 +791,11 @@ void crear_pilas()
   pila_coordenada = pila_crear();
 }
 
+void crear_colas()
+{
+  cola_saltos_comparacion = cola_crear();
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -801,6 +810,7 @@ int main(int argc, char *argv[])
 
     tabla_simbolos_crear();
     crear_pilas();
+    crear_colas();
     gci_tercetos_crear_lista();
 
     yyparse();        
