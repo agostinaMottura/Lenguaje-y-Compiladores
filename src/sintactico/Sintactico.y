@@ -17,6 +17,7 @@
 #include "./src/gci/tercetos/tercetos.h"
 #include "./src/pila/pila.h"
 #include "./src/pila_punteros/pila_punteros.h"
+#include "./src/semantico/informes/informes.h"
 
 
 int yystopparser=0;
@@ -24,6 +25,8 @@ FILE  *yyin;
 
 int yyerror(const char *s);
 int yylex();
+
+int semantico_validacion_existe_simbolo_en_tabla_simbolos(const char* nombre);
 
 // Pilas
 t_pila *pila_expresion;
@@ -336,7 +339,7 @@ declaracion_var:
     {
       tabla_simbolos_insertar_dato(ids_declarados[i].cadena, tipo_dato_aux, VALORES_NULL);
     }
-    
+
     cant_id=0;
    }
   ;
@@ -380,6 +383,10 @@ asignacion:
   ID ASIGNACION expresion 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
+    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
+       exit(1);
+    }
+    
     t_gci_tercetos_dato* aux = gci_tercetos_agregar_terceto(
       $1,
       NULL,
@@ -390,7 +397,6 @@ asignacion:
       aux,
       punteros_simbolos_no_terminales_expresion
     );
-    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
 
@@ -410,7 +416,10 @@ read:
   READ PARENTESIS_A ID PARENTESIS_C 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_READ, "READ PARENTESIS_A ID PARENTESIS_C");
-    tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+
+    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($3)) {
+      exit(1);
+    }
 
     void* terceto_id = gci_tercetos_agregar_terceto(
       $3,
@@ -688,7 +697,10 @@ factor:
   ID {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "ID");
     punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
-    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+    
+    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
+      exit(1);
+    }
   }
   | CTE_INT 
       {
@@ -731,11 +743,11 @@ factor:
   | RESTA ID
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "RESTA ID");
-        
-        // TODO: Como manejamos este negativo de ID?
-        // TODO: Agregar punteros de tercetos
+        if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($2)) {
+          exit(1);
+        }
 
-        tabla_simbolos_insertar_dato($2, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+        // Duda: Como manejamos este negativo de ID?
       }
   | CTE_STRING 
       {
@@ -759,6 +771,20 @@ factor:
   ;
 
 %%
+
+int semantico_validacion_existe_simbolo_en_tabla_simbolos(const char* nombre)
+{
+  void* simbolo = tabla_simbolos_obtener_dato(nombre);
+  if (simbolo == NULL) {
+    char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];
+    sprintf(mensaje, "Simbolo no encontrado en la tabla de simbolos: %s", nombre);
+    informes_semantico_imprimir_mensaje(mensaje);
+    
+    return 0;
+  }
+
+  return 1;
+}
 
 void crear_pilas()
 {
