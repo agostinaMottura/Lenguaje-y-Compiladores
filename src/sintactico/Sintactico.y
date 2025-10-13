@@ -35,6 +35,7 @@ t_pila *pila_coordenada;
 
 // Pilas punteros
 t_pila_punteros* pila_saltos_comparacion;
+t_pila_punteros* pila_ciclos_while;
 
 // Colas
 t_cola_punteros *cola_saltos_comparacion;
@@ -351,7 +352,7 @@ declaracion_var:
    }
   ;
 
-lista_ids: // No aporta nada de valor al GCI esta regla no terminal, despues los asignamos todos juntos en declaracion_var
+lista_ids:
   ID 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_LISTA_IDS, "ID");
@@ -451,36 +452,29 @@ ciclo:
   WHILE PARENTESIS_A
   {
     punteros_simbolos_no_terminales_ciclo = gci_tercetos_agregar_terceto(
-                                              "InicioCiclo", 
+                                              "InicioCicloWhile", 
                                               NULL, 
                                               NULL);
-    pila_apilar(
-      pila_nro_tercetos, 
-      punteros_simbolos_no_terminales_ciclo, 
-     tamano_terceto);
-  } condicional PARENTESIS_C
-  {
-
-  } LLAVES_A instrucciones LLAVES_C 
+    pila_punteros_apilar(pila_ciclos_while, punteros_simbolos_no_terminales_ciclo);
+  } condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C 
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_CICLO, 
       "WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
-  
-    // TODO: Revisar
-    void* terceto_a_actualizar = pila_desapilar(pila_nro_tercetos);
-    t_gci_tercetos_dato* siguiente_indice = gci_tercetos_obtener_siguiente_indice();
-    gci_tercetos_actualizar(siguiente_indice, terceto_a_actualizar);
 
-    gci_tercetos_agregar_terceto(
-      "BI",
-      NULL,
-      punteros_simbolos_no_terminales_ciclo
-    );
+      void* puntero_inicio_ciclo_while;
+      pila_punteros_desapilar(pila_ciclos_while, &puntero_inicio_ciclo_while);
+      aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+          "BI",
+          NULL, 
+          puntero_inicio_ciclo_while);
+
+      void* terceto_salto_comparacion;
+      pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
+      gci_tercetos_actualizar_indice(terceto_salto_comparacion);
   }
   ;
 
-// TODO: Queda pendiente
 if:
   bloque_if 
   {
@@ -798,6 +792,7 @@ void crear_pilas()
   pila_coordenada = pila_crear();
 
   pila_saltos_comparacion = pila_punteros_crear();
+  pila_ciclos_while = pila_punteros_crear();
 }
 
 void crear_colas()
