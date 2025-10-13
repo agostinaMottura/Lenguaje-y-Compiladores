@@ -35,11 +35,15 @@ extern t_tabla_simbolos tabla_simbolos;
 
 // Declaración de funciones
 void tabla_simbolos_crear();
+void tabla_simbolos_guardar();
+
 int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor);
+
 t_tabla_simbolos_dato *tabla_simbolos_crear_dato(
     const char *nombre,
     t_tipo_dato tipo_dato,
     const char *valor);
-void tabla_simbolos_guardar();
+
+t_tabla_simbolos_dato *tabla_simbolos_obtener_dato(const char *nombre);
 
 #endif // TABLA_SIMBOLOS_H

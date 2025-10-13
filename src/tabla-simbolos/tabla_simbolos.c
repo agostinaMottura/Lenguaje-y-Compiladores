@@ -185,6 +185,23 @@ t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato
     return dato;
 }
 
+t_tabla_simbolos_dato *tabla_simbolos_obtener_dato(const char *nombre)
+{
+    t_tabla_simbolos_nodo *nodo = tabla_simbolos.primero;
+
+    while (nodo != NULL && strcmp(nodo->dato.nombre, nombre) != 0)
+    {
+        nodo = nodo->siguiente;
+    }
+
+    if (nodo == NULL)
+    {
+        return NULL;
+    }
+
+    return &(nodo->dato);
+}
+
 void tabla_simbolos_guardar()
 {
     FILE *arch;

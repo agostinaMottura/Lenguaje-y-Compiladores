@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include "./pila_punteros.h"
+#include "./informes/informes.h"
 
 t_pila_punteros *pila_punteros_crear()
 {
     t_pila_punteros *pila = (t_pila_punteros *)malloc(sizeof(t_pila_punteros));
     if (pila == NULL)
     {
-        // Informar falta memoria
+        informes_pila_punteros_imprimir_mensaje("No hay suficiente memoria para crear la pila");
         exit(1);
     }
 
@@ -25,7 +26,7 @@ void pila_punteros_apilar(t_pila_punteros *pila, void *dato)
     t_pila_punteros_nodo *nodo = (t_pila_punteros_nodo *)malloc(sizeof(t_pila_punteros_nodo));
     if (nodo == NULL)
     {
-        // Informar falta memoria
+        informes_pila_punteros_imprimir_mensaje("No hay suficiente memoria para crear un nodo de la pila");
         exit(1);
     }
 

@@ -1,13 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pila.h"
+#include "./informes/informes.h"
 
 t_pila *pila_crear()
 {
     t_pila *pila = (t_pila *)malloc(sizeof(t_pila));
     if (pila == NULL)
     {
-        // Informar falta memoria
+        informes_pila_imprimir_mensaje("No hay memoria suficiente para crear la pila");
         exit(1);
     }
 
@@ -21,14 +22,14 @@ void pila_apilar(t_pila *pila, void *dato, size_t tamano)
     t_pila_nodo *nodo = (t_pila_nodo *)malloc(sizeof(t_pila_nodo));
     if (nodo == NULL)
     {
-        // Informar falta memoria
+        informes_pila_imprimir_mensaje("No hay memoria suficiente para crear un nodo de la pila");
         exit(1);
     }
 
     nodo->dato = malloc(tamano);
     if (nodo->dato == NULL)
     {
-        // Informar falta memoria
+        informes_pila_imprimir_mensaje("No hay memoria suficiente para almacenar el dato de un nodo de la pila");
         exit(1);
     }
 

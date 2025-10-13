@@ -16,8 +16,8 @@
 #include "./src/simbolos/no-terminales/punteros/punteros.h"
 #include "./src/gci/tercetos/tercetos.h"
 #include "./src/pila/pila.h"
-#include "./src/cola_punteros/cola_punteros.h"
 #include "./src/pila_punteros/pila_punteros.h"
+#include "./src/semantico/semantico.h"
 
 
 int yystopparser=0;
@@ -28,36 +28,29 @@ int yylex();
 
 // Pilas
 t_pila *pila_expresion;
-t_pila *pila_comparacion;
-t_pila *pila_nro_tercetos;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
+t_pila *pila_tipo_dato;
 
 // Pilas punteros
 t_pila_punteros* pila_saltos_comparacion;
 t_pila_punteros* pila_ciclos_while;
 
-// Colas
-t_cola_punteros *cola_saltos_comparacion;
-
-
 // Declaracion variables tabla de simbolos
-int aux_hay_else = 0; 
 int i=0;
 int cant_id = 0;
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
+size_t tamano_tipo_dato = sizeof(t_tipo_dato);
 char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
 t_tipo_dato tipo_dato_aux;
 
 t_gci_tercetos_dato* aux_terceto_if_else;
 t_gci_tercetos_dato* aux_terceto_salto_comparacion;
+t_gci_tercetos_dato* aux_expresion;
 
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
 %}
-
-%nonassoc LOWER_THAN_ELSE
-%nonassoc ELSE_PREC
 
 %union {
     char cadena[50]; // Bison no me deja poner una macro aca :(
@@ -225,12 +218,20 @@ isZero:
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_IS_ZERO, 
         "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");
-    
+
       punteros_simbolos_no_terminales_isZero = gci_tercetos_agregar_terceto(
         SIMBOLOS_NO_TERMINALES_IS_ZERO_VALOR,
         punteros_simbolos_no_terminales_expresion,
         NULL
       );
+
+      aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+        "BNE",
+        NULL,
+        NULL
+      );
+      pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
+
     }
   ;
 
@@ -326,8 +327,6 @@ lista_declaraciones:
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_LISTA_DECLARACIONES, 
         "lista_declaraciones declaracion_var");
-
-      // Como los tercetos los manejamos con una lista enlazada, no hace falta volver a asignar el puntero de lista_declaraciones
     }
   ;
 
@@ -337,17 +336,13 @@ declaracion_var:
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_DECLARACION_VAR, "lista_ids DOS_PUNTOS tipo");
 
     for(i=0;i<cant_id;i++)
-      {
-        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, tipo_dato_aux, VALORES_NULL);
-        void *terceto_id = gci_tercetos_agregar_terceto(
-          ids_declarados[i].cadena, 
-          NULL, 
-          NULL);
-        punteros_simbolos_no_terminales_declaracion_var = gci_tercetos_agregar_terceto(
-          SIMBOLOS_NO_TERMINALES_DECLARACION_VAR_VALOR, 
-          terceto_id, 
-          punteros_simbolos_no_terminales_tipo);
+    {
+      if (!semantico_validacion_no_existe_simbolo_en_tabla_simbolos(ids_declarados[i].cadena)) {
+        exit(1);
       }
+      tabla_simbolos_insertar_dato(ids_declarados[i].cadena, tipo_dato_aux, VALORES_NULL);
+    }
+
     cant_id=0;
    }
   ;
@@ -373,28 +368,16 @@ tipo:
   FLOAT 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "FLOAT");
-    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_FLOAT_VALOR, 
-      NULL, 
-      NULL);
     tipo_dato_aux = TIPO_DATO_FLOAT;
   }
   | INT 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "INT");
-    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_INT_VALOR, 
-      NULL, 
-      NULL);
-      tipo_dato_aux = TIPO_DATO_INT;
+    tipo_dato_aux = TIPO_DATO_INT;
   }
   | STRING 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "STRING");
-    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_STRING_VALOR, 
-      NULL, 
-      NULL);
     tipo_dato_aux = TIPO_DATO_STRING;
   }
   ;
@@ -403,6 +386,17 @@ asignacion:
   ID ASIGNACION expresion 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
+    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
+       exit(1);
+    }
+
+    t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+
+    // Con una expresion como isZero, tambien funciona?
+    if (!semantico_validacion_tipo_dato($1, *tipo_dato_a)) {
+      exit(1);
+    }
+
     t_gci_tercetos_dato* aux = gci_tercetos_agregar_terceto(
       $1,
       NULL,
@@ -413,7 +407,6 @@ asignacion:
       aux,
       punteros_simbolos_no_terminales_expresion
     );
-    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
   }
   ;
 
@@ -433,7 +426,10 @@ read:
   READ PARENTESIS_A ID PARENTESIS_C 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_READ, "READ PARENTESIS_A ID PARENTESIS_C");
-    tabla_simbolos_insertar_dato($3, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+
+    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($3)) {
+      exit(1);
+    }
 
     void* terceto_id = gci_tercetos_agregar_terceto(
       $3,
@@ -484,7 +480,7 @@ if:
   ;
 
 bloque_if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C %prec LOWER_THAN_ELSE
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
@@ -648,6 +644,20 @@ operador_comparacion: // No creo los GCI aca, sino que los creamos en el predica
 expresion:
   expresion SUMA termino 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_SUMA_VALOR,
@@ -661,6 +671,20 @@ expresion:
     }
   |expresion RESTA termino 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_RESTA_VALOR,
@@ -686,6 +710,20 @@ expresion:
 termino: 
   termino MULTIPLICACION factor 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_MULTIPLICACION_VALOR, 
@@ -694,6 +732,20 @@ termino:
     }
   |termino DIVISION factor 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_DIVISION_VALOR, 
@@ -711,19 +763,28 @@ factor:
   ID {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "ID");
     punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
-    tabla_simbolos_insertar_dato($1, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+    
+    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
+      exit(1);
+    }
   }
   | CTE_INT 
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_INT");
         punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_INT, $1);
+        
+        tipo_dato_aux = TIPO_DATO_INT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | CTE_FLOAT 
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_FLOAT");
         punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_FLOAT, $1);
+        
+        tipo_dato_aux = TIPO_DATO_FLOAT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | RESTA CTE_INT
       {
@@ -737,6 +798,9 @@ factor:
           NULL);
 
         tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_INT, nro_negativo);
+        
+        tipo_dato_aux = TIPO_DATO_INT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | RESTA CTE_FLOAT
       {
@@ -750,21 +814,27 @@ factor:
           NULL);
 
         tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_FLOAT, nro_negativo);
+
+        tipo_dato_aux = TIPO_DATO_FLOAT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | RESTA ID
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "RESTA ID");
-        
-        // TODO: Como manejamos este negativo de ID?
-        // TODO: Agregar punteros de tercetos
+        if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($2)) {
+          exit(1);
+        }
 
-        tabla_simbolos_insertar_dato($2, TIPO_DATO_DESCONOCIDO, VALORES_NULL);
+        // Duda: Como manejamos este negativo de ID?
       }
   | CTE_STRING 
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_STRING");
         punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_STRING, $1);
+        
+        tipo_dato_aux = TIPO_DATO_CTE_STRING;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | PARENTESIS_A expresion PARENTESIS_C 
     {
@@ -782,24 +852,16 @@ factor:
   ;
 
 %%
-
 void crear_pilas()
 {
   pila_expresion = pila_crear();
-  pila_comparacion = pila_crear();
-  pila_nro_tercetos = pila_crear();
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
+  pila_tipo_dato = pila_crear();
 
   pila_saltos_comparacion = pila_punteros_crear();
   pila_ciclos_while = pila_punteros_crear();
 }
-
-void crear_colas()
-{
-  cola_saltos_comparacion = cola_punteros_crear();
-}
-
 
 int main(int argc, char *argv[])
 {
@@ -814,7 +876,6 @@ int main(int argc, char *argv[])
 
     tabla_simbolos_crear();
     crear_pilas();
-    crear_colas();
     gci_tercetos_crear_lista();
 
     yyparse();        
