@@ -16,7 +16,6 @@
 #include "./src/simbolos/no-terminales/punteros/punteros.h"
 #include "./src/gci/tercetos/tercetos.h"
 #include "./src/pila/pila.h"
-#include "./src/cola_punteros/cola_punteros.h"
 #include "./src/pila_punteros/pila_punteros.h"
 
 
@@ -28,8 +27,6 @@ int yylex();
 
 // Pilas
 t_pila *pila_expresion;
-t_pila *pila_comparacion;
-t_pila *pila_nro_tercetos;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
 
@@ -37,12 +34,7 @@ t_pila *pila_coordenada;
 t_pila_punteros* pila_saltos_comparacion;
 t_pila_punteros* pila_ciclos_while;
 
-// Colas
-t_cola_punteros *cola_saltos_comparacion;
-
-
 // Declaracion variables tabla de simbolos
-int aux_hay_else = 0; 
 int i=0;
 int cant_id = 0;
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
@@ -51,13 +43,11 @@ t_tipo_dato tipo_dato_aux;
 
 t_gci_tercetos_dato* aux_terceto_if_else;
 t_gci_tercetos_dato* aux_terceto_salto_comparacion;
+t_gci_tercetos_dato* aux_expresion;
 
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
 %}
-
-%nonassoc LOWER_THAN_ELSE
-%nonassoc ELSE_PREC
 
 %union {
     char cadena[50]; // Bison no me deja poner una macro aca :(
@@ -225,12 +215,20 @@ isZero:
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_IS_ZERO, 
         "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");
-    
+
       punteros_simbolos_no_terminales_isZero = gci_tercetos_agregar_terceto(
         SIMBOLOS_NO_TERMINALES_IS_ZERO_VALOR,
         punteros_simbolos_no_terminales_expresion,
         NULL
       );
+
+      aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+        "BNE",
+        NULL,
+        NULL
+      );
+      pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
+
     }
   ;
 
@@ -326,8 +324,6 @@ lista_declaraciones:
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_LISTA_DECLARACIONES, 
         "lista_declaraciones declaracion_var");
-
-      // Como los tercetos los manejamos con una lista enlazada, no hace falta volver a asignar el puntero de lista_declaraciones
     }
   ;
 
@@ -337,17 +333,10 @@ declaracion_var:
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_DECLARACION_VAR, "lista_ids DOS_PUNTOS tipo");
 
     for(i=0;i<cant_id;i++)
-      {
-        tabla_simbolos_insertar_dato(ids_declarados[i].cadena, tipo_dato_aux, VALORES_NULL);
-        void *terceto_id = gci_tercetos_agregar_terceto(
-          ids_declarados[i].cadena, 
-          NULL, 
-          NULL);
-        punteros_simbolos_no_terminales_declaracion_var = gci_tercetos_agregar_terceto(
-          SIMBOLOS_NO_TERMINALES_DECLARACION_VAR_VALOR, 
-          terceto_id, 
-          punteros_simbolos_no_terminales_tipo);
-      }
+    {
+      tabla_simbolos_insertar_dato(ids_declarados[i].cadena, tipo_dato_aux, VALORES_NULL);
+    }
+    
     cant_id=0;
    }
   ;
@@ -373,28 +362,16 @@ tipo:
   FLOAT 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "FLOAT");
-    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_FLOAT_VALOR, 
-      NULL, 
-      NULL);
     tipo_dato_aux = TIPO_DATO_FLOAT;
   }
   | INT 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "INT");
-    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_INT_VALOR, 
-      NULL, 
-      NULL);
-      tipo_dato_aux = TIPO_DATO_INT;
+    tipo_dato_aux = TIPO_DATO_INT;
   }
   | STRING 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TIPO, "STRING");
-    punteros_simbolos_no_terminales_tipo = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_STRING_VALOR, 
-      NULL, 
-      NULL);
     tipo_dato_aux = TIPO_DATO_STRING;
   }
   ;
@@ -484,7 +461,7 @@ if:
   ;
 
 bloque_if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C %prec LOWER_THAN_ELSE
+  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
@@ -786,20 +763,12 @@ factor:
 void crear_pilas()
 {
   pila_expresion = pila_crear();
-  pila_comparacion = pila_crear();
-  pila_nro_tercetos = pila_crear();
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
 
   pila_saltos_comparacion = pila_punteros_crear();
   pila_ciclos_while = pila_punteros_crear();
 }
-
-void crear_colas()
-{
-  cola_saltos_comparacion = cola_punteros_crear();
-}
-
 
 int main(int argc, char *argv[])
 {
@@ -814,7 +783,6 @@ int main(int argc, char *argv[])
 
     tabla_simbolos_crear();
     crear_pilas();
-    crear_colas();
     gci_tercetos_crear_lista();
 
     yyparse();        

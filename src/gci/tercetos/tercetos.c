@@ -91,7 +91,6 @@ void gci_tercetos_actualizar_indice(void *terceto)
         return;
 
     t_gci_tercetos_dato *dato = (t_gci_tercetos_dato *)terceto;
-    printf("terceto: [%d] (%s, %s, %s)\n", dato->indice, dato->a, dato->b, dato->c);
 
     dato->c = malloc(100);
     if (dato->c == NULL)
@@ -101,8 +100,6 @@ void gci_tercetos_actualizar_indice(void *terceto)
     }
 
     sprintf(dato->c, "[%d]", cantidad_tercetos_en_lista);
-
-    printf("final: terceto: [%d] (%s, %s, %s)\n", dato->indice, dato->a, dato->b, dato->c);
 }
 
 void gci_tercetos_guardar()
