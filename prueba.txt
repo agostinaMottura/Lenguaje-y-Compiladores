@@ -1,3 +1,24 @@
-#+ Ejemplo que usa el profe +#
-#+ id1 := id2 * cte1 + cte2 +#
-a := b * 1 + 2
+if (a < b) {
+    a := 1
+    
+    if (a == 5) {
+        a := 2
+    } else {
+        a := 9
+    }
+
+} else {
+
+    a := 2
+    
+    if (c > d) {
+        a := 3
+    } else {
+        a := 4
+    }
+
+    d := 5
+
+}
+
+c := 2

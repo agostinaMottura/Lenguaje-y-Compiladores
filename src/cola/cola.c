@@ -10,6 +10,7 @@ t_cola *cola_crear()
     if (cola == NULL)
     {
         // Informar falta de memoria
+        printf("[COLA] Falta de memoria\n");
         exit(1);
     }
 
@@ -19,12 +20,13 @@ t_cola *cola_crear()
     return cola;
 }
 
-void cola_agregar(t_cola *cola, const void *dato, unsigned tamano)
+void cola_agregar(t_cola *cola, void *dato, unsigned tamano)
 {
     t_cola_nodo *nodo = (t_cola_nodo *)malloc(sizeof(t_cola_nodo));
     if (nodo == NULL)
     {
         // Informar falta de memoria
+        printf("[COLA] Falta de memoria\n");
         exit(1);
     }
 
@@ -32,6 +34,7 @@ void cola_agregar(t_cola *cola, const void *dato, unsigned tamano)
     if (nodo->dato == NULL)
     {
         // Informar falta de memoria
+        printf("[COLA] Falta de memoria\n");
         free(nodo);
         exit(1);
     }
@@ -51,17 +54,22 @@ void cola_agregar(t_cola *cola, const void *dato, unsigned tamano)
     }
 
     cola->ultimo = nodo;
+    return;
 }
 
-void *cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado)
+void cola_quitar(t_cola *cola, void *destino, unsigned tamano_esperado)
 {
     t_cola_nodo *nodo = cola->primero;
     if (nodo == NULL)
         return;
+    printf("primero no es null\n");
 
     cola->primero = nodo->siguiente;
+    printf("primero ahora es el segundo\n");
 
     memcpy(destino, nodo->dato, MINIMO(nodo->tamano, tamano_esperado));
+
+    printf("copiamos los datos del primero en destino\n");
 
     free(nodo->dato);
     free(nodo);
