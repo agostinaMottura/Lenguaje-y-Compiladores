@@ -17,6 +17,7 @@
 #include "./src/gci/tercetos/tercetos.h"
 #include "./src/pila/pila.h"
 #include "./src/cola_punteros/cola_punteros.h"
+#include "./src/pila_punteros/pila_punteros.h"
 
 
 int yystopparser=0;
@@ -31,6 +32,9 @@ t_pila *pila_comparacion;
 t_pila *pila_nro_tercetos;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
+
+// Pilas punteros
+t_pila_punteros* pila_saltos_comparacion;
 
 // Colas
 t_cola_punteros *cola_saltos_comparacion;
@@ -493,44 +497,34 @@ bloque_if:
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
       void* terceto_salto_comparacion;
-      cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
+      pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
 
       gci_tercetos_actualizar_indice(terceto_salto_comparacion);
   }
-  | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE 
+  | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE
     {
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
         "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE LLAVES_A instrucciones LLAVES_C");
       
-        void* terceto_salto_comparacion;
-        cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
-
         aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
           "BI",
           NULL, 
           NULL);
 
+        void* terceto_salto_comparacion;
+        pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
         gci_tercetos_actualizar_indice(terceto_salto_comparacion);
 
-
-      cola_punteros_agregar(cola_saltos_comparacion, aux_terceto_salto_comparacion);
+        // Despues de actualizar el terceto de comparacion, apilo el BI
+        pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
     } LLAVES_A instrucciones LLAVES_C
     {
-      while(!cola_punteros_esta_vacia(cola_saltos_comparacion))
-      {
         void* terceto_salto_comparacion;
-        cola_punteros_quitar(cola_saltos_comparacion, &terceto_salto_comparacion);
-
+        pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
         gci_tercetos_actualizar_indice(terceto_salto_comparacion);
-      }
     }
-  /* | ELSE bloque_if
-    {
-      informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_BLOQUE_IF, "ELSE bloque_if");
-    } */
   ;
-
 condicional:
   condicion_compuesta 
   {
@@ -607,7 +601,7 @@ predicado:
         salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
         NULL, 
         NULL);
-      cola_punteros_agregar(cola_saltos_comparacion, aux_terceto_salto_comparacion);
+      pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {
@@ -802,6 +796,8 @@ void crear_pilas()
   pila_nro_tercetos = pila_crear();
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
+
+  pila_saltos_comparacion = pila_punteros_crear();
 }
 
 void crear_colas()
