@@ -30,6 +30,7 @@ int yylex();
 t_pila *pila_expresion;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
+t_pila *pila_tipo_dato;
 
 // Pilas punteros
 t_pila_punteros* pila_saltos_comparacion;
@@ -39,6 +40,7 @@ t_pila_punteros* pila_ciclos_while;
 int i=0;
 int cant_id = 0;
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
+size_t tamano_tipo_dato = sizeof(t_tipo_dato);
 char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
 t_tipo_dato tipo_dato_aux;
 
@@ -387,8 +389,11 @@ asignacion:
     if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
        exit(1);
     }
-    if (!semantico_validacion_tipo_dato($1, TIPO_DATO_INT)) {
-      // Como se el tipo de dato a partir de la expresion?
+
+    t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+
+    // Con una expresion como isZero, tambien funciona?
+    if (!semantico_validacion_tipo_dato($1, *tipo_dato_a)) {
       exit(1);
     }
 
@@ -639,6 +644,20 @@ operador_comparacion: // No creo los GCI aca, sino que los creamos en el predica
 expresion:
   expresion SUMA termino 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_SUMA_VALOR,
@@ -652,6 +671,20 @@ expresion:
     }
   |expresion RESTA termino 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_RESTA_VALOR,
@@ -677,6 +710,20 @@ expresion:
 termino: 
   termino MULTIPLICACION factor 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_MULTIPLICACION_VALOR, 
@@ -685,6 +732,20 @@ termino:
     }
   |termino DIVISION factor 
     {
+      t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
+      t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
+
+      t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
+        *tipo_dato_a,
+        *tipo_dato_b);
+
+      if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
+      {
+        exit(1);
+      }
+
+      pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
         SIMBOLOS_TERMINALES_DIVISION_VALOR, 
@@ -712,12 +773,18 @@ factor:
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_INT");
         punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_INT, $1);
+        
+        tipo_dato_aux = TIPO_DATO_INT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | CTE_FLOAT 
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_FLOAT");
         punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_FLOAT, $1);
+        
+        tipo_dato_aux = TIPO_DATO_FLOAT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | RESTA CTE_INT
       {
@@ -731,6 +798,9 @@ factor:
           NULL);
 
         tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_INT, nro_negativo);
+        
+        tipo_dato_aux = TIPO_DATO_INT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | RESTA CTE_FLOAT
       {
@@ -744,6 +814,9 @@ factor:
           NULL);
 
         tabla_simbolos_insertar_dato(nro_negativo, TIPO_DATO_CTE_FLOAT, nro_negativo);
+
+        tipo_dato_aux = TIPO_DATO_FLOAT;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | RESTA ID
       {
@@ -759,6 +832,9 @@ factor:
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_STRING");
         punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_STRING, $1);
+        
+        tipo_dato_aux = TIPO_DATO_CTE_STRING;
+        pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
       }
   | PARENTESIS_A expresion PARENTESIS_C 
     {
@@ -781,6 +857,7 @@ void crear_pilas()
   pila_expresion = pila_crear();
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
+  pila_tipo_dato = pila_crear();
 
   pila_saltos_comparacion = pila_punteros_crear();
   pila_ciclos_while = pila_punteros_crear();
