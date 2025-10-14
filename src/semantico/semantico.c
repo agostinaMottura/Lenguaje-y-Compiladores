@@ -83,7 +83,7 @@ int semantico_son_tipos_de_datos_compatibles(
         return 0;
     }
 
-    // STRING no puede asignarse a INT o FLOAT
+    // STRING/CTE_STRING no puede asignarse a INT o FLOAT
     if (tipo_dato_b == TIPO_DATO_STRING || tipo_dato_b == TIPO_DATO_CTE_STRING)
     {
         char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];

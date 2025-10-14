@@ -403,7 +403,7 @@ asignacion:
       NULL
     );
     punteros_simbolos_no_terminales_asignacion = gci_tercetos_agregar_terceto(
-      SIMBOLOS_TERMINALES_ASIGNACION_VALOR,
+      ":=",
       aux,
       punteros_simbolos_no_terminales_expresion
     );
@@ -648,8 +648,8 @@ expresion:
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
 
       t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
-        *tipo_dato_a,
-        *tipo_dato_b);
+        *tipo_dato_b,
+        *tipo_dato_a);
 
       if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
       {
@@ -660,7 +660,7 @@ expresion:
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_SUMA_VALOR,
+        "+",
         punteros_simbolos_no_terminales_expresion,
         punteros_simbolos_no_terminales_termino
       );
@@ -675,8 +675,8 @@ expresion:
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
 
       t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
-        *tipo_dato_a,
-        *tipo_dato_b);
+        *tipo_dato_b,
+        *tipo_dato_a);
 
       if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
       {
@@ -687,7 +687,7 @@ expresion:
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_RESTA_VALOR,
+        "-",
         punteros_simbolos_no_terminales_expresion,
         punteros_simbolos_no_terminales_termino
       );
@@ -714,8 +714,8 @@ termino:
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
 
       t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
-        *tipo_dato_a,
-        *tipo_dato_b);
+        *tipo_dato_b,
+        *tipo_dato_a);
 
       if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
       {
@@ -726,7 +726,7 @@ termino:
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_MULTIPLICACION_VALOR, 
+        "*", 
         punteros_simbolos_no_terminales_termino, 
         punteros_simbolos_no_terminales_factor);
     }
@@ -736,8 +736,8 @@ termino:
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
 
       t_tipo_dato tipo_dato_resultante = semantico_obtener_tipo_de_dato_resultante(
-        *tipo_dato_a,
-        *tipo_dato_b);
+        *tipo_dato_b,
+        *tipo_dato_a);
 
       if (tipo_dato_resultante == TIPO_DATO_DESCONOCIDO)
       {
@@ -748,7 +748,7 @@ termino:
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_DIVISION_VALOR, 
+        "/", 
         punteros_simbolos_no_terminales_termino, 
         punteros_simbolos_no_terminales_factor);
     }
@@ -766,6 +766,11 @@ factor:
     
     if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
       exit(1);
+    }
+    
+    t_tabla_simbolos_dato *simbolo = tabla_simbolos_obtener_dato($1);
+    if (simbolo != NULL) {
+      pila_apilar(pila_tipo_dato, &(simbolo->tipo_dato), tamano_tipo_dato);
     }
   }
   | CTE_INT 

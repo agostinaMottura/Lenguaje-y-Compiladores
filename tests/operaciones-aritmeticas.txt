@@ -1,3 +1,10 @@
+init {
+    z, x : float
+    c, f, r : int
+    
+}
+
+
 x := 27 - c
 x := r + 500
 x := 34 * 3

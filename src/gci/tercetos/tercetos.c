@@ -107,17 +107,16 @@ void gci_tercetos_actualizar_indice(void *terceto)
 
 void gci_tercetos_guardar()
 {
+    if (lista_tercetos.primero == NULL)
+    {
+        informes_gci_tercetos_imprimir_mensaje("Lista de tercetos vacia - no se genera archivo");
+        return;  
+    }
+
     FILE *arch = fopen(GCI_TECETOS_NOMBRE_ARCHIVO, "wt");
     if (arch == NULL)
     {
         informes_gci_tercetos_imprimir_error("Abriendo el archivo para almacenar los tercetos");
-        exit(1);
-    }
-
-    if (lista_tercetos.primero == NULL)
-    {
-        informes_gci_tercetos_imprimir_error("Lista de tercetos vacia");
-        fclose(arch);
         exit(1);
     }
 
