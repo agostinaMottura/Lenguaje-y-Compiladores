@@ -1,10 +1,32 @@
 NOMBRE                                                 TIPO_DATO                     VALOR                                                  LONGITUD                      
-z                                                      FLOAT                         __                                                     2                             
+a                                                      FLOAT                         __                                                     2                             
+b                                                      FLOAT                         __                                                     2                             
 x                                                      FLOAT                         __                                                     2                             
+z                                                      FLOAT                         __                                                     2                             
 c                                                      INT                           __                                                     2                             
 f                                                      INT                           __                                                     2                             
 r                                                      INT                           __                                                     2                             
-_27                                                    CTE_INT                       27                                                     2                             
-_500                                                   CTE_INT                       500                                                    3                             
-_34                                                    CTE_INT                       34                                                     2                             
-_3                                                     CTE_INT                       3                                                      1                             
+variable1                                              INT                           __                                                     2                             
+p1                                                     STRING                        __                                                     2                             
+p2                                                     STRING                        __                                                     2                             
+p3                                                     STRING                        __                                                     2                             
+_1                                                     CTE_INT                       1                                                      1                             
+_3.5                                                   CTE_FLOAT                     3.5                                                    3                             
+_9                                                     CTE_INT                       9                                                      1                             
+_42                                                    CTE_INT                       42                                                     2                             
+_2                                                     CTE_INT                       2                                                      1                             
+_2.0                                                   CTE_FLOAT                     2.0                                                    3                             
+_a es mayor que b                                      CTE_STRING                    a es mayor que b                                       16                            
+_c es mayor que variable1                              CTE_STRING                    c es mayor que variable1                               24                            
+_c es menor o igual que variable1                      CTE_STRING                    c es menor o igual que variable1                       32                            
+_a mayor que b Y c mayor que r                         CTE_STRING                    a mayor que b Y c mayor que r                          29                            
+_a NO es mayor que b                                   CTE_STRING                    a NO es mayor que b                                    19                            
+_a mayor que b O c mayor que r                         CTE_STRING                    a mayor que b O c mayor que r                          29                            
+_1.0                                                   CTE_FLOAT                     1.0                                                    3                             
+_5.0                                                   CTE_FLOAT                     5.0                                                    3                             
+_Dentro del bucle                                      CTE_STRING                    Dentro del bucle                                       16                            
+_1.0                                                   CTE_FLOAT                     1.0                                                    3                             
+_Hola mundo                                            CTE_STRING                    Hola mundo                                             10                            
+_Este es un test                                       CTE_STRING                    Este es un test                                        15                            
+_Final del programa                                    CTE_STRING                    Final del programa                                     18                            
+_Programa terminado exitosamente                       CTE_STRING                    Programa terminado exitosamente                        31                            

@@ -1,0 +1,63 @@
+init {
+    a, b, x, z : float
+    c, f, r, variable1 : int
+    p1, p2, p3 : string
+}
+
+a := 1
+b := 3.5
+c := 9
+variable1 := 42
+
+x := a + b    
+x := a - c    
+x := c * 2    
+z := x / 2.0  
+
+r := c + variable1
+x := a + b * c - z
+
+if (a > b)
+{
+    write("a es mayor que b")
+}
+
+if (c > variable1)
+{
+    write("c es mayor que variable1")
+}
+else
+{
+    write("c es menor o igual que variable1")
+}
+
+if (a > b and c > r)
+{
+    write("a mayor que b Y c mayor que r")
+}
+
+if (not a > b)
+{
+    write("a NO es mayor que b")
+}
+
+if (a > b or c > r)
+{
+    write("a mayor que b O c mayor que r")
+}
+
+a := 1.0
+b := 5.0
+
+while (a < b)
+{
+    write("Dentro del bucle")
+    a := a + 1.0
+}
+
+p1 := "Hola mundo"
+p2 := "Este es un test"
+p3 := "Final del programa"
+
+z := (a + b) * (c - r)
+write("Programa terminado exitosamente")
