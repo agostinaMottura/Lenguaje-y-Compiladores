@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "../validaciones/validaciones.h"
 #include "./utils.h"
+
+// Declaración explícita de strdup para evitar warnings
+char *strdup(const char *s);
 
 void utils_imprimir_error(const char *mensaje)
 {

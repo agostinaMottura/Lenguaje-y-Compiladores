@@ -6,6 +6,9 @@
 #include "./tercetos.h"
 #include "../../validaciones/validaciones.h"
 
+// Declaración explícita de strdup para evitar warnings
+char *strdup(const char *s);
+
 t_gci_tercetos_lista_tercetos lista_tercetos;
 int cantidad_tercetos_en_lista = 0;
 
