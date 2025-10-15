@@ -1,2 +1,0 @@
-NOMBRE                                                 TIPO_DATO                     VALOR                                                  LONGITUD                      
-base                                                   STRING                        __                                                     2                             

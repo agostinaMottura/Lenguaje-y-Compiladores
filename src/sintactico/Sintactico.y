@@ -225,10 +225,12 @@ isZero:
         SIMBOLOS_NO_TERMINALES_IS_ZERO, 
         "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");
 
+      void* cero = gci_tercetos_agregar_terceto("0", NULL, NULL);
+
       punteros_simbolos_no_terminales_isZero = gci_tercetos_agregar_terceto(
-        SIMBOLOS_NO_TERMINALES_IS_ZERO_VALOR,
+        "CMP",
         punteros_simbolos_no_terminales_expresion,
-        NULL
+        cero
       );
 
       aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
