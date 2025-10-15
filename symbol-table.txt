@@ -1,32 +1,73 @@
 NOMBRE                                                 TIPO_DATO                     VALOR                                                  LONGITUD                      
-a                                                      FLOAT                         __                                                     2                             
-b                                                      FLOAT                         __                                                     2                             
-x                                                      FLOAT                         __                                                     2                             
-z                                                      FLOAT                         __                                                     2                             
-c                                                      INT                           __                                                     2                             
-f                                                      INT                           __                                                     2                             
-r                                                      INT                           __                                                     2                             
+a1                                                     FLOAT                         __                                                     2                             
+b1                                                     FLOAT                         __                                                     2                             
 variable1                                              INT                           __                                                     2                             
 p1                                                     STRING                        __                                                     2                             
 p2                                                     STRING                        __                                                     2                             
 p3                                                     STRING                        __                                                     2                             
-_1                                                     CTE_INT                       1                                                      1                             
-_3.5                                                   CTE_FLOAT                     3.5                                                    3                             
-_9                                                     CTE_INT                       9                                                      1                             
-_42                                                    CTE_INT                       42                                                     2                             
-_2                                                     CTE_INT                       2                                                      1                             
-_2.0                                                   CTE_FLOAT                     2.0                                                    3                             
-_a es mayor que b                                      CTE_STRING                    a es mayor que b                                       16                            
-_c es mayor que variable1                              CTE_STRING                    c es mayor que variable1                               24                            
-_c es menor o igual que variable1                      CTE_STRING                    c es menor o igual que variable1                       32                            
-_a mayor que b Y c mayor que r                         CTE_STRING                    a mayor que b Y c mayor que r                          29                            
-_a NO es mayor que b                                   CTE_STRING                    a NO es mayor que b                                    19                            
-_a mayor que b O c mayor que r                         CTE_STRING                    a mayor que b O c mayor que r                          29                            
-_1.0                                                   CTE_FLOAT                     1.0                                                    3                             
+a                                                      FLOAT                         __                                                     2                             
+b                                                      FLOAT                         __                                                     2                             
+c                                                      FLOAT                         __                                                     2                             
+d                                                      FLOAT                         __                                                     2                             
+e                                                      FLOAT                         __                                                     2                             
+f                                                      FLOAT                         __                                                     2                             
+x                                                      FLOAT                         __                                                     2                             
+r                                                      FLOAT                         __                                                     2                             
+z                                                      FLOAT                         __                                                     2                             
+w                                                      FLOAT                         __                                                     2                             
+p                                                      FLOAT                         __                                                     2                             
+contador                                               INT                           __                                                     2                             
+s                                                      INT                           __                                                     2                             
+h                                                      INT                           __                                                     2                             
+areaMax                                                FLOAT                         __                                                     2                             
+_-205.0                                                CTE_FLOAT                     -205.0                                                 6                             
+_-205.0-9.5                                            CTE_FLOAT                     -205.0-9.5                                             10                            
+_99999.99                                              CTE_FLOAT                     99999.99                                               8                             
+_99.0                                                  CTE_FLOAT                     99.0                                                   4                             
+_0.9999                                                CTE_FLOAT                     0.9999                                                 6                             
+_@sdADaSjfla%dfg                                       CTE_STRING                    @sdADaSjfla%dfg                                        15                            
+_asldk  fh sjf                                         CTE_STRING                    asldk  fh sjf                                          13                            
+_21.0                                                  CTE_FLOAT                     21.0                                                   4                             
+_4.0                                                   CTE_FLOAT                     4.0                                                    3                             
+_21.0                                                  CTE_FLOAT                     21.0                                                   4                             
+_-205.0-9.5-4.0                                        CTE_FLOAT                     -205.0-9.5-4.0                                         14                            
+_palabra                                               CTE_STRING                    palabra                                                7                             
+_27.0                                                  CTE_FLOAT                     27.0                                                   4                             
+_500.0                                                 CTE_FLOAT                     500.0                                                  5                             
+_34.0                                                  CTE_FLOAT                     34.0                                                   4                             
+_3.0                                                   CTE_FLOAT                     3.0                                                    3                             
+_a es mas grande que b                                 CTE_STRING                    a es mas grande que b                                  21                            
+_a es mas chico o igual a b                            CTE_STRING                    a es mas chico o igual a b                             26                            
 _5.0                                                   CTE_FLOAT                     5.0                                                    3                             
-_Dentro del bucle                                      CTE_STRING                    Dentro del bucle                                       16                            
+_10.0                                                  CTE_FLOAT                     10.0                                                   4                             
+_wow                                                   CTE_STRING                    wow                                                    3                             
+_10.0                                                  CTE_FLOAT                     10.0                                                   4                             
+_e mayor iguala 10                                     CTE_STRING                    e mayor iguala 10                                      17                            
+_w menor igual a p                                     CTE_STRING                    w menor igual a p                                      17                            
 _1.0                                                   CTE_FLOAT                     1.0                                                    3                             
-_Hola mundo                                            CTE_STRING                    Hola mundo                                             10                            
-_Este es un test                                       CTE_STRING                    Este es un test                                        15                            
-_Final del programa                                    CTE_STRING                    Final del programa                                     18                            
-_Programa terminado exitosamente                       CTE_STRING                    Programa terminado exitosamente                        31                            
+_3.0                                                   CTE_FLOAT                     3.0                                                    3                             
+_a es mas grande que b                                 CTE_STRING                    a es mas grande que b                                  21                            
+_1.0                                                   CTE_FLOAT                     1.0                                                    3                             
+_2.0                                                   CTE_FLOAT                     2.0                                                    3                             
+_3.8                                                   CTE_FLOAT                     3.8                                                    3                             
+_0.0                                                   CTE_FLOAT                     0.0                                                    3                             
+_4.0                                                   CTE_FLOAT                     4.0                                                    3                             
+_12.0                                                  CTE_FLOAT                     12.0                                                   4                             
+_2.5                                                   CTE_FLOAT                     2.5                                                    3                             
+_3.0                                                   CTE_FLOAT                     3.0                                                    3                             
+_0.0                                                   CTE_FLOAT                     0.0                                                    3                             
+_6.0                                                   CTE_FLOAT                     6.0                                                    3                             
+_0.0                                                   CTE_FLOAT                     0.0                                                    3                             
+_2.0                                                   CTE_FLOAT                     2.0                                                    3                             
+_3                                                     CTE_INT                       3                                                      1                             
+_44                                                    CTE_INT                       44                                                     2                             
+_10                                                    CTE_INT                       10                                                     2                             
+_5.0                                                   CTE_FLOAT                     5.0                                                    3                             
+_var is zero                                           CTE_STRING                    var is zero                                            11                            
+_10                                                    CTE_INT                       10                                                     2                             
+_El contador vale 10                                   CTE_STRING                    El contador vale 10                                    19                            
+_1                                                     CTE_INT                       1                                                      1                             
+_7                                                     CTE_INT                       7                                                      1                             
+_1                                                     CTE_INT                       1                                                      1                             
+_2                                                     CTE_INT                       2                                                      1                             
+_La expresion es igual a cero                          CTE_STRING                    La expresion es igual a cero                           28                            

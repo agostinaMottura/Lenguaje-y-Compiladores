@@ -49,7 +49,7 @@ if (a == 5.0 or (w < p and e >= 10.0)) {
 
     if (e >= 10.0) {
         write("e mayor iguala 10")
-    } else if (w <= p) {
+    } else {
         write("w menor igual a p")
     }
 }
