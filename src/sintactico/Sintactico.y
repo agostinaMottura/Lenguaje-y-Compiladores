@@ -34,12 +34,14 @@ t_pila *pila_tipo_dato;
 
 // Pilas punteros
 t_pila_punteros* pila_saltos_comparacion;
+t_pila_punteros* pila_saltos_or;
 t_pila_punteros* pila_ciclos_while;
 
 
 // Declaracion variables tabla de simbolos
 int i=0;
 int cant_id = 0;
+int aux_condicion_not = 0;
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
 size_t tamano_tipo_dato = sizeof(t_tipo_dato);
 char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
@@ -488,9 +490,11 @@ bloque_if:
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
       void* terceto_salto_comparacion;
-      pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-
-      gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+      while(!pila_punteros_esta_vacia(pila_saltos_comparacion))
+      {
+        pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
+        gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+      }
   }
   | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE
     {
@@ -522,17 +526,37 @@ condicional:
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICIONAL, "condicion_compuesta");
     punteros_simbolos_no_terminales_condicional = punteros_simbolos_no_terminales_condicion_compuesta;
 
-    aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
-      salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
-      NULL, 
-      NULL);
+    
+    void* terceto_salto_comparacion;
+    while(!pila_punteros_esta_vacia(pila_saltos_or))
+    {
+      pila_punteros_desapilar(pila_saltos_or, &terceto_salto_comparacion);
+      gci_tercetos_actualizar_indice_izq(terceto_salto_comparacion);
+    }
+  
 
-    pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
+    // TODO: Sacar
+    if (aux_condicion_not == 0)
+    {
+
+    } 
+    else 
+    {
+      aux_condicion_not = 0;
+
+      // aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+      //   utils_obtener_salto_comparacion_opuesto(salto_comparacion), // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
+      //   NULL, 
+      //   NULL);
+
+      // pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
+    }
+
   }
   ;
 
 condicion_compuesta:
-  condicion_unaria 
+ condicion_unaria 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, "condicion_unaria");
       punteros_simbolos_no_terminales_condicion_compuesta = punteros_simbolos_no_terminales_condicion_unaria;
@@ -542,37 +566,34 @@ condicion_compuesta:
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, 
         "condicion_compuesta AND condicion_unaria");
-    
-      punteros_simbolos_no_terminales_condicion_compuesta = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_AND_VALOR,
-        punteros_simbolos_no_terminales_condicion_compuesta,
-        punteros_simbolos_no_terminales_condicion_unaria);
     }
-  | condicion_compuesta OR condicion_unaria 
+  | condicion_compuesta OR 
+  {
+    
+    void* terceto_salto_comparacion;
+    pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
+    gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+    pila_punteros_apilar(pila_saltos_or, terceto_salto_comparacion);
+
+  } condicion_unaria 
     {
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_CONDICION_COMPUESTA, 
         "condicion_compuesta OR condicion_unaria");
-
-      punteros_simbolos_no_terminales_condicion_compuesta = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_OR_VALOR,
-        punteros_simbolos_no_terminales_condicion_compuesta,
-        punteros_simbolos_no_terminales_condicion_unaria);
     }
   ;
 
 condicion_unaria:
-  NOT condicion_unaria 
+  NOT 
+  {
+    aux_condicion_not = 1; // Empieza el NOT
+  } condicion_unaria 
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_CONDICION_UNARIA, 
       "NOT condicion_unaria");
 
-    
-    punteros_simbolos_no_terminales_condicion_unaria = gci_tercetos_agregar_terceto(
-        SIMBOLOS_TERMINALES_NOT_VALOR,
-        punteros_simbolos_no_terminales_condicion_unaria,
-        NULL);
+    aux_condicion_not = 0; // Termina el NOT
   }
   | predicado 
     {
@@ -595,6 +616,22 @@ predicado:
                                                     "CMP", 
                                                     primera_expresion, 
                                                     segunda_expresion);
+
+      if (aux_condicion_not)
+      {
+        aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+          utils_obtener_salto_comparacion_opuesto(salto_comparacion), // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
+          NULL, 
+          NULL);
+      }
+      else
+      {
+        aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+          salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
+          NULL, 
+          NULL);
+      }
+      pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {
@@ -869,6 +906,7 @@ void crear_pilas()
   
   pila_saltos_comparacion = pila_punteros_crear();
   pila_ciclos_while = pila_punteros_crear();
+  pila_saltos_or = pila_punteros_crear();
 }
 
 int main(int argc, char *argv[])
