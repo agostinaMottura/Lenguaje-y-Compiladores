@@ -44,9 +44,7 @@ int i=0;
 int cant_id = 0;
 int aux_condicion_not = 0;
 int aux_if_id = -1;
-int aux_while_id = -1;
 int aux_cantidad_comparaciones_if[10] = {0,0,0,0,0,0,0,0,0,0};
-int aux_cantidad_comparaciones_while[10] = {0,0,0,0,0,0,0,0,0,0};
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
 size_t tamano_tipo_dato = sizeof(t_tipo_dato);
 char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
@@ -499,7 +497,7 @@ bloque_if:
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
       void* terceto_salto_comparacion;
-      while(!pila_punteros_esta_vacia(pila_saltos_comparacion) && aux_cantidad_comparaciones_if[aux_if_id] >= 0)
+      while(!pila_punteros_esta_vacia(pila_saltos_comparacion) && aux_cantidad_comparaciones_if[aux_if_id] > 0)
       {
         pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
         gci_tercetos_actualizar_indice(terceto_salto_comparacion);
