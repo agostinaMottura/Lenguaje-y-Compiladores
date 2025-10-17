@@ -39,7 +39,6 @@ _3.0                                                   CTE_FLOAT                
 _a es mas grande que b                                 CTE_STRING                    a es mas grande que b                                  21                            
 _a es mas chico o igual a b                            CTE_STRING                    a es mas chico o igual a b                             26                            
 _5.0                                                   CTE_FLOAT                     5.0                                                    3                             
-_10.0                                                  CTE_FLOAT                     10.0                                                   4                             
 _wow                                                   CTE_STRING                    wow                                                    3                             
 _10.0                                                  CTE_FLOAT                     10.0                                                   4                             
 _e mayor iguala 10                                     CTE_STRING                    e mayor iguala 10                                      17                            

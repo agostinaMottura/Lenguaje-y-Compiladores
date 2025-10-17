@@ -509,8 +509,12 @@ bloque_if:
           NULL);
 
         void* terceto_salto_comparacion;
-        pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-        gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+
+        while(!pila_punteros_esta_vacia(pila_saltos_comparacion))
+        {
+          pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
+          gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+        }
 
         // Despues de actualizar el terceto de comparacion, apilo el BI
         pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);

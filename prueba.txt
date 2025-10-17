@@ -44,7 +44,7 @@ else
     write("a es mas chico o igual a b")
 }
 
-if (a == 5.0 or (w < p and e >= 10.0)) {
+if (a == 5.0 or w < p) {
     write("wow")
 
     if (e >= 10.0) {
