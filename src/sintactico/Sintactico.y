@@ -43,6 +43,10 @@ t_pila_punteros* pila_ciclos_while;
 int i=0;
 int cant_id = 0;
 int aux_condicion_not = 0;
+int aux_if_id = -1;
+int aux_while_id = -1;
+int aux_cantidad_comparaciones_if[10] = {0,0,0,0,0,0,0,0,0,0};
+int aux_cantidad_comparaciones_while[10] = {0,0,0,0,0,0,0,0,0,0};
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
 size_t tamano_tipo_dato = sizeof(t_tipo_dato);
 char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
@@ -483,21 +487,28 @@ if:
   }
   ;
 
+if_contador: IF {
+  aux_if_id++;
+}
+
 bloque_if:
-  IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C
+  if_contador PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
       void* terceto_salto_comparacion;
-      while(!pila_punteros_esta_vacia(pila_saltos_comparacion))
+      while(!pila_punteros_esta_vacia(pila_saltos_comparacion) && aux_cantidad_comparaciones_if[aux_if_id] >= 0)
       {
         pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
         gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+        aux_cantidad_comparaciones_if[aux_if_id]--;
       }
+
+      aux_if_id--;
   }
-  | IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE
+  | if_contador PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C ELSE
     {
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
@@ -510,14 +521,17 @@ bloque_if:
 
         void* terceto_salto_comparacion;
 
-        while(!pila_punteros_esta_vacia(pila_saltos_comparacion))
+        while(!pila_punteros_esta_vacia(pila_saltos_comparacion) && aux_cantidad_comparaciones_if[aux_if_id] > 0)
         {
           pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
           gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+          aux_cantidad_comparaciones_if[aux_if_id]--;
         }
 
         // Despues de actualizar el terceto de comparacion, apilo el BI
         pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
+
+        aux_if_id--;
     } LLAVES_A instrucciones LLAVES_C
     {
         void* terceto_salto_comparacion;
@@ -618,6 +632,7 @@ predicado:
           NULL);
       }
       pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
+      aux_cantidad_comparaciones_if[aux_if_id]++;
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {

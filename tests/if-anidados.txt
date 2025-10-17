@@ -1,0 +1,17 @@
+init {
+    a, b, x : float
+}
+
+if (a == 5.0 and b < x) {
+    write("wow")
+
+    if (b >= 10.0) {
+        write("b")
+    } else {
+        write("a")
+    }
+} else {
+    write("hola")
+}
+
+write("chau")
