@@ -2,7 +2,12 @@ init {
     a, b : float
 }
 
-if (a > b and b == 0)
+if (a > b and b < 1)
 {
-    write("a es mayor a b, o b es igual a cero")
+    write("a es mas grande que b")
+}
+
+if (a > 0 or b > a)
+{
+    write("a es mas grande que b")
 }

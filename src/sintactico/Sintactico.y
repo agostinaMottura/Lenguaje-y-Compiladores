@@ -38,6 +38,7 @@ t_pila_punteros* pila_saltos_or;
 t_pila_punteros* pila_ciclos_while;
 
 
+
 // Declaracion variables tabla de simbolos
 int i=0;
 int cant_id = 0;
@@ -533,25 +534,6 @@ condicional:
       pila_punteros_desapilar(pila_saltos_or, &terceto_salto_comparacion);
       gci_tercetos_actualizar_indice_izq(terceto_salto_comparacion);
     }
-  
-
-    // TODO: Sacar
-    if (aux_condicion_not == 0)
-    {
-
-    } 
-    else 
-    {
-      aux_condicion_not = 0;
-
-      // aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
-      //   utils_obtener_salto_comparacion_opuesto(salto_comparacion), // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
-      //   NULL, 
-      //   NULL);
-
-      // pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
-    }
-
   }
   ;
 
@@ -903,6 +885,7 @@ void crear_pilas()
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
   pila_tipo_dato = pila_crear();
+  
   
   pila_saltos_comparacion = pila_punteros_crear();
   pila_ciclos_while = pila_punteros_crear();
