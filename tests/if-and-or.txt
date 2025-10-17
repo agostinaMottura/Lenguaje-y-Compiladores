@@ -7,7 +7,7 @@ if (a > b and b < 1)
     write("a es mas grande que b")
 }
 
-if (a > 0 or b > a)
+if (a > 0 or b == a)
 {
     write("a es mas grande que b")
 }
