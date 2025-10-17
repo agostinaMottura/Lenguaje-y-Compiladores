@@ -36,6 +36,7 @@ t_pila *pila_tipo_dato;
 t_pila_punteros* pila_saltos_comparacion;
 t_pila_punteros* pila_ciclos_while;
 
+
 // Declaracion variables tabla de simbolos
 int i=0;
 int cant_id = 0;
@@ -520,6 +521,13 @@ condicional:
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICIONAL, "condicion_compuesta");
     punteros_simbolos_no_terminales_condicional = punteros_simbolos_no_terminales_condicion_compuesta;
+
+    aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
+      salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
+      NULL, 
+      NULL);
+
+    pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
   }
   ;
 
@@ -587,11 +595,6 @@ predicado:
                                                     "CMP", 
                                                     primera_expresion, 
                                                     segunda_expresion);
-      aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
-        salto_comparacion, // Saltos: BGE, BGT, BLT, BLE, BNE. BEQ
-        NULL, 
-        NULL);
-      pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
     }
   | PARENTESIS_A condicional PARENTESIS_C 
     {
@@ -863,7 +866,7 @@ void crear_pilas()
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
   pila_tipo_dato = pila_crear();
-
+  
   pila_saltos_comparacion = pila_punteros_crear();
   pila_ciclos_while = pila_punteros_crear();
 }
