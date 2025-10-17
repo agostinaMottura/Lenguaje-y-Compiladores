@@ -29,3 +29,39 @@ const char *utils_obtener_string_numero_negativo(const char *nro)
 
     return str;
 }
+
+const char* utils_obtener_salto_comparacion_opuesto(const char* salto_comparacion)
+{
+    if (strcmp(salto_comparacion, "BLE") == 0)
+    {
+        return "BGT";
+    }
+
+    if (strcmp(salto_comparacion, "BNE") == 0)
+    {
+        return "BEQ";
+    }
+
+    if (strcmp(salto_comparacion, "BEQ") == 0)
+    {
+        return "BNE";
+    }
+
+    if (strcmp(salto_comparacion, "BGE") == 0)
+    {
+        return "BLT";
+    }
+    
+    if (strcmp(salto_comparacion, "BGT") == 0)
+    {
+        return "BLE";
+    }
+    
+    if (strcmp(salto_comparacion, "BLT") == 0)
+    {
+        return "BGE";
+    }
+
+    utils_imprimir_error("Salto de comparacion incorrecto");
+    exit(1);
+}

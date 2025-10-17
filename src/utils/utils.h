@@ -19,4 +19,5 @@
 void utils_imprimir_error(const char *mensaje);
 const char *utils_obtener_string_sin_comillas(const char *str);
 const char *utils_obtener_string_numero_negativo(const char *nro);
+const char* utils_obtener_salto_comparacion_opuesto(const char* salto_comparacion);
 #endif // UTILS_H

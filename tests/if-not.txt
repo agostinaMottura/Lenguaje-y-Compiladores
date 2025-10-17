@@ -1,0 +1,10 @@
+init {
+    a, b : float
+}
+
+if (not (a == b or b == 0))
+{
+    write("hola")
+}
+
+write("chau")

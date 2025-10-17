@@ -1,0 +1,14 @@
+init {
+    a, b, x : float
+}
+
+if (a > b and b > x)
+{
+    write("a es mas grande que b")
+}
+else
+{
+    write("a es mas chico o igual a b")
+}
+
+write("chau")
