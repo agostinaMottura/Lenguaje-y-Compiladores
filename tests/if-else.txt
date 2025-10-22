@@ -1,8 +1,8 @@
 init {
-    a, b, x : float
+    a, b: float
 }
 
-if (a > b and b > x)
+if (a > b)
 {
     write("a es mas grande que b")
 }

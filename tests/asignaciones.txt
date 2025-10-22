@@ -1,1 +1,11 @@
-a := 9
+init {
+    a : float
+    b : string
+}
+
+a := 99999.99
+a := 99.
+a := .9999
+
+b := "@sdADaSjfla%dfg"
+b := "asldk  fh sjf"

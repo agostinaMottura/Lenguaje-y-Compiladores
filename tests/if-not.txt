@@ -2,9 +2,9 @@ init {
     a, b : float
 }
 
-if (not (a == b or b == 0))
+if (not a > b)
 {
-    write("hola")
+    write("a no es mas grande que b")
 }
 
 write("chau")

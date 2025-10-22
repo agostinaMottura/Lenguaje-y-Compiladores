@@ -1,3 +1,8 @@
+init {
+    z : int
+    x, areaMax : float
+}
+
 z := 2
 x := 3.8
 areaMax := triangleAreaMaximum( [0,x; 4.0,12; 2.5,3] ; [x,0; 6,0; z,2] )
