@@ -391,12 +391,14 @@ tipo:
   ;
 
 asignacion: 
-  ID ASIGNACION expresion 
+  ID {
+      if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
+        exit(1);
+      }
+  } 
+  ASIGNACION expresion 
   {
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_ASIGNACION, "ID ASIGNACION expresion");
-    if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($1)) {
-       exit(1);
-    }
 
     t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
 
