@@ -95,14 +95,31 @@ void gci_tercetos_actualizar_indice(void *terceto)
 
     t_gci_tercetos_dato *dato = (t_gci_tercetos_dato *)terceto;
 
-    dato->c = malloc(100);
-    if (dato->c == NULL)
+    dato->b = malloc(100);
+    if (dato->b == NULL)
     {
         informes_gci_tercetos_imprimir_error("Falta de memoria");
         exit(1);
     }
 
-    sprintf(dato->c, "[%d]", cantidad_tercetos_en_lista);
+    sprintf(dato->b, "[%d]", cantidad_tercetos_en_lista);
+}
+
+void gci_tercetos_actualizar_primera_posicion(void *terceto, const char *valor)
+{
+    if (terceto == NULL)
+        return;
+
+    t_gci_tercetos_dato *dato = (t_gci_tercetos_dato *)terceto;
+
+    if (valor == NULL)
+    {
+        dato->a = NULL;
+    }
+    else
+    {
+        dato->a = strdup(valor);
+    }
 }
 
 void gci_tercetos_actualizar_indice_izq(void *terceto)

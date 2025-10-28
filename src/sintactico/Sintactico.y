@@ -575,6 +575,7 @@ condicion_compuesta:
     void* terceto_salto_comparacion;
     pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
     gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+    gci_tercetos_actualizar_primera_posicion(terceto_salto_comparacion, utils_obtener_salto_comparacion_opuesto(salto_comparacion));
     pila_punteros_apilar(pila_saltos_or, terceto_salto_comparacion);
 
   } condicion_unaria 

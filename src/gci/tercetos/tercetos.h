@@ -28,6 +28,7 @@ extern t_gci_tercetos_lista_tercetos lista_tercetos;
 // Funciones publicas
 void gci_tercetos_crear_lista();
 void gci_tercetos_actualizar_indice(void *terceto);
+void gci_tercetos_actualizar_primera_posicion(void *terceto, const char *valor);
 void gci_tercetos_actualizar_indice_izq(void *terceto);
 void gci_tercetos_actualizar(
     t_gci_tercetos_dato *nuevo_dato,
