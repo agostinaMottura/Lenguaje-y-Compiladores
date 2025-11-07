@@ -1,0 +1,5 @@
+init {
+    a : string
+}
+
+a := "Aca hay un caracter chino 会"

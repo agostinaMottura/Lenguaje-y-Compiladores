@@ -85,12 +85,12 @@ COMA                ","
 DIGITO			    [0-9]
 LETRA			    [a-zA-Z]
 
-INVALIDO        "~"|"`"|"^"|"¨"|"´"|"¬"
-
 /* Constantes */
 CTE_INT		        {DIGITO}+
 CTE_FLOAT         ({DIGITO}+{PUNTO}{DIGITO}+)|({DIGITO}+{PUNTO}{DIGITO}+[eE][+-]?{DIGITO}+)|({DIGITO}+[eE][+-]?{DIGITO}+)
-CTE_STRING		  \"[^"~`^¨´¬]*\"
+CTE_STRING		  \"[ -!\x23-~]*\"
+
+STRING_MAL_FORMADO \"[^"\n]*
 
 /* Identificador */
 ID			        ({LETRA}|{GUION_BAJO})({LETRA}|{DIGITO}|{GUION_BAJO})*
@@ -160,6 +160,16 @@ COMENTARIO \#\+.*\+\#
                     strcpy(yylval.cadena, utils_obtener_string_sin_comillas(yytext));
                     return CTE_STRING;
                 }
+
+{STRING_MAL_FORMADO} {
+                        informes_lexico_imprimir_error(
+                            "String mal formado", 
+                            yytext, 
+                            "El string contiene caracteres ilegales o no fue cerrado en la misma linea"
+                        );
+                        exit(1);
+                    }
+    
 {CTE_FLOAT}	    {
                     t_validaciones_resultado_validacion res = validaciones_es_float_valido(yytext);
                     if (!res.es_valido) {
@@ -189,7 +199,7 @@ COMENTARIO \#\+.*\+\#
                     return ID;
                 }
 
-{INVALIDO}  { 
+.  { 
                 informes_lexico_imprimir_error(
                     "Caracter desconocido", 
                     yytext, 
