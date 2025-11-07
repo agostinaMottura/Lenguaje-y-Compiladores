@@ -17,4 +17,5 @@ int semantico_son_tipos_de_datos_compatibles(
 t_tipo_dato semantico_obtener_tipo_de_dato_resultante(
     t_tipo_dato tipo_dato_a,
     t_tipo_dato tipo_dato_b);
+    
 #endif // SEMANTICO_H
