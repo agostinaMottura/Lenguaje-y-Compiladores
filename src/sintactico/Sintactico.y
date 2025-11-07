@@ -45,6 +45,7 @@ int i=0;
 int cant_id = 0;
 int aux_condicion_not = 0;
 int aux_if_id = -1;
+int funcion_booleana_aux = 0;
 int aux_cantidad_comparaciones_if[10] = {0,0,0,0,0,0,0,0,0,0};
 size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
 size_t tamano_tipo_dato = sizeof(t_tipo_dato);
@@ -240,8 +241,9 @@ isZero:
         NULL,
         NULL
       );
+      
       pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
-
+      aux_cantidad_comparaciones_if[aux_if_id]++;
     }
   ;
 
@@ -659,6 +661,8 @@ predicado:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PREDICADO, "funcion_booleana");
       punteros_simbolos_no_terminales_predicado = punteros_simbolos_no_terminales_funcion_booleana;
+
+      funcion_booleana_aux = 1;
     }
   ;
 
