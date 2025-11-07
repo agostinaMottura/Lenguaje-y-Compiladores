@@ -37,7 +37,7 @@ t_validaciones_resultado_validacion validaciones_es_float_valido(char *cadena)
 
     float numero_float = (float)numero;
 
-    if (numero_float != 0.0f && (numero_float < VALIDACIONES_MIN_VALOR_FLOAT || numero_float > VALIDACIONES_MAX_VALOR_FLOAT))
+    if (numero_float != VALIDACIONES_FLOAT_CERO && (numero_float < VALIDACIONES_MIN_VALOR_FLOAT || numero_float > VALIDACIONES_MAX_VALOR_FLOAT))
     {
         resultado.es_valido = 0;
         sprintf(resultado.mensaje_error, "Float fuera de rango");
