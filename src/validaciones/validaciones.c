@@ -64,7 +64,7 @@ t_validaciones_resultado_validacion validaciones_es_int_valido(char *cadena)
     if (longitud > VALIDACIONES_MAX_LONGITUD_INT)
     {
         resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Entero supera la longitud maxima permitida");
+        sprintf(resultado.mensaje_error, "Entero excede el maximo valor de constante INT permitido");
         sprintf(resultado.aclaracion, "Maximo %d caracteres", VALIDACIONES_MAX_LONGITUD_INT);
         return resultado;
     }
