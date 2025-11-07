@@ -37,10 +37,32 @@ t_validaciones_resultado_validacion validaciones_es_float_valido(char *cadena)
 
     float numero_float = (float)numero;
 
-    if (numero_float != VALIDACIONES_FLOAT_CERO && (numero_float < VALIDACIONES_MIN_VALOR_FLOAT || numero_float > VALIDACIONES_MAX_VALOR_FLOAT))
+    if (isinf(numero_float)) 
     {
         resultado.es_valido = 0;
-        sprintf(resultado.mensaje_error, "Float fuera de rango");
+        sprintf(resultado.mensaje_error, "Float fuera de rango (Overflow)");
+        sprintf(resultado.aclaracion, "Debe estar entre %.5e y %.5e", VALIDACIONES_MIN_VALOR_FLOAT, VALIDACIONES_MAX_VALOR_FLOAT);
+        return resultado;
+    }
+
+    if (numero_float == VALIDACIONES_FLOAT_CERO && numero != VALIDACIONES_DOUBLE_CERO)
+    {
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Float fuera de rango (Underflow)");
+        sprintf(resultado.aclaracion, "Floats validos entre %.5e y %.5e", VALIDACIONES_MIN_VALOR_FLOAT, VALIDACIONES_MAX_VALOR_FLOAT);
+        return resultado;
+    }
+
+    if (numero_float == VALIDACIONES_FLOAT_CERO)
+    {
+        resultado.es_valido = 1;
+        return resultado;
+    }
+    
+    if (numero_float < VALIDACIONES_MIN_VALOR_FLOAT )
+    {
+        resultado.es_valido = 0;
+        sprintf(resultado.mensaje_error, "Float fuera de rango (Underflow)");
         sprintf(resultado.aclaracion, "Floats validos entre %.5e y %.5e", VALIDACIONES_MIN_VALOR_FLOAT, VALIDACIONES_MAX_VALOR_FLOAT);
         return resultado;
     }
