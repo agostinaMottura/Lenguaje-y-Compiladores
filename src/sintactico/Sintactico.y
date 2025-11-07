@@ -18,6 +18,7 @@
 #include "./src/pila/pila.h"
 #include "./src/pila_punteros/pila_punteros.h"
 #include "./src/semantico/semantico.h"
+#include "./src/semantico/informes/informes.h"
 
 
 int yystopparser=0;
@@ -49,6 +50,7 @@ size_t tamano_terceto = sizeof(t_gci_tercetos_dato);
 size_t tamano_tipo_dato = sizeof(t_tipo_dato);
 char salto_comparacion[VALIDACIONES_MAX_LONGITUD_STRING];
 t_tipo_dato tipo_dato_aux;
+t_tipo_dato tipo_dato_comparacion_aux;
 
 t_gci_tercetos_dato* aux_terceto_if_else;
 t_gci_tercetos_dato* aux_terceto_salto_comparacion;
@@ -606,10 +608,18 @@ condicion_unaria:
   ;
 
 predicado:
-  expresion operador_comparacion expresion 
+  expresion {
+      tipo_dato_comparacion_aux = tipo_dato_aux;
+  } operador_comparacion expresion 
     {
       void* primera_expresion = pila_desapilar(pila_expresion);
       void* segunda_expresion = pila_desapilar(pila_expresion);
+
+      if (tipo_dato_aux != tipo_dato_comparacion_aux) 
+      {
+        informes_semantico_imprimir_mensaje("Error de tipos en la comparacion de expresiones.");
+        exit(1);
+      }
 
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_PREDICADO, 
@@ -701,6 +711,7 @@ expresion:
       }
 
       pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+      tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
@@ -728,6 +739,7 @@ expresion:
       }
 
       pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+      tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
@@ -767,6 +779,7 @@ termino:
       }
 
       pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+      tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
@@ -789,6 +802,7 @@ termino:
       }
 
       pila_apilar(pila_tipo_dato, &tipo_dato_resultante, tamano_tipo_dato);
+      tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
@@ -815,6 +829,7 @@ factor:
     t_tabla_simbolos_dato *simbolo = tabla_simbolos_obtener_dato($1);
     if (simbolo != NULL) {
       pila_apilar(pila_tipo_dato, &(simbolo->tipo_dato), tamano_tipo_dato);
+      tipo_dato_aux = simbolo->tipo_dato;
     }
   }
   | CTE_INT 
@@ -872,6 +887,12 @@ factor:
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "RESTA ID");
         if (!semantico_validacion_existe_simbolo_en_tabla_simbolos($2)) {
           exit(1);
+        }
+
+        t_tabla_simbolos_dato *simbolo = tabla_simbolos_obtener_dato($2);
+        if (simbolo != NULL) {
+          pila_apilar(pila_tipo_dato, &(simbolo->tipo_dato), tamano_tipo_dato);
+          tipo_dato_aux = simbolo->tipo_dato;
         }
 
         // Duda: Como manejamos este negativo de ID?
