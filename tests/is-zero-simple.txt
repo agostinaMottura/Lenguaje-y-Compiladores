@@ -1,0 +1,12 @@
+init {
+    a : int
+}
+
+if (isZero(a))
+{
+    a := 1
+}
+else
+{
+    a := 2
+}
