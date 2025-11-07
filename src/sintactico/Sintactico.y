@@ -59,6 +59,19 @@ t_gci_tercetos_dato* aux_expresion;
 
 t_validaciones_nombre_id ids_declarados[VALIDACIONES_MAX_IDS_DECLARADOS];
 
+// Triangulos
+int punto_aux = 0;
+int triangulo_numero = 0;
+
+t_gci_tercetos_dato* punto_a_x;
+t_gci_tercetos_dato* punto_a_y;
+
+t_gci_tercetos_dato* punto_b_x;
+t_gci_tercetos_dato* punto_b_y;
+
+t_gci_tercetos_dato* punto_c_x;
+t_gci_tercetos_dato* punto_c_y;
+
 %}
 
 %union {
@@ -248,7 +261,11 @@ isZero:
   ;
 
 triangleAreaMaximum:
-  TRIANGLE_AREA_MAXIMUM PARENTESIS_A triangulo PUNTO_Y_COMA triangulo PARENTESIS_C 
+  TRIANGLE_AREA_MAXIMUM PARENTESIS_A {
+    triangulo_numero = 0;
+  } triangulo PUNTO_Y_COMA {
+    triangulo_numero = 1;
+  } triangulo PARENTESIS_C 
   {
     informes_sintactico_imprimir_mensaje(
       SIMBOLOS_NO_TERMINALES_TRIANGLE_AREA_MAXIMUM, 
@@ -257,16 +274,77 @@ triangleAreaMaximum:
     void* primer_triangulo = pila_desapilar(pila_triangulo);
     void* segundo_triangulo = pila_desapilar(pila_triangulo);
 
-    punteros_simbolos_no_terminales_triangleAreaMaximum = gci_tercetos_agregar_terceto(
-      SIMBOLOS_NO_TERMINALES_TRIANGLE_AREA_MAXIMUM_VALOR, 
-      primer_triangulo, 
-      segundo_triangulo);
+
+
+    // Comparamos los triangulos y nos quedamos con el de mayor area
+    void* variable_asignacion = gci_tercetos_agregar_terceto(
+      "@area_triangulo_maxima",
+      NULL,
+      NULL
+    );
+
+    punteros_simbolos_no_terminales_triangleAreaMaximum = variable_asignacion;
+
+    void* area_triangulo_a = gci_tercetos_agregar_terceto(
+      "@area_triangulo_a",
+      NULL,
+      NULL
+    );
+    void* area_triangulo_b = gci_tercetos_agregar_terceto(
+      "@area_triangulo_b",
+      NULL,
+      NULL
+    );
+
+    gci_tercetos_agregar_terceto(
+      "CMP",
+      area_triangulo_a,
+      area_triangulo_b
+    );
+    void* salto_menor_que = gci_tercetos_agregar_terceto(
+      "BLT",
+      NULL,
+      NULL
+    );
+
+    // Si el primero es mayor o igual, devolvemos el primero
+    gci_tercetos_agregar_terceto(
+      ":=",
+      variable_asignacion,
+      area_triangulo_a
+    );
+    void* salto_incondicional = gci_tercetos_agregar_terceto(
+      "BI",
+      NULL,
+      NULL
+    );
+
+    // Si el segundo es mayor, devolvemos el segundo
+    gci_tercetos_actualizar_indice(salto_menor_que);
+
+    gci_tercetos_agregar_terceto(
+      ":=",
+      variable_asignacion,
+      area_triangulo_b
+    );
+    gci_tercetos_actualizar_indice(salto_incondicional);
+
+     
   }
   ;
   
 triangulo:
-  CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C 
-    {
+  CORCHETE_A
+  {
+    punto_aux = 0;
+  } coordenada PUNTO_Y_COMA
+  {
+    punto_aux = 1;
+  } coordenada PUNTO_Y_COMA
+  {
+    punto_aux = 2;
+  } coordenada CORCHETE_C 
+  {
       informes_sintactico_imprimir_mensaje(
         SIMBOLOS_NO_TERMINALES_TRIANGULO, 
         "CORCHETE_A coordenada PUNTO_Y_COMA coordenada PUNTO_Y_COMA coordenada CORCHETE_C");
@@ -290,11 +368,143 @@ triangulo:
         pila_triangulo, 
         punteros_simbolos_no_terminales_triangulo,
         tamano_terceto);
+
+      // Calcular el area de este triangulo
+      void* area_triangulo_variable_resultado = NULL;
+
+      if (triangulo_numero == 0)
+      {
+        area_triangulo_variable_resultado = gci_tercetos_agregar_terceto(
+          "@area_triangulo_a",
+          NULL,
+          NULL
+        );
+      }
+      else
+      {
+        area_triangulo_variable_resultado = gci_tercetos_agregar_terceto(
+          "@area_triangulo_b",
+          NULL,
+          NULL
+        );
+      }
+
+      // Calculo del primer termino
+      void* area_triangulo_aux_a = gci_tercetos_agregar_terceto("*", punto_a_x, punto_b_y); // A.x * B.y
+      void* area_triangulo_aux_b = gci_tercetos_agregar_terceto("*", punto_b_x, punto_c_y); // B.x * C.y
+      void* area_triangulo_aux_c = gci_tercetos_agregar_terceto("*", punto_c_x, punto_a_y); // C.x * A.y
+
+      void* area_triangulo_suma_ab = gci_tercetos_agregar_terceto("+", area_triangulo_aux_a, area_triangulo_aux_b); // (A.x * B.y) + (B.x * C.y)
+      void* area_triangulo_primer_termino = gci_tercetos_agregar_terceto("+", area_triangulo_suma_ab, area_triangulo_aux_c); // (A.x * B.y) + (B.x * C.y) + (C.x * A.y)
+
+      // Calculo del segundo termino
+      area_triangulo_aux_a = gci_tercetos_agregar_terceto("*", punto_a_y, punto_b_x); // A.y * B.x
+      area_triangulo_aux_b = gci_tercetos_agregar_terceto("*", punto_b_y, punto_c_x); // B.y * C.x
+      area_triangulo_aux_c = gci_tercetos_agregar_terceto("*", punto_c_y, punto_a_x); // C.y * A.x
+
+      area_triangulo_suma_ab = gci_tercetos_agregar_terceto("+", area_triangulo_aux_a, area_triangulo_aux_b); // (A.y * B.x) + (B.y * C.x)
+      void* area_triangulo_segundo_termino = gci_tercetos_agregar_terceto("+", area_triangulo_suma_ab, area_triangulo_aux_c); // (A.y * B.x) + (B.y * C.x) + (C.y * A.x)
+
+      // Finalmente, calculamos el area
+      void* area_triangulo_comp_terminos = gci_tercetos_agregar_terceto(
+        "CMP",
+        area_triangulo_primer_termino,
+        area_triangulo_segundo_termino
+      );
+      void* area_triangulo_salto_comp_terminos = gci_tercetos_agregar_terceto(
+        "BLT",
+        NULL,
+        NULL
+      );
+
+      // Si el primer termino es mayor o igual, calculamos la resta normal
+      void* area_triangulo_resta = gci_tercetos_agregar_terceto(
+        "-",
+        area_triangulo_primer_termino,
+        area_triangulo_segundo_termino
+      );
+      void* area_triangulo_resultado = gci_tercetos_agregar_terceto(
+        "/",
+        area_triangulo_resta,
+        gci_tercetos_agregar_terceto("2", NULL, NULL)
+      );
+
+
+
+      if (triangulo_numero == 0)
+      {
+        gci_tercetos_agregar_terceto(
+          ":=",
+          area_triangulo_variable_resultado,
+          area_triangulo_resultado
+        );
+      }
+      else
+      {
+        gci_tercetos_agregar_terceto(
+          ":=",
+          area_triangulo_variable_resultado,
+          area_triangulo_resultado
+        );
+      }
+
+      void* area_triangulo_salto_incondicional = gci_tercetos_agregar_terceto(
+        "BI",
+        NULL,
+        NULL
+      );
+
+      // Si el segundo termino es mayor, calculamos la resta invertida
+      gci_tercetos_actualizar_indice(area_triangulo_salto_comp_terminos);
+      area_triangulo_resta = gci_tercetos_agregar_terceto(
+        "-",
+        area_triangulo_segundo_termino,
+        area_triangulo_primer_termino
+      );
+      area_triangulo_resultado = gci_tercetos_agregar_terceto(
+        "/",
+        area_triangulo_resta,
+        gci_tercetos_agregar_terceto("2", NULL, NULL)
+      );
+
+      if (triangulo_numero == 0)
+      {
+        gci_tercetos_agregar_terceto(
+          ":=",
+          area_triangulo_variable_resultado,
+          area_triangulo_resultado
+        );
+      }
+      else
+      {
+        gci_tercetos_agregar_terceto(
+          ":=",
+          area_triangulo_variable_resultado,
+          area_triangulo_resultado
+        );
+      }
+
+      gci_tercetos_actualizar_indice(area_triangulo_salto_incondicional);
     }
   ;
 
 coordenada:
-  expresion COMA expresion 
+  expresion {
+    if (punto_aux == 0)
+    {
+      punto_a_x = punteros_simbolos_no_terminales_expresion;
+    }
+
+    if (punto_aux == 1)
+    {
+      punto_b_x = punteros_simbolos_no_terminales_expresion;
+    }
+
+    if (punto_aux == 2)
+    {
+      punto_c_x = punteros_simbolos_no_terminales_expresion;
+    }
+  } COMA expresion 
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_COORDENADA, "expresion COMA expresion");
       
@@ -310,6 +520,21 @@ coordenada:
         pila_coordenada, 
         punteros_simbolos_no_terminales_coordenada, 
        tamano_terceto);
+
+      if (punto_aux == 0)
+      {
+        punto_a_y = punteros_simbolos_no_terminales_expresion;
+      }
+
+      if (punto_aux == 1)
+      {
+        punto_b_y = punteros_simbolos_no_terminales_expresion;
+      }
+
+      if (punto_aux == 2)
+      {
+        punto_c_y = punteros_simbolos_no_terminales_expresion;
+      }
     }
   ;
 
