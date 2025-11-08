@@ -37,7 +37,7 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
         char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
-            "Elmento duplicado. (%s: %s | %s: %s)",
+            "Elemento duplicado. (%s: %s | %s: %s)",
             TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
             TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);

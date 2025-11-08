@@ -33,6 +33,7 @@ t_pila *pila_expresion;
 t_pila *pila_triangulo;
 t_pila *pila_coordenada;
 t_pila *pila_tipo_dato;
+t_pila *pila_termino;
 
 // Pilas punteros
 t_pila_punteros* pila_saltos_comparacion;
@@ -928,7 +929,13 @@ operador_comparacion: // No creo los GCI aca, sino que los creamos en el predica
 ;
 
 expresion:
-  expresion SUMA termino 
+  expresion 
+  {
+    pila_apilar(
+      pila_expresion, 
+      punteros_simbolos_no_terminales_expresion, 
+      tamano_terceto);
+  } SUMA termino 
     {
       t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
@@ -946,6 +953,7 @@ expresion:
       tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion SUMA termino");
+      punteros_simbolos_no_terminales_expresion = pila_desapilar(pila_expresion);
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
         "+",
         punteros_simbolos_no_terminales_expresion,
@@ -956,7 +964,13 @@ expresion:
         punteros_simbolos_no_terminales_expresion, 
        tamano_terceto);
     }
-  |expresion RESTA termino 
+  |expresion 
+  {
+    pila_apilar(
+      pila_expresion, 
+      punteros_simbolos_no_terminales_expresion, 
+      tamano_terceto);
+  } RESTA termino 
     {
       t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
@@ -974,6 +988,7 @@ expresion:
       tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_EXPRESION, "expresion RESTA termino");
+      punteros_simbolos_no_terminales_expresion = pila_desapilar(pila_expresion);
       punteros_simbolos_no_terminales_expresion = gci_tercetos_agregar_terceto(
         "-",
         punteros_simbolos_no_terminales_expresion,
@@ -996,7 +1011,13 @@ expresion:
   ;
 
 termino: 
-  termino MULTIPLICACION factor 
+  termino 
+  {
+    pila_apilar(
+      pila_termino, 
+      punteros_simbolos_no_terminales_termino, 
+      tamano_terceto);
+  } MULTIPLICACION factor 
     {
       t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
@@ -1014,12 +1035,19 @@ termino:
       tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino MULTIPLICACION factor");
+      punteros_simbolos_no_terminales_termino = pila_desapilar(pila_termino);
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
         "*", 
         punteros_simbolos_no_terminales_termino, 
         punteros_simbolos_no_terminales_factor);
     }
-  |termino DIVISION factor 
+  |termino 
+  {
+    pila_apilar(
+      pila_termino, 
+      punteros_simbolos_no_terminales_termino, 
+      tamano_terceto);
+  } DIVISION factor 
     {
       t_tipo_dato* tipo_dato_a = pila_desapilar(pila_tipo_dato);
       t_tipo_dato* tipo_dato_b = pila_desapilar(pila_tipo_dato);
@@ -1037,6 +1065,7 @@ termino:
       tipo_dato_aux = tipo_dato_resultante;
 
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_TERMINO, "termino DIVISION factor");
+      punteros_simbolos_no_terminales_termino = pila_desapilar(pila_termino);
       punteros_simbolos_no_terminales_termino = gci_tercetos_agregar_terceto(
         "/", 
         punteros_simbolos_no_terminales_termino, 
@@ -1145,6 +1174,7 @@ factor:
         "PARENTESIS_A expresion PARENTESIS_C");
         
       punteros_simbolos_no_terminales_factor = punteros_simbolos_no_terminales_expresion;
+      
     }
   | funcion_numerica 
     {
@@ -1160,6 +1190,7 @@ void crear_pilas()
   pila_triangulo = pila_crear();
   pila_coordenada = pila_crear();
   pila_tipo_dato = pila_crear();
+  pila_termino = pila_crear();
   
   
   pila_saltos_comparacion = pila_punteros_crear();
