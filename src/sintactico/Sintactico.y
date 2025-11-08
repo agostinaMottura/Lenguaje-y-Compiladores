@@ -19,6 +19,7 @@
 #include "./src/pila_punteros/pila_punteros.h"
 #include "./src/semantico/semantico.h"
 #include "./src/semantico/informes/informes.h"
+#include "./src/assembler/assembler.h"
 
 
 int yystopparser=0;
@@ -147,6 +148,8 @@ programa:
     {
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PROGRAMA, "instrucciones");
       punteros_simbolos_no_terminales_programa = punteros_simbolos_no_terminales_instrucciones;
+
+      generar_assembler(&lista_tercetos, &tabla_simbolos);
     }
   ;
 

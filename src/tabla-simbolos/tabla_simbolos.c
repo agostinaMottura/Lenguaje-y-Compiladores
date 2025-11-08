@@ -30,6 +30,17 @@ void tabla_simbolos_crear()
     informes_tabla_simbolos_imprimir_mensaje("Tabla de simbolos creada con exito");
 }
 
+void sanitizar_espacios(char *destino, const char *origen)
+{
+    while (*origen)
+    {
+        *destino = (*origen == ' ') ? '_' : *origen;
+        destino++;
+        origen++;
+    }
+    *destino = '\0';
+}
+
 int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
 {
     if (existe_nombre_en_tabla_de_simbolos(nombre, valor, tabla_simbolos.primero))
@@ -37,7 +48,7 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
         char mensaje[UTILS_MAX_STRING_MENSAJE_LONGITUD];
         sprintf(
             mensaje,
-            "Elmento duplicado. (%s: %s | %s: %s)",
+            "Elemento duplicado. (%s: %s | %s: %s)",
             TABLA_SIMBOLOS_VALOR_COLUMNA_NOMBRE, nombre,
             TABLA_SIMBOLOS_VALOR_COLUMNA_VALOR, valor);
         informes_tabla_simbolos_imprimir_mensaje(mensaje);
@@ -181,7 +192,14 @@ t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato
         return NULL;
     }
 
-    strcpy(dato->nombre, nombre_cte);
+    if (tipo_dato == TIPO_DATO_CTE_STRING)
+    {
+        sanitizar_espacios(dato->nombre, nombre_cte);
+    }
+    else
+    {
+        strcpy(dato->nombre, nombre_cte);
+    }
     return dato;
 }
 
