@@ -63,6 +63,7 @@ y.tab.c
 y.output
 y.tab.h
 compilador
+assembler.asm
 
 intermediate-code.txt
 symbol-table.txt
