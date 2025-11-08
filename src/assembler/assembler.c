@@ -56,7 +56,7 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos, t_tabla_simbolos
         exit(1);
     }
 
-    fprintf(archivo_assembler, ".data\n");
+    fprintf(archivo_assembler, ".DATA\n");
 
     t_tabla_simbolos_nodo *simbolo = tabla->primero;
     while (simbolo)
@@ -65,7 +65,10 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos, t_tabla_simbolos
         simbolo = simbolo->siguiente;
     }
 
-    fprintf(archivo_assembler, ".code\n");
+    fprintf(archivo_assembler, ".CODE\n");
+    fprintf(archivo_assembler,  "MOV EAX,@DATA\n");
+    fprintf(archivo_assembler,  "MOV DS,EAX\n");
+    fprintf(archivo_assembler,  "MOV ES,EAX\n\n");
 
     fclose(archivo_assembler);
 }
