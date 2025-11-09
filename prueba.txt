@@ -1,91 +1,9 @@
-#+===== ARCHIVO UNIFICADO DE TESTS =====+#
-
-#+  ----- INIT (Declaraciones) -----  +#
 init {
-    a1, b1 : float
-    variable1 : int
-    p1, p2, p3 : string
-    a, b, c, d, e, f, x, r, z, w, p : float
-    contador, s, h : int
-    areaMax : float
+    var1 : int
+    base : string
 }
 
-#+  ----- ASIGNACIONES -----  +#
-a1 := -205.0
-b1 := -9.5
-a1 := 99999.99
-a1 := 99.0
-a1 := 0.9999
+read(base) #+ base es una variable +#
 
-p1 := "@sdADaSjfla%dfg"
-p2 := "asldk  fh sjf"
-
-c := d*(e-21.0)/4.0
-c := d*(e-21.0)/(-4.0)
-
-p3 := "palabra"
-
-#+  ----- OPERACIONES ARITMETICAS -----  +#
-x := 27.0 - c
-x := r + 500.0
-x := 34.0 * 3.0
-x := z / f
-
-#+  ----- COMENTARIOS -----  +#
-#+Esto es un comentario+#
-
-#+  ----- ESTRUCTURA IF -----  +#
-if (a > b and b > x)
-{
-    write("a es mas grande que b")
-}
-else
-{
-    write("a es mas chico o igual a b")
-}
-
-if (a == 5.0 or w < p) {
-    write("wow")
-
-    if (e >= 10.0) {
-        write("e mayor iguala 10")
-    } else {
-        write("w menor igual a p")
-    }
-}
-
-#+  ----- ESTRUCTURA WHILE -----  +#
-a := 1.0
-b := 3.0
-
-while (a > b)
-{
-    write("a es mas grande que b")
-    a := a + 1.0
-}
-
-#+  ----- TRIANGLE AREA MAX -----  +#
-z := 2.0
-x := 3.8
-
-areaMax := triangleAreaMaximum( [0.0,x; 4.0,12.0; 2.5,3.0] ; [x,0.0; 6.0,0.0; z,2.0] )
-
-#+  ----- IS ZERO -----  +#
-
-s := 3
-h := 44
-contador := 10
-
-if(not c == 5.0) {
-    write("var is zero")
-}
-
-while (isZero( contador - 10 ))
-{
-    write("El contador vale 10")
-    contador := contador - 1
-}
-if (isZero( s*7+1-h/2 ))
-{
-    write("La expresion es igual a cero")
-}
+write("ewr")  #+ "ewr" es una cte string +#
+write(var1)  #+ var1 es una variable numérica definida previamente +#

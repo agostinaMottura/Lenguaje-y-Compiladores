@@ -35,11 +35,18 @@ void escribir_valor_data(FILE *archivo_assembler,
     snprintf(mensaje, sizeof(mensaje), "    %-40s %-8s %s, '$', 3 dup (?)",
              dato->nombre, "db", valor_con_comillas);
     free(valor_con_comillas);
+  } else if (dato->tipo_dato == TIPO_DATO_STRING) {
+    // Variable string sin valor inicial - reservar espacio para 50 caracteres
+    snprintf(mensaje, sizeof(mensaje), "    %-40s %-8s 50 dup (?), '$'",
+             dato->nombre, "db");
   } else {
-    const char *valor_a_escribir = dato->valor ? dato->valor : "";
+    const char *valor_a_escribir = dato->valor;
     char valor_flotante[256];
 
-    if (dato->tipo_dato == TIPO_DATO_CTE_INT && dato->valor) {
+    // Si no tiene valor o es "__", usar "?"
+    if (!valor_a_escribir || strcmp(valor_a_escribir, "__") == 0 || strlen(valor_a_escribir) == 0) {
+      valor_a_escribir = "?";
+    } else if (dato->tipo_dato == TIPO_DATO_CTE_INT && dato->valor) {
       snprintf(valor_flotante, sizeof(valor_flotante), "%s.0", dato->valor);
       valor_a_escribir = valor_flotante;
     }
@@ -287,7 +294,7 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
       if (nombre_variable) {
         t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(nombre_variable);
         if (dato != NULL && dato->tipo_dato == TIPO_DATO_STRING) {
-          fprintf(archivo_assembler, "GetString %s\n", nombre_variable);
+          fprintf(archivo_assembler, "getString %s\n", nombre_variable);
         } else {
           fprintf(archivo_assembler, "GetFloat %s\n", nombre_variable);
         }
