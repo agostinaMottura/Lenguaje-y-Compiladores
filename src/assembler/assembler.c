@@ -230,13 +230,11 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     nodo = nodo->siguiente;
   }
 
-  /* Iterar vector y escribir solo operadores */
   for (int i = 0; i < vector_size; i++) {
     t_gci_tercetos_dato *t = vec[i];
     if (t == NULL || t->a == NULL)
       continue;
 
-    // Si es una etiqueta, generarla con su nombre
     if (es_etiqueta(t->a)) {
       fprintf(archivo_assembler, "%s:\n", t->a);
       continue;
@@ -271,8 +269,29 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     if (strcmp(t->a, "write") == 0) {
       const char *nombre_valor =
           resolver_nombre_operando(t->b, tercetos, tabla);
-      if (nombre_valor)
-        fprintf(archivo_assembler, "DisplayFloat %s,2\n", nombre_valor);
+      if (nombre_valor) {
+        t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(nombre_valor);
+        if (dato != NULL && (dato->tipo_dato == TIPO_DATO_STRING || 
+                             dato->tipo_dato == TIPO_DATO_CTE_STRING)) {
+          fprintf(archivo_assembler, "displayString %s\n", nombre_valor);
+        } else {
+          fprintf(archivo_assembler, "DisplayFloat %s,2\n", nombre_valor);
+        }
+      }
+      continue;
+    }
+
+    if (strcmp(t->a, "read") == 0) {
+      const char *nombre_variable =
+          resolver_nombre_operando(t->b, tercetos, tabla);
+      if (nombre_variable) {
+        t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(nombre_variable);
+        if (dato != NULL && dato->tipo_dato == TIPO_DATO_STRING) {
+          fprintf(archivo_assembler, "GetString %s\n", nombre_variable);
+        } else {
+          fprintf(archivo_assembler, "GetFloat %s\n", nombre_variable);
+        }
+      }
       continue;
     }
 
