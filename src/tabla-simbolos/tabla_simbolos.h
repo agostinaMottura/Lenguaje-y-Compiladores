@@ -46,4 +46,7 @@ t_tabla_simbolos_dato *tabla_simbolos_crear_dato(
 
 t_tabla_simbolos_dato *tabla_simbolos_obtener_dato(const char *nombre);
 
+// Función para verificar si un dato existe en la tabla de símbolos
+int tabla_simbolos_existe_dato(const char *nombre);
+
 #endif // TABLA_SIMBOLOS_H

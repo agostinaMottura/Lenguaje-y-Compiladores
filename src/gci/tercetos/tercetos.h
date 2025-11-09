@@ -1,6 +1,8 @@
 #ifndef GCI_TERCETOS_H
 #define GCI_TERCETOS_H
 #include <stdio.h>
+#include "../../tabla-simbolos/tipo-dato/tipo_dato.h"
+#include "../../utils/aux_variables.h"
 
 #define GCI_TECETOS_NOMBRE_ARCHIVO "intermediate-code.txt"
 

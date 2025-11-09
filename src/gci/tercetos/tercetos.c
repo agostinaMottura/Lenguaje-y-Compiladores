@@ -5,6 +5,8 @@
 #include "./informes/informes.h"
 #include "./tercetos.h"
 #include "../../validaciones/validaciones.h"
+#include "../../tabla-simbolos/tipo-dato/tipo_dato.h"
+#include "../../utils/aux_variables.h"
 
 // Declaración explícita de strdup para evitar warnings
 char *strdup(const char *s);
@@ -39,6 +41,11 @@ gci_tercetos_agregar_terceto(
     void *b,
     void *c)
 {
+    // Si es una variable auxiliar (comienza con @), la cargamos en la tabla de símbolos
+    if (a != NULL && a[0] == '@') {
+        cargar_variable_auxiliar_si_no_existe(a, TIPO_DATO_INT);  // Por defecto INT, se podría parametrizar
+    }
+
     t_gci_tercetos_dato *nuevo_terceto = crear_terceto(
         a,
         obtener_indice_de_un_terceto(b),
