@@ -36,14 +36,22 @@ void escribir_valor_data(FILE *archivo_assembler,
              dato->nombre, "db", valor_con_comillas);
     free(valor_con_comillas);
   } else {
+    const char *valor_a_escribir = dato->valor ? dato->valor : "";
+    char valor_flotante[256];
+    
+    if (dato->tipo_dato == TIPO_DATO_CTE_INT && dato->valor) {
+      snprintf(valor_flotante, sizeof(valor_flotante), "%s.0", dato->valor);
+      valor_a_escribir = valor_flotante;
+    }
+    
     snprintf(mensaje, sizeof(mensaje), "    %-40s %-8s %s", dato->nombre,
-             obtener_tipo_de_dato(dato), dato->valor ? dato->valor : "");
+             obtener_tipo_de_dato(dato), valor_a_escribir);
   }
 
   fprintf(archivo_assembler, "%s\n", mensaje);
 }
 
-char *mapear_operador_float(const char *operador) {
+char *mapear_operador(const char *operador) {
   if (operador == NULL)
     return NULL;
   if (strcmp(operador, "+") == 0)
@@ -89,7 +97,7 @@ obtener_terceto_por_indice(t_gci_tercetos_lista_tercetos *lista, int indice) {
 }
 
 const char *tabla_buscar_nombre_por_valor(t_tabla_simbolos *tabla,
-                                                 const char *valor) {
+                                          const char *valor) {
   if (tabla == NULL || valor == NULL)
     return NULL;
   t_tabla_simbolos_nodo *n = tabla->primero;
@@ -116,8 +124,9 @@ int es_constante_numerica_token(const char *token) {
           token[0] == '.');
 }
 
-const char * resolver_nombre_operando(const char *op, t_gci_tercetos_lista_tercetos *lista,
-                         t_tabla_simbolos *tabla) {
+const char *resolver_nombre_operando(const char *op,
+                                     t_gci_tercetos_lista_tercetos *lista,
+                                     t_tabla_simbolos *tabla) {
   if (op == NULL)
     return NULL;
   if (strcmp(op, "__") == 0)
@@ -131,21 +140,17 @@ const char * resolver_nombre_operando(const char *op, t_gci_tercetos_lista_terce
     if (t == NULL || t->a == NULL)
       return NULL;
     if (es_operador_aritmetico(t->a)) {
-      /* Es una referencia a una operacion; no hay simbolo directo que cargar */
       return NULL;
     }
     token = t->a;
   }
 
-  /* Si token parece constante numerica (empieza por digito, '-' o '.') buscar
-   * su nombre subrayado en la TS por valor */
-  if ((token[0] >= '0' && token[0] <= '9') || token[0] == '-' ||
-      token[0] == '.') {
-    const char *nombre_cte = tabla_buscar_nombre_por_valor(tabla, token);
-    return nombre_cte ? nombre_cte : token;
+  const char *nombre_en_tabla = tabla_buscar_nombre_por_valor(tabla, token);
+  if (nombre_en_tabla) {
+    return nombre_en_tabla;
   }
 
-  /* Caso variable / identificador: usar el nombre tal cual */
+  /* Si no se encuentra en la tabla, usar el token tal cual */
   return token;
 }
 
@@ -203,7 +208,41 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     t_gci_tercetos_dato *t = vec[i];
     if (t == NULL || t->a == NULL)
       continue;
-    const char *mnemonic = mapear_operador_float(t->a);
+
+    if (strcmp(t->a, ":=") == 0) {
+      int idx_c = -1;
+      int es_operacion_c = 0;
+
+      if (parsear_indice(t->c, &idx_c)) {
+        if (idx_c >= 0 && idx_c < vector_size) {
+          t_gci_tercetos_dato *tc = vec[idx_c];
+          if (tc && tc->a && es_operador_aritmetico(tc->a)) {
+            es_operacion_c = 1;
+          }
+        }
+      }
+
+      if (!es_operacion_c) {
+        const char *nombre_c = resolver_nombre_operando(t->c, tercetos, tabla);
+        if (nombre_c)
+          fprintf(archivo_assembler, "FLD %s\n", nombre_c);
+      }
+
+      const char *nombre_id = resolver_nombre_operando(t->b, tercetos, tabla);
+      if (nombre_id)
+        fprintf(archivo_assembler, "FSTP %s\n", nombre_id);
+
+      continue;
+    }
+
+    if (strcmp(t->a, "write") == 0) {
+      const char *nombre_valor = resolver_nombre_operando(t->b, tercetos, tabla);
+      if (nombre_valor)
+        fprintf(archivo_assembler, "DisplayFloat %s,2\n", nombre_valor);
+      continue;
+    }
+
+    const char *mnemonic = mapear_operador(t->a);
     if (mnemonic == NULL)
       continue;
 
