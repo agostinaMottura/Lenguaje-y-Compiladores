@@ -37,12 +37,14 @@ void gci_tercetos_actualizar(
     t_gci_tercetos_dato *terceto_a_actualizar);
 void gci_tercetos_guardar();
 void gci_imprimir_terceto(void *terceto);
+void gci_tercetos_actualizar_salto_con_etiqueta(void *terceto_salto, void *terceto_etiqueta);  
 
 t_gci_tercetos_dato *gci_tercetos_obtener_siguiente_indice();
 t_gci_tercetos_dato *gci_tercetos_agregar_terceto(
     const char *a,
     void *b,
     void *c);
+t_gci_tercetos_dato *gci_tercetos_agregar_etiqueta();  
 
 // Funciones privadas
 void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo);

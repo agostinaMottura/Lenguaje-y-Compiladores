@@ -13,6 +13,7 @@ char *strdup(const char *s);
 
 t_gci_tercetos_lista_tercetos lista_tercetos;
 int cantidad_tercetos_en_lista = 0;
+int contador_etiquetas = 0;  
 
 void gci_tercetos_crear_lista()
 {
@@ -172,7 +173,7 @@ void gci_tercetos_guardar()
     liberar_memoria_nodo(nodo);
 
     fclose(arch);
-    informes_gci_tercetos_imprimir_mensaje("Lista de tercetos almacenada correctametne");
+    informes_gci_tercetos_imprimir_mensaje("Lista de tercetos almacenada correctamente");
 }
 
 void gci_imprimir_terceto(void *terceto)
@@ -223,6 +224,32 @@ t_gci_tercetos_dato *crear_terceto(
     nuevo_terceto->indice = cantidad_tercetos_en_lista;
 
     return nuevo_terceto;
+}
+
+
+t_gci_tercetos_dato *gci_tercetos_agregar_etiqueta()
+{
+    char nombre_etiqueta[50];
+    sprintf(nombre_etiqueta, "etiqueta_%d", contador_etiquetas);
+    contador_etiquetas++;
+    
+    return gci_tercetos_agregar_terceto(nombre_etiqueta, NULL, NULL);
+}
+
+void gci_tercetos_actualizar_salto_con_etiqueta(void *terceto_salto, void *terceto_etiqueta)
+{
+    if (terceto_salto == NULL || terceto_etiqueta == NULL)
+        return;
+
+    t_gci_tercetos_dato *salto = (t_gci_tercetos_dato *)terceto_salto;
+    t_gci_tercetos_dato *etiqueta = (t_gci_tercetos_dato *)terceto_etiqueta;
+
+    if (salto->b != NULL)
+    {
+        free(salto->b);
+    }
+
+    salto->b = strdup(etiqueta->a);
 }
 
 void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo)

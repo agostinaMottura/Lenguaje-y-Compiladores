@@ -324,15 +324,19 @@ triangleAreaMaximum:
       NULL
     );
 
-    // Si el segundo es mayor, devolvemos el segundo
-    gci_tercetos_actualizar_indice(salto_menor_que);
+    // Etiqueta para el caso cuando el segundo es mayor
+    void* etiqueta_segundo_mayor = gci_tercetos_agregar_etiqueta();
+    gci_tercetos_actualizar_salto_con_etiqueta(salto_menor_que, etiqueta_segundo_mayor);
 
     gci_tercetos_agregar_terceto(
       ":=",
       variable_asignacion,
       area_triangulo_b
     );
-    gci_tercetos_actualizar_indice(salto_incondicional);
+    
+    // Etiqueta para el final de la comparación
+    void* etiqueta_fin_comparacion = gci_tercetos_agregar_etiqueta();
+    gci_tercetos_actualizar_salto_con_etiqueta(salto_incondicional, etiqueta_fin_comparacion);
 
      
   }
@@ -459,8 +463,10 @@ triangulo:
         NULL
       );
 
-      // Si el segundo termino es mayor, calculamos la resta invertida
-      gci_tercetos_actualizar_indice(area_triangulo_salto_comp_terminos);
+      // Etiqueta para cuando el segundo término es mayor
+      void* etiqueta_segundo_termino_mayor = gci_tercetos_agregar_etiqueta();
+      gci_tercetos_actualizar_salto_con_etiqueta(area_triangulo_salto_comp_terminos, etiqueta_segundo_termino_mayor);
+      
       area_triangulo_resta = gci_tercetos_agregar_terceto(
         "-",
         area_triangulo_segundo_termino,
@@ -489,7 +495,9 @@ triangulo:
         );
       }
 
-      gci_tercetos_actualizar_indice(area_triangulo_salto_incondicional);
+      // Etiqueta para el final del cálculo de área
+      void* etiqueta_fin_calculo_area = gci_tercetos_agregar_etiqueta();
+      gci_tercetos_actualizar_salto_con_etiqueta(area_triangulo_salto_incondicional, etiqueta_fin_calculo_area);
     }
   ;
 
@@ -691,10 +699,7 @@ read:
 ciclo:
   WHILE PARENTESIS_A
   {
-    punteros_simbolos_no_terminales_ciclo = gci_tercetos_agregar_terceto(
-                                              "InicioCicloWhile", 
-                                              NULL, 
-                                              NULL);
+    punteros_simbolos_no_terminales_ciclo = gci_tercetos_agregar_etiqueta();
     pila_punteros_apilar(pila_ciclos_while, punteros_simbolos_no_terminales_ciclo);
   } condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C 
   {
@@ -702,16 +707,21 @@ ciclo:
       SIMBOLOS_NO_TERMINALES_CICLO, 
       "WHILE PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
 
-      void* puntero_inicio_ciclo_while;
-      pila_punteros_desapilar(pila_ciclos_while, &puntero_inicio_ciclo_while);
+      void* puntero_etiqueta_inicio_ciclo;
+      pila_punteros_desapilar(pila_ciclos_while, &puntero_etiqueta_inicio_ciclo);
+      
       aux_terceto_salto_comparacion = gci_tercetos_agregar_terceto(
           "BI",
           NULL, 
-          puntero_inicio_ciclo_while);
+          NULL);
+      
+      gci_tercetos_actualizar_salto_con_etiqueta(aux_terceto_salto_comparacion, puntero_etiqueta_inicio_ciclo);
 
+      void* etiqueta_fin_ciclo = gci_tercetos_agregar_etiqueta();
+      
       void* terceto_salto_comparacion;
       pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-      gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+      gci_tercetos_actualizar_salto_con_etiqueta(terceto_salto_comparacion, etiqueta_fin_ciclo);
   }
   ;
 
@@ -734,11 +744,13 @@ bloque_if:
       SIMBOLOS_NO_TERMINALES_BLOQUE_IF, 
       "IF PARENTESIS_A condicional PARENTESIS_C LLAVES_A instrucciones LLAVES_C");
     
+      void* etiqueta_fin_if = gci_tercetos_agregar_etiqueta();
+      
       void* terceto_salto_comparacion;
       while(!pila_punteros_esta_vacia(pila_saltos_comparacion) && aux_cantidad_comparaciones_if[aux_if_id] > 0)
       {
         pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-        gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+        gci_tercetos_actualizar_salto_con_etiqueta(terceto_salto_comparacion, etiqueta_fin_if);
         aux_cantidad_comparaciones_if[aux_if_id]--;
       }
 
@@ -755,24 +767,26 @@ bloque_if:
           NULL, 
           NULL);
 
-        void* terceto_salto_comparacion;
+        void* etiqueta_inicio_else = gci_tercetos_agregar_etiqueta();
 
+        void* terceto_salto_comparacion;
         while(!pila_punteros_esta_vacia(pila_saltos_comparacion) && aux_cantidad_comparaciones_if[aux_if_id] > 0)
         {
           pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-          gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+          gci_tercetos_actualizar_salto_con_etiqueta(terceto_salto_comparacion, etiqueta_inicio_else);
           aux_cantidad_comparaciones_if[aux_if_id]--;
         }
 
-        // Despues de actualizar el terceto de comparacion, apilo el BI
         pila_punteros_apilar(pila_saltos_comparacion, aux_terceto_salto_comparacion);
 
         aux_if_id--;
     } LLAVES_A instrucciones LLAVES_C
     {
+        void* etiqueta_fin_if_else = gci_tercetos_agregar_etiqueta();
+        
         void* terceto_salto_comparacion;
         pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-        gci_tercetos_actualizar_indice(terceto_salto_comparacion);
+        gci_tercetos_actualizar_salto_con_etiqueta(terceto_salto_comparacion, etiqueta_fin_if_else);
     }
   ;
 condicional:
@@ -781,12 +795,16 @@ condicional:
     informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_CONDICIONAL, "condicion_compuesta");
     punteros_simbolos_no_terminales_condicional = punteros_simbolos_no_terminales_condicion_compuesta;
 
-    
-    void* terceto_salto_comparacion;
-    while(!pila_punteros_esta_vacia(pila_saltos_or))
+    if (!pila_punteros_esta_vacia(pila_saltos_or))
     {
-      pila_punteros_desapilar(pila_saltos_or, &terceto_salto_comparacion);
-      gci_tercetos_actualizar_indice_izq(terceto_salto_comparacion);
+      void* etiqueta_continuacion_or = gci_tercetos_agregar_etiqueta();
+      
+      void* terceto_salto_comparacion;
+      while(!pila_punteros_esta_vacia(pila_saltos_or))
+      {
+        pila_punteros_desapilar(pila_saltos_or, &terceto_salto_comparacion);
+        gci_tercetos_actualizar_salto_con_etiqueta(terceto_salto_comparacion, etiqueta_continuacion_or);
+      }
     }
   }
   ;
@@ -808,7 +826,6 @@ condicion_compuesta:
     
     void* terceto_salto_comparacion;
     pila_punteros_desapilar(pila_saltos_comparacion, &terceto_salto_comparacion);
-    gci_tercetos_actualizar_indice(terceto_salto_comparacion);
     gci_tercetos_actualizar_primera_posicion(terceto_salto_comparacion, utils_obtener_salto_comparacion_opuesto(salto_comparacion));
     pila_punteros_apilar(pila_saltos_or, terceto_salto_comparacion);
 
