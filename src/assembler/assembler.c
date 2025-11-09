@@ -137,6 +137,13 @@ int es_operador_aritmetico(const char *a) {
           strcmp(a, "/") == 0);
 }
 
+int es_etiqueta(const char *a) {
+  if (a == NULL)
+    return 0;
+  // Una etiqueta empieza con "etiqueta_"
+  return (strncmp(a, "etiqueta_", 9) == 0);
+}
+
 int es_constante_numerica_token(const char *token) {
   if (token == NULL || token[0] == '\0')
     return 0;
@@ -229,7 +236,12 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     if (t == NULL || t->a == NULL)
       continue;
 
-    fprintf(archivo_assembler, "LABEL_%d:\n", i);
+    // Si es una etiqueta, generarla con su nombre
+    if (es_etiqueta(t->a)) {
+      fprintf(archivo_assembler, "%s:\n", t->a);
+      continue;
+    }
+
     if (strcmp(t->a, ":=") == 0) {
       int idx_c = -1;
       int es_operacion_c = 0;
@@ -282,9 +294,20 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
 
     const char *salto_asm = mapear_salto_condicional(t->a);
     if (salto_asm != NULL) {
-      int idx_destino = -1;
-      if (parsear_indice(t->b, &idx_destino)) {
-        fprintf(archivo_assembler, "%s LABEL_%d\n", salto_asm, idx_destino);
+      // El destino del salto puede ser una etiqueta directamente o un índice
+      const char *destino = t->b;
+      
+      if (destino != NULL && strcmp(destino, "__") != 0) {
+        // Si es una etiqueta, usarla directamente
+        if (strncmp(destino, "etiqueta_", 9) == 0) {
+          fprintf(archivo_assembler, "%s %s\n", salto_asm, destino);
+        } else {
+          // Si es un índice [X], convertir a LABEL_X (compatibilidad con código viejo)
+          int idx_destino = -1;
+          if (parsear_indice(destino, &idx_destino)) {
+            fprintf(archivo_assembler, "%s LABEL_%d\n", salto_asm, idx_destino);
+          }
+        }
       }
       continue;
     }

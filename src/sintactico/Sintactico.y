@@ -312,7 +312,6 @@ triangleAreaMaximum:
       NULL
     );
 
-    // Si el primero es mayor o igual, devolvemos el primero
     gci_tercetos_agregar_terceto(
       ":=",
       variable_asignacion,
@@ -324,7 +323,6 @@ triangleAreaMaximum:
       NULL
     );
 
-    // Etiqueta para el caso cuando el segundo es mayor
     void* etiqueta_segundo_mayor = gci_tercetos_agregar_etiqueta();
     gci_tercetos_actualizar_salto_con_etiqueta(salto_menor_que, etiqueta_segundo_mayor);
 
@@ -334,7 +332,6 @@ triangleAreaMaximum:
       area_triangulo_b
     );
     
-    // Etiqueta para el final de la comparación
     void* etiqueta_fin_comparacion = gci_tercetos_agregar_etiqueta();
     gci_tercetos_actualizar_salto_con_etiqueta(salto_incondicional, etiqueta_fin_comparacion);
 
@@ -463,7 +460,6 @@ triangulo:
         NULL
       );
 
-      // Etiqueta para cuando el segundo término es mayor
       void* etiqueta_segundo_termino_mayor = gci_tercetos_agregar_etiqueta();
       gci_tercetos_actualizar_salto_con_etiqueta(area_triangulo_salto_comp_terminos, etiqueta_segundo_termino_mayor);
       
@@ -495,7 +491,6 @@ triangulo:
         );
       }
 
-      // Etiqueta para el final del cálculo de área
       void* etiqueta_fin_calculo_area = gci_tercetos_agregar_etiqueta();
       gci_tercetos_actualizar_salto_con_etiqueta(area_triangulo_salto_incondicional, etiqueta_fin_calculo_area);
     }
