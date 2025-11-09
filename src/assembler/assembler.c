@@ -38,12 +38,12 @@ void escribir_valor_data(FILE *archivo_assembler,
   } else {
     const char *valor_a_escribir = dato->valor ? dato->valor : "";
     char valor_flotante[256];
-    
+
     if (dato->tipo_dato == TIPO_DATO_CTE_INT && dato->valor) {
       snprintf(valor_flotante, sizeof(valor_flotante), "%s.0", dato->valor);
       valor_a_escribir = valor_flotante;
     }
-    
+
     snprintf(mensaje, sizeof(mensaje), "    %-40s %-8s %s", dato->nombre,
              obtener_tipo_de_dato(dato), valor_a_escribir);
   }
@@ -62,6 +62,26 @@ char *mapear_operador(const char *operador) {
     return "FMUL";
   if (strcmp(operador, "/") == 0)
     return "FDIV";
+  return NULL;
+}
+
+char *mapear_salto_condicional(const char *operador) {
+  if (operador == NULL)
+    return NULL;
+  if (strcmp(operador, "BLE") == 0)
+    return "JBE";
+  if (strcmp(operador, "BLT") == 0)
+    return "JB";
+  if (strcmp(operador, "BGT") == 0)
+    return "JA";
+  if (strcmp(operador, "BGE") == 0)
+    return "JAE";
+  if (strcmp(operador, "BEQ") == 0)
+    return "JE";
+  if (strcmp(operador, "BNE") == 0)
+    return "JNE";
+  if (strcmp(operador, "BI") == 0)
+    return "JMP";
   return NULL;
 }
 
@@ -209,6 +229,7 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     if (t == NULL || t->a == NULL)
       continue;
 
+    fprintf(archivo_assembler, "LABEL_%d:\n", i);
     if (strcmp(t->a, ":=") == 0) {
       int idx_c = -1;
       int es_operacion_c = 0;
@@ -236,9 +257,35 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     }
 
     if (strcmp(t->a, "write") == 0) {
-      const char *nombre_valor = resolver_nombre_operando(t->b, tercetos, tabla);
+      const char *nombre_valor =
+          resolver_nombre_operando(t->b, tercetos, tabla);
       if (nombre_valor)
         fprintf(archivo_assembler, "DisplayFloat %s,2\n", nombre_valor);
+      continue;
+    }
+
+    if (strcmp(t->a, "CMP") == 0) {
+      const char *nombre_valor_b =
+          resolver_nombre_operando(t->b, tercetos, tabla);
+      const char *nombre_valor_c =
+          resolver_nombre_operando(t->c, tercetos, tabla);
+      if (nombre_valor_b && nombre_valor_c) {
+        fprintf(archivo_assembler, "FLD %s\n", nombre_valor_b);
+        fprintf(archivo_assembler, "FLD %s\n", nombre_valor_c);
+        fprintf(archivo_assembler, "FXCH\n");
+        fprintf(archivo_assembler, "FCOM\n");
+        fprintf(archivo_assembler, "FSTSW AX\n");
+        fprintf(archivo_assembler, "SAHF\n");
+      }
+      continue;
+    }
+
+    const char *salto_asm = mapear_salto_condicional(t->a);
+    if (salto_asm != NULL) {
+      int idx_destino = -1;
+      if (parsear_indice(t->b, &idx_destino)) {
+        fprintf(archivo_assembler, "%s LABEL_%d\n", salto_asm, idx_destino);
+      }
       continue;
     }
 
