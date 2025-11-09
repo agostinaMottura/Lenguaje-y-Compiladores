@@ -23,7 +23,10 @@ const char *utils_obtener_string_sin_comillas(const char *str)
 const char *utils_obtener_string_numero_negativo(const char *nro)
 {
     static char str[VALIDACIONES_MAX_LONGITUD_STRING];
-
+    
+    // Limpia el buffer antes de usarlo
+    str[0] = '\0';
+    
     strcat(str, "-");
     strcat(str, nro);
 

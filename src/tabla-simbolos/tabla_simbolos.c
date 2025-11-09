@@ -10,20 +10,26 @@ t_tabla_simbolos tabla_simbolos;
 // Validaciones
 int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_tabla_simbolos_nodo *nodo)
 {
-
-    if(valor == TIPO_DATO_VALOR_CTE_FLOAT || TIPO_DATO_VALOR_CTE_INT || TIPO_DATO_VALOR_CTE_STRING)
-    {
-        char nombre_cte[VALIDACIONES_MAX_LONGITUD_STRING + 1] = "_";
-        strcat(nombre_cte, nombre);
-        nombre = nombre_cte;
-    }
-
     while (nodo)
     {
-        if (strcmp(nodo->dato.nombre, nombre) == 0 &&
-            strcmp(nodo->dato.valor, valor) == 0)
+        // Para constantes, comparamos solo el valor
+        if (nodo->dato.tipo_dato == TIPO_DATO_CTE_FLOAT ||
+            nodo->dato.tipo_dato == TIPO_DATO_CTE_INT ||
+            nodo->dato.tipo_dato == TIPO_DATO_CTE_STRING)
         {
-            return 1;
+            if (strcmp(nodo->dato.valor, valor) == 0)
+            {
+                return 1;
+            }
+        }
+        else 
+        {
+            // Para variables normales, comparamos nombre y valor
+            if (strcmp(nodo->dato.nombre, nombre) == 0 &&
+                strcmp(nodo->dato.valor, valor) == 0)
+            {
+                return 1;
+            }
         }
         nodo = nodo->siguiente;
     }
