@@ -116,8 +116,7 @@ int tabla_simbolos_insertar_dato(const char *nombre, t_tipo_dato tipo_dato, cons
     return 1;
 }
 
-t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato tipo_dato,
-                                                 const char *valor)
+t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato tipo_dato, const char *valor)
 {
     t_tabla_simbolos_dato *dato = (t_tabla_simbolos_dato *)calloc(1, sizeof(t_tabla_simbolos_dato));
     if (dato == NULL)
@@ -153,7 +152,11 @@ t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato
         return NULL;
     }
     strcpy(dato->valor, valor);
-    dato->longitud = strlen(valor);
+
+    if (!tipo_dato_es_constante(dato->tipo_dato))
+        dato->longitud = 0;
+    else
+        dato->longitud = strlen(valor);
 
     if (!tipo_dato_es_constante(dato->tipo_dato))
     {
