@@ -21,7 +21,7 @@ gcc.exe -std=c99 -D_GNU_SOURCE -D_POSIX_C_SOURCE=200809L -Wno-implicit-function-
 
 :: Ejecutar compilador
 if "%~1"=="" (
-    compilador.exe prueba.txt
+    compilador.exe test/*
 ) else (
     compilador.exe %1
 )

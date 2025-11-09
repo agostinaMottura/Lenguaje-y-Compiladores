@@ -150,7 +150,7 @@ programa:
       informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_PROGRAMA, "instrucciones");
       punteros_simbolos_no_terminales_programa = punteros_simbolos_no_terminales_instrucciones;
 
-      generar_assembler(&lista_tercetos, &tabla_simbolos);
+      //generar_assembler(&lista_tercetos, &tabla_simbolos);
     }
   ;
 

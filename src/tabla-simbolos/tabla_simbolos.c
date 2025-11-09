@@ -10,6 +10,14 @@ t_tabla_simbolos tabla_simbolos;
 // Validaciones
 int existe_nombre_en_tabla_de_simbolos(const char *nombre, const char *valor, t_tabla_simbolos_nodo *nodo)
 {
+
+    if(valor == TIPO_DATO_VALOR_CTE_FLOAT || TIPO_DATO_VALOR_CTE_INT || TIPO_DATO_VALOR_CTE_STRING)
+    {
+        char nombre_cte[VALIDACIONES_MAX_LONGITUD_STRING + 1] = "_";
+        strcat(nombre_cte, nombre);
+        nombre = nombre_cte;
+    }
+
     while (nodo)
     {
         if (strcmp(nodo->dato.nombre, nombre) == 0 &&
