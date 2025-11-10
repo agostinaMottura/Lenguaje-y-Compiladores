@@ -266,9 +266,16 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
       }
 
       if (es_string) {
-        // Manejo de strings usando registros
-        fprintf(archivo_assembler, "MOV R1, %s\n", nombre_c);
-        fprintf(archivo_assembler, "MOV %s, R1\n", nombre_id);
+        // Manejo de strings usando LEA y REP MOVSB
+        fprintf(archivo_assembler, "LEA ESI, %s\n", nombre_c);
+        fprintf(archivo_assembler, "LEA EDI, %s\n", nombre_id);
+        
+        // Obtener longitud del string
+        t_tabla_simbolos_dato *dato_origen = tabla_simbolos_obtener_dato(nombre_c);
+        int longitud = dato_origen->longitud + 1;  // +1 por el '$'
+        
+        fprintf(archivo_assembler, "MOV ECX, %d\n", longitud);
+        fprintf(archivo_assembler, "REP MOVSB\n\n");
       } else {
         // Lógica existente para números
         if (parsear_indice(t->c, &idx_c)) {
