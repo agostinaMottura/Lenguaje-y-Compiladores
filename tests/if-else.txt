@@ -2,6 +2,8 @@ init {
     a, b: float
 }
 
+a := 5.0
+b := 10.0
 if (a > b)
 {
     write("a es mas grande que b")
