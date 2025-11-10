@@ -71,7 +71,7 @@ FSTP @area_a_segundo_termino
 FLD @area_a_primer_termino
 FLD @area_a_segundo_termino
 FSUB
-FLD ABS
+FABS
 FLD _2
 FDIV
 FSTP @var_aux_area_triangulo_a
@@ -114,7 +114,7 @@ FSTP @area_a_segundo_termino
 FLD @area_a_primer_termino
 FLD @area_a_segundo_termino
 FSUB
-FLD ABS
+FABS
 FLD _2
 FDIV
 FSTP @var_aux_area_triangulo_b

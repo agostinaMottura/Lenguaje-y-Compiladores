@@ -267,7 +267,9 @@ static void generar_asignacion_numerica(
     FILE *f, const char *valor_c, const char *destino, 
     int es_resultado_operacion) {
     if (!es_resultado_operacion && valor_c)
+    {
         fprintf(f, "FLD %s\n", valor_c);
+    }
     if (destino)
         fprintf(f, "FSTP %s\n", destino);
 
@@ -390,14 +392,18 @@ static void generar_comparacion(
     // (quedará en ST(1) después de cargar op1)
     if (!es_op_c) {
         const char *op2 = resolver_operando(terceto->c, lista, tabla);
-        if (op2) fprintf(f, "FLD %s\n", op2);
+        if (op2) {
+            fprintf(f, "FLD %s\n", op2);
+        } 
     }
     
     // Si op1 (b) NO es una operación, cargarlo SEGUNDO
     // (quedará en ST(0) para la comparación)
     if (!es_op_b) {
         const char *op1 = resolver_operando(terceto->b, lista, tabla);
-        if (op1) fprintf(f, "FLD %s\n", op1);
+        if (op1) {
+            fprintf(f, "FLD %s\n", op1);
+        } 
     }
     
     // Realizar la comparación
@@ -451,7 +457,10 @@ static void generar_operacion_aritmetica(
             if (tb && tb->a) {
                 const char *nombre = buscar_nombre_por_valor(tabla, tb->a);
                 const char *simbolo = nombre ? nombre : tb->a;
-                if (simbolo) fprintf(f, "FLD %s\n", simbolo);
+                if (simbolo && strcmp(simbolo, "ABS") != 0) 
+                {
+                    fprintf(f, "FLD %s\n", simbolo);
+                }
             }
         }
     }
@@ -463,7 +472,10 @@ static void generar_operacion_aritmetica(
             if (tc && tc->a) {
                 const char *nombre = buscar_nombre_por_valor(tabla, tc->a);
                 const char *simbolo = nombre ? nombre : tc->a;
-                if (simbolo) fprintf(f, "FLD %s\n", simbolo);
+                if (simbolo)
+                {
+                    fprintf(f, "FLD %s\n", simbolo);
+                } 
             }
         }
     }
@@ -503,6 +515,11 @@ static void procesar_terceto(
     
     if (strcmp(terceto->a, "CMP") == 0) {
         generar_comparacion(f, terceto, lista, tabla);
+        return;
+    }
+
+    if (strcmp(terceto->a, "ABS") == 0) {
+        fprintf(f, "FABS\n");
         return;
     }
     
