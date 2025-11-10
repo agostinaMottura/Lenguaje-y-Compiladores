@@ -247,6 +247,9 @@ static void generar_asignacion_string(
     fprintf(f, "LEA EDI, %s\n", destino);
     fprintf(f, "MOV ECX, %d\n", dato_origen->longitud + 1);
     fprintf(f, "REP MOVSB\n\n");
+
+    fprintf(f, "displayString %s\n", destino);
+    fprintf(f, "newLine\n");
 }
 
 static void generar_asignacion_numerica(
@@ -256,6 +259,12 @@ static void generar_asignacion_numerica(
         fprintf(f, "FLD %s\n", valor_c);
     if (destino)
         fprintf(f, "FSTP %s\n", destino);
+
+    // agregar displayFlat para ver el resultado en consola
+    if (destino) {
+        fprintf(f, "DisplayFloat %s, 2\n", destino);
+        fprintf(f, "newLine\n");
+    }
 }
 
 static void generar_asignacion(

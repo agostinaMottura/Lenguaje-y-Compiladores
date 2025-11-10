@@ -4,11 +4,7 @@ init {
 }
 
 a := 9
-a := 9
-a := 9
 
-b := "hola"
 b := "asldk  fh sjf"
 
 a := -205.0
-a := -9.5
