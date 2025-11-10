@@ -5,9 +5,8 @@ include C:\asm\number.asm
 .STACK 200h
 
 .DATA
-    var1                                     dd       ?
-    _1                                       dd       1.0
-    _ewr                                     db       "ewr", '$', 3 dup (?)
+    base                                     db       50 dup (?), '$'
+    prueba                                   dd       ?
 
 
 .CODE
@@ -17,11 +16,12 @@ MOV AX,@DATA
 MOV DS,AX
 MOV ES,AX
 
-FLD _1
-FSTP var1
-displayString _ewr
+getString base
+displayString base
 newLine
-DisplayFloat var1,2
+GetFloat prueba
+DisplayFloat prueba, 2
+newLine
 
 MOV AX,4C00H
 INT 21H

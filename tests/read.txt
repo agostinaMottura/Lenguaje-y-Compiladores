@@ -1,5 +1,7 @@
 init {
     base : string
+    prueba : int
 }
 
 read(base) #+ base es una variable +#
+read(prueba) #+ prueba es una variable numérica +#

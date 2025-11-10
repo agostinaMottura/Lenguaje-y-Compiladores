@@ -315,9 +315,17 @@ static void generar_read(
     t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(nombre);
     
     if (dato && dato->tipo_dato == TIPO_DATO_STRING)
-        fprintf(f, "getString %s\n", nombre);
+    {
+      fprintf(f, "getString %s\n", nombre);
+      fprintf(f, "displayString %s\n", nombre);
+      fprintf(f, "newLine\n");
+    }
     else
-        fprintf(f, "GetFloat %s\n", nombre);
+        {
+      fprintf(f, "GetFloat %s\n", nombre);
+      fprintf(f, "DisplayFloat %s, 2\n", nombre); //muestra el valor leído y la cant dsp de la coma
+      fprintf(f, "newLine\n");
+    }
 }
 
 static void generar_comparacion(
