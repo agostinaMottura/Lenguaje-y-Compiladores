@@ -353,15 +353,39 @@ static void generar_comparacion(
     t_gci_tercetos_lista_tercetos *lista,
     t_tabla_simbolos *tabla) {
     
-    const char *op1 = resolver_operando(terceto->b, lista, tabla);
-    const char *op2 = resolver_operando(terceto->c, lista, tabla);
+    int idx_b, idx_c;
+    int es_op_b = 0, es_op_c = 0;
     
-    if (!op1 || !op2) return;
+    // Verificar si los operandos son operaciones
+    if (parsear_indice(terceto->b, &idx_b)) {
+        t_gci_tercetos_dato *tb = buscar_terceto_por_indice(lista, idx_b);
+        if (tb && tb->a && es_operador_aritmetico(tb->a)) {
+            es_op_b = 1;
+        }
+    }
     
-    // Cargar primero op2, luego op1, para que FCOM compare op1 con op2
+    if (parsear_indice(terceto->c, &idx_c)) {
+        t_gci_tercetos_dato *tc = buscar_terceto_por_indice(lista, idx_c);
+        if (tc && tc->a && es_operador_aritmetico(tc->a)) {
+            es_op_c = 1;
+        }
+    }
+    
+    // Si op1 (b) NO es una operación, cargarlo
+    // (si es operación, ya está en ST(0) de pasos anteriores)
+    if (!es_op_b) {
+        const char *op1 = resolver_operando(terceto->b, lista, tabla);
+        if (op1) fprintf(f, "FLD %s\n", op1);
+    }
+    
+    // Si op2 (c) NO es una operación, cargarlo
+    if (!es_op_c) {
+        const char *op2 = resolver_operando(terceto->c, lista, tabla);
+        if (op2) fprintf(f, "FLD %s\n", op2);
+    }
+    
+    // Realizar la comparación
     // FCOM compara ST(0) con ST(1)
-    fprintf(f, "FLD %s\n", op2);
-    fprintf(f, "FLD %s\n", op1);
     fprintf(f, "FCOM\n");
     fprintf(f, "FSTSW AX\n");
     fprintf(f, "SAHF\n");

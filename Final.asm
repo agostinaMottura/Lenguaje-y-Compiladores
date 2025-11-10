@@ -5,12 +5,18 @@ include C:\asm\number.asm
 .STACK 200h
 
 .DATA
-    a                                        dd       ?
+    s                                        dd       ?
+    h                                        dd       ?
+    contador                                 dd       ?
+    _3                                       dd       3.0
+    _44                                      dd       44.0
+    _10                                      dd       10.0
     _0                                       dd       0.0
+    _El_contador_vale_10                     db       "El contador vale 10", '$', 3 dup (?)
     _1                                       dd       1.0
-    _a_es_cero                               db       "a es cero", '$', 3 dup (?)
+    _7                                       dd       7.0
     _2                                       dd       2.0
-    _a_no_es_cero                            db       "a no es cero", '$', 3 dup (?)
+    _La_expresion_es_igual_a_cero            db       "La expresion es igual a cero", '$', 3 dup (?)
 
 
 .CODE
@@ -20,25 +26,46 @@ MOV AX,@DATA
 MOV DS,AX
 MOV ES,AX
 
+FLD _3
+FSTP s
+FLD _44
+FSTP h
+FLD _10
+FSTP contador
+etiqueta_0:
+FLD contador
+FLD _10
+FSUB
 FLD _0
-FSTP a
-FLD _0
-FLD a
 FCOM
 FSTSW AX
 SAHF
-JNE etiqueta_0
+JNE etiqueta_1
+displayString _El_contador_vale_10
+newLine
+FLD contador
 FLD _1
-FSTP a
-displayString _a_es_cero
-newLine
-JMP etiqueta_1
-etiqueta_0:
-FLD _2
-FSTP a
-displayString _a_no_es_cero
-newLine
+FSUB
+FSTP contador
+JMP etiqueta_0
 etiqueta_1:
+FLD s
+FLD _7
+FMUL
+FLD _1
+FADD
+FLD h
+FLD _2
+FDIV
+FSUB
+FLD _0
+FCOM
+FSTSW AX
+SAHF
+JNE etiqueta_2
+displayString _La_expresion_es_igual_a_cero
+newLine
+etiqueta_2:
 
 MOV AX,4C00H
 INT 21H
