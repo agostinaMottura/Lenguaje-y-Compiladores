@@ -9,7 +9,7 @@ x := 20.0
 if (a == 5.0 and b < x) {
     write("wow")
 
-    if (b >= 10.0) {
+    if (b > 10.0) {
         write("b")
     } else {
         write("a")

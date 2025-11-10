@@ -371,17 +371,29 @@ static void generar_comparacion(
         }
     }
     
-    // Si op1 (b) NO es una operación, cargarlo
-    // (si es operación, ya está en ST(0) de pasos anteriores)
-    if (!es_op_b) {
-        const char *op1 = resolver_operando(terceto->b, lista, tabla);
-        if (op1) fprintf(f, "FLD %s\n", op1);
+    // Caso especial: si b es operación y c no, usar FCOM directo
+    if (es_op_b && !es_op_c) {
+        const char *op2 = resolver_operando(terceto->c, lista, tabla);
+        if (op2) {
+            fprintf(f, "FCOM %s\n", op2);
+            fprintf(f, "FSTSW AX\n");
+            fprintf(f, "SAHF\n");
+        }
+        return;
     }
     
-    // Si op2 (c) NO es una operación, cargarlo
+    // Si op2 (c) NO es una operación, cargarlo PRIMERO
+    // (quedará en ST(1) después de cargar op1)
     if (!es_op_c) {
         const char *op2 = resolver_operando(terceto->c, lista, tabla);
         if (op2) fprintf(f, "FLD %s\n", op2);
+    }
+    
+    // Si op1 (b) NO es una operación, cargarlo SEGUNDO
+    // (quedará en ST(0) para la comparación)
+    if (!es_op_b) {
+        const char *op1 = resolver_operando(terceto->b, lista, tabla);
+        if (op1) fprintf(f, "FLD %s\n", op1);
     }
     
     // Realizar la comparación
@@ -413,24 +425,42 @@ static void generar_operacion_aritmetica(
     t_tabla_simbolos *tabla) {
     
     int idx_b, idx_c;
+    int b_es_operacion = 0, c_es_operacion = 0;
     
-    if (parsear_indice(terceto->b, &idx_b) && 
-        idx_b >= 0 && idx_b < vec_size) {
+    if (parsear_indice(terceto->b, &idx_b) && idx_b >= 0 && idx_b < vec_size) {
         t_gci_tercetos_dato *tb = vec[idx_b];
-        if (tb && tb->a && !es_operador_aritmetico(tb->a)) {
-            const char *nombre = buscar_nombre_por_valor(tabla, tb->a);
-            const char *simbolo = nombre ? nombre : tb->a;
-            if (simbolo) fprintf(f, "FLD %s\n", simbolo);
+        if (tb && tb->a && es_operador_aritmetico(tb->a)) {
+            b_es_operacion = 1;
         }
     }
     
-    if (parsear_indice(terceto->c, &idx_c) && 
-        idx_c >= 0 && idx_c < vec_size) {
+    if (parsear_indice(terceto->c, &idx_c) && idx_c >= 0 && idx_c < vec_size) {
         t_gci_tercetos_dato *tc = vec[idx_c];
-        if (tc && tc->a && !es_operador_aritmetico(tc->a)) {
-            const char *nombre = buscar_nombre_por_valor(tabla, tc->a);
-            const char *simbolo = nombre ? nombre : tc->a;
-            if (simbolo) fprintf(f, "FLD %s\n", simbolo);
+        if (tc && tc->a && es_operador_aritmetico(tc->a)) {
+            c_es_operacion = 1;
+        }
+    }
+  
+    if (!b_es_operacion) {
+        if (parsear_indice(terceto->b, &idx_b) && idx_b >= 0 && idx_b < vec_size) {
+            t_gci_tercetos_dato *tb = vec[idx_b];
+            if (tb && tb->a) {
+                const char *nombre = buscar_nombre_por_valor(tabla, tb->a);
+                const char *simbolo = nombre ? nombre : tb->a;
+                if (simbolo) fprintf(f, "FLD %s\n", simbolo);
+            }
+        }
+    }
+    
+
+    if (!c_es_operacion) {
+        if (parsear_indice(terceto->c, &idx_c) && idx_c >= 0 && idx_c < vec_size) {
+            t_gci_tercetos_dato *tc = vec[idx_c];
+            if (tc && tc->a) {
+                const char *nombre = buscar_nombre_por_valor(tabla, tc->a);
+                const char *simbolo = nombre ? nombre : tc->a;
+                if (simbolo) fprintf(f, "FLD %s\n", simbolo);
+            }
         }
     }
     

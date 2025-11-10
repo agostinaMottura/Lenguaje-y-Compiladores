@@ -5,18 +5,14 @@ include C:\asm\number.asm
 .STACK 200h
 
 .DATA
-    s                                        dd       ?
-    h                                        dd       ?
-    contador                                 dd       ?
-    _3                                       dd       3.0
-    _44                                      dd       44.0
-    _10                                      dd       10.0
-    _0                                       dd       0.0
-    _El_contador_vale_10                     db       "El contador vale 10", '$', 3 dup (?)
-    _1                                       dd       1.0
-    _7                                       dd       7.0
+    a                                        dd       ?
+    b                                        dd       ?
+    c                                        dd       ?
     _2                                       dd       2.0
-    _La_expresion_es_igual_a_cero            db       "La expresion es igual a cero", '$', 3 dup (?)
+    _1                                       dd       1.0
+    _a_es_mas_grande_que_b_y_c_es_mas_grande_que_b db       "a es mas grande que b y c es mas grande que b", '$', 3 dup (?)
+    _a_no_es_mas_grande_que_b                db       "a no es mas grande que b", '$', 3 dup (?)
+    _a_es_mas_grande_que_b_o_c_es_mas_grande_que_b db       "a es mas grande que b o c es mas grande que b", '$', 3 dup (?)
 
 
 .CODE
@@ -26,46 +22,56 @@ MOV AX,@DATA
 MOV DS,AX
 MOV ES,AX
 
-FLD _3
-FSTP s
-FLD _44
-FSTP h
-FLD _10
-FSTP contador
-etiqueta_0:
-FLD contador
-FLD _10
-FSUB
-FLD _0
-FCOM
-FSTSW AX
-SAHF
-JNE etiqueta_1
-displayString _El_contador_vale_10
-newLine
-FLD contador
-FLD _1
-FSUB
-FSTP contador
-JMP etiqueta_0
-etiqueta_1:
-FLD s
-FLD _7
-FMUL
-FLD _1
-FADD
-FLD h
 FLD _2
-FDIV
-FSUB
-FLD _0
+FSTP a
+FLD _1
+FSTP b
+FLD _2
+FSTP c
+FLD b
+FLD a
 FCOM
 FSTSW AX
 SAHF
-JNE etiqueta_2
-displayString _La_expresion_es_igual_a_cero
+JBE etiqueta_0
+FLD b
+FLD c
+FCOM
+FSTSW AX
+SAHF
+JBE etiqueta_0
+displayString _a_es_mas_grande_que_b_y_c_es_mas_grande_que_b
 newLine
+etiqueta_0:
+FLD b
+FLD a
+FCOM
+FSTSW AX
+SAHF
+JB etiqueta_1
+displayString _a_no_es_mas_grande_que_b
+newLine
+etiqueta_1:
+FLD b
+FLD a
+FCOM
+FSTSW AX
+SAHF
+JA etiqueta_2
+FLD b
+FLD c
+FCOM
+FSTSW AX
+SAHF
+JBE etiqueta_3
 etiqueta_2:
+displayString _a_es_mas_grande_que_b_o_c_es_mas_grande_que_b
+newLine
+etiqueta_3:
+FLD b
+FLD c
+FADD
+FSTP a
 
 MOV AX,4C00H
 INT 21H
