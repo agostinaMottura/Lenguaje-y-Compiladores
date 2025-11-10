@@ -246,7 +246,23 @@ isZero:
         SIMBOLOS_NO_TERMINALES_IS_ZERO, 
         "IS_ZERO PARENTESIS_A expresion PARENTESIS_C");
 
-      void* cero = gci_tercetos_agregar_terceto("0", NULL, NULL);
+      // Agregamos el 0 a la tabla de símbolos como constante
+      tabla_simbolos_insertar_dato("0", TIPO_DATO_CTE_INT, "0");
+      
+      // Buscamos el nombre generado (con prefijo _) en la tabla
+      t_tabla_simbolos_dato* dato_cero = NULL;
+      t_tabla_simbolos_nodo* nodo = tabla_simbolos.primero;
+      while (nodo != NULL) {
+          if ((nodo->dato.tipo_dato == TIPO_DATO_CTE_INT || nodo->dato.tipo_dato == TIPO_DATO_CTE_FLOAT) && 
+              strcmp(nodo->dato.valor, "0") == 0) {
+              dato_cero = &(nodo->dato);
+              break;
+          }
+          nodo = nodo->siguiente;
+      }
+      
+      const char* nombre_cero = (dato_cero != NULL) ? dato_cero->nombre : "0";
+      void* cero = gci_tercetos_agregar_terceto(nombre_cero, NULL, NULL);
 
       punteros_simbolos_no_terminales_isZero = gci_tercetos_agregar_terceto(
         "CMP",

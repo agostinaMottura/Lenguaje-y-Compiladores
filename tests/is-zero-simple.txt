@@ -2,11 +2,15 @@ init {
     a : int
 }
 
+a := 0
+
 if (isZero(a))
 {
     a := 1
+    write("a es cero")
 }
 else
 {
     a := 2
+    write("a no es cero")
 }
