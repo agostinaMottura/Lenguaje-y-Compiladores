@@ -296,7 +296,10 @@ static void generar_write(
     t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(nombre);
     
     if (es_tipo_string(dato))
-        fprintf(f, "displayString %s\n", nombre);
+    {
+       fprintf(f, "displayString %s\n", nombre);
+        fprintf(f, "newLine\n");
+    }
     else
         fprintf(f, "DisplayFloat %s,2\n", nombre);
 }
@@ -434,9 +437,14 @@ static void escribir_seccion_codigo(
     t_tabla_simbolos *tabla) {
     
     fprintf(f, ".CODE\n");
-    fprintf(f, "MOV EAX,@DATA\n");
-    fprintf(f, "MOV DS,EAX\n");
-    fprintf(f, "MOV ES,EAX\n\n");
+
+    fprintf(f, "\nSTART:\n");
+
+    fprintf(f, "MOV AX,@DATA\n");
+    fprintf(f, "MOV DS,AX\n");
+    fprintf(f, "MOV ES,AX\n\n");
+
+    
     
     int vec_size;
     t_gci_tercetos_dato **vec = construir_vector_tercetos(lista, &vec_size);
@@ -444,9 +452,9 @@ static void escribir_seccion_codigo(
     for (int i = 0; i < vec_size; i++)
         procesar_terceto(f, vec[i], lista, tabla, vec, vec_size);
     
-    fprintf(f, "\nmov ax,4c00h\n");
-    fprintf(f, "Int 21h\n");
-    fprintf(f, "End\n");
+    fprintf(f, "\nMOV AX,4C00H\n");
+    fprintf(f, "INT 21H\n");
+    fprintf(f, "END START\n");
     
     free(vec);
 }
