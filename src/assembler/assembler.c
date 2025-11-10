@@ -249,7 +249,6 @@ static void generar_asignacion_string(
     fprintf(f, "REP MOVSB\n\n");
 }
 
-<<<<<<< Updated upstream
 static void generar_asignacion_numerica(
     FILE *f, const char *valor_c, const char *destino, 
     int es_resultado_operacion) {
@@ -268,77 +267,11 @@ static void generar_asignacion(
     const char *destino = resolver_operando(terceto->b, lista, tabla);
     const char *origen = resolver_operando(terceto->c, lista, tabla);
     
-    t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(origen);
+    t_tabla_simbolos_dato *dato = origen ? tabla_simbolos_obtener_dato(origen) : NULL;
     
-    if (es_tipo_string(dato)) {
+    if (dato && es_tipo_string(dato)) {
         generar_asignacion_string(f, origen, destino);
         return;
-=======
-void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
-                       t_tabla_simbolos *tabla) {
-  FILE *archivo_assembler;
-  archivo_assembler = fopen("Final.asm", "wt");
-  if (archivo_assembler == NULL) {
-    imprimir_mensaje("Error al abrir el archivo Final.asm");
-    exit(1);
-  }
-
-  fprintf(archivo_assembler, "include macros2.asm\n");
-  fprintf(archivo_assembler, "include number.asm\n");
-
-  fprintf(archivo_assembler, ".MODEL LARGE\n");
-  fprintf(archivo_assembler, ".386\n");
-  fprintf(archivo_assembler, ".STACK 200h\n\n");
-
-  fprintf(archivo_assembler, ".DATA\n");
-
-  t_tabla_simbolos_nodo *simbolo = tabla->primero;
-  while (simbolo) {
-    escribir_valor_data(archivo_assembler, &simbolo->dato);
-    simbolo = simbolo->siguiente;
-  }
-
-  fprintf(archivo_assembler, "\n\n.CODE\n");
-  fprintf(archivo_assembler, "MOV EAX,@DATA\n");
-  fprintf(archivo_assembler, "MOV DS,EAX\n");
-  fprintf(archivo_assembler, "MOV ES,EAX\n\n");
-
-  int max_indice = -1;
-  int cantidad = 0;
-  t_gci_tercetos_nodo *nodo = tercetos ? tercetos->primero : NULL;
-  while (nodo) {
-    if (nodo->dato && nodo->dato->indice > max_indice)
-      max_indice = nodo->dato->indice;
-    cantidad++;
-    nodo = nodo->siguiente;
-  }
-  int vector_size = max_indice + 1;
-  t_gci_tercetos_dato **vec = NULL;
-  vec = (t_gci_tercetos_dato **)calloc((size_t)vector_size,
-                                       sizeof(t_gci_tercetos_dato *));
-  if (vec == NULL) {
-    imprimir_mensaje("Error de memoria al construir vector de tercetos");
-    fclose(archivo_assembler);
-    exit(1);
-  }
-
-  nodo = tercetos->primero;
-  while (nodo) {
-    if (nodo->dato && nodo->dato->indice >= 0 &&
-        nodo->dato->indice < vector_size)
-      vec[nodo->dato->indice] = nodo->dato;
-    nodo = nodo->siguiente;
-  }
-
-  for (int i = 0; i < vector_size; i++) {
-    t_gci_tercetos_dato *t = vec[i];
-    if (t == NULL || t->a == NULL)
-      continue;
-
-    if (es_etiqueta(t->a)) {
-      fprintf(archivo_assembler, "%s:\n", t->a);
-      continue;
->>>>>>> Stashed changes
     }
     
     int idx_c, es_operacion = 0;
