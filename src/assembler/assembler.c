@@ -375,11 +375,11 @@ static void generar_comparacion(
         }
     }
     
-    // Caso especial: si b es operación y c no, usar FCOM directo
+    // Caso especial: si b es operación y c no, usar FCOMP directo
     if (es_op_b && !es_op_c) {
         const char *op2 = resolver_operando(terceto->c, lista, tabla);
         if (op2) {
-            fprintf(f, "FCOM %s\n", op2);
+            fprintf(f, "FCOMP %s\n", op2);
             fprintf(f, "FSTSW AX\n");
             fprintf(f, "SAHF\n");
         }

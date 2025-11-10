@@ -5,19 +5,18 @@ include C:\asm\number.asm
 .STACK 200h
 
 .DATA
-    c                                        dd       ?
-    f                                        dd       ?
-    r                                        dd       ?
-    z                                        dd       ?
-    x                                        dd       ?
-    _27P0                                    dd       27.0
+    s                                        dd       ?
+    h                                        dd       ?
+    contador                                 dd       ?
     _3                                       dd       3.0
+    _44                                      dd       44.0
+    _10                                      dd       10.0
+    _0                                       dd       0.0
+    _El_contador_vale_10                     db       "El contador vale 10", '$', 3 dup (?)
+    _1                                       dd       1.0
+    _7                                       dd       7.0
     _2                                       dd       2.0
-    _500P0                                   dd       500.0
-    _0P0                                     dd       0.0
-    _27                                      dd       27.0
-    _500                                     dd       500.0
-    _34                                      dd       34.0
+    _La_expresion_es_igual_a_cero            db       "La expresion es igual a cero", '$', 3 dup (?)
 
 
 .CODE
@@ -27,40 +26,44 @@ MOV AX,@DATA
 MOV DS,AX
 MOV ES,AX
 
-FLD _27P0
-FSTP z
 FLD _3
-FSTP c
-FLD _2
-FSTP f
-FLD _500P0
-FSTP r
-FLD _0P0
-FSTP x
-FLD _27
-FLD c
+FSTP s
+FLD _44
+FSTP h
+FLD _10
+FSTP contador
+etiqueta_0:
+FLD contador
+FLD _10
 FSUB
-FSTP x
-DisplayFloat x,2
+FCOMP _0
+FSTSW AX
+SAHF
+JNE etiqueta_1
+displayString _El_contador_vale_10
 newLine
-FLD r
-FLD _500
-FADD
-FSTP x
-DisplayFloat x,2
-newLine
-FLD _34
-FLD _3
+FLD contador
+FLD _1
+FSUB
+FSTP contador
+JMP etiqueta_0
+etiqueta_1:
+FLD s
+FLD _7
 FMUL
-FSTP x
-DisplayFloat x,2
-newLine
-FLD z
-FLD f
+FLD _1
+FADD
+FLD h
+FLD _2
 FDIV
-FSTP x
-DisplayFloat x,2
+FSUB
+FCOMP _0
+FSTSW AX
+SAHF
+JNE etiqueta_2
+displayString _La_expresion_es_igual_a_cero
 newLine
+etiqueta_2:
 
 MOV AX,4C00H
 INT 21H
