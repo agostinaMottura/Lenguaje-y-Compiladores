@@ -321,7 +321,11 @@ static void generar_write(
         fprintf(f, "newLine\n");
     }
     else
-        fprintf(f, "DisplayFloat %s,2\n", nombre);
+    {
+      fprintf(f, "DisplayFloat %s,2\n", nombre);
+      fprintf(f, "newLine\n");
+    }
+        
 }
 
 static void generar_read(

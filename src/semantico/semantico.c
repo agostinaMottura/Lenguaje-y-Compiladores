@@ -119,21 +119,35 @@ t_tipo_dato semantico_obtener_tipo_de_dato_resultante(
     t_tipo_dato tipo_dato_a,
     t_tipo_dato tipo_dato_b)
 {
-    // Antes de llamar a esta funcion, siempre llamar a semantico_son_tipos_de_datos_compatibles
-    if (!semantico_son_tipos_de_datos_compatibles(tipo_dato_a, tipo_dato_b))
+    // Esta función determina el tipo resultante de una OPERACIÓN ARITMÉTICA
+    // No usar semantico_son_tipos_de_datos_compatibles aquí porque esa función
+    // valida ASIGNACIONES (donde INT <- FLOAT no es válido)
+    // En operaciones aritméticas, INT + FLOAT SÍ es válido y produce FLOAT
+    
+    // STRING: operaciones solo entre strings
+    if (tipo_dato_a == TIPO_DATO_STRING || tipo_dato_a == TIPO_DATO_CTE_STRING ||
+        tipo_dato_b == TIPO_DATO_STRING || tipo_dato_b == TIPO_DATO_CTE_STRING)
     {
+        if ((tipo_dato_a == TIPO_DATO_STRING || tipo_dato_a == TIPO_DATO_CTE_STRING) &&
+            (tipo_dato_b == TIPO_DATO_STRING || tipo_dato_b == TIPO_DATO_CTE_STRING))
+        {
+            return TIPO_DATO_STRING;
+        }
+        // String con numérico: incompatible
+        char mensaje[VALIDACIONES_MAX_MENSAJE_ERROR_LONGITUD];
+        sprintf(mensaje, "Tipos de datos incompatibles en operación: %s con %s",
+                tipo_dato_obtener_valor(tipo_dato_a),
+                tipo_dato_obtener_valor(tipo_dato_b));
+        informes_semantico_imprimir_mensaje(mensaje);
         return TIPO_DATO_DESCONOCIDO;
     }
 
-    if (tipo_dato_a == TIPO_DATO_STRING && tipo_dato_b == TIPO_DATO_STRING)
-    {
-        return TIPO_DATO_STRING;
-    }
-
+    // Ambos INT: resultado INT
     if (tipo_dato_a == TIPO_DATO_INT && tipo_dato_b == TIPO_DATO_INT)
     {
         return TIPO_DATO_INT;
     }
 
-    return TIPO_DATO_CTE_FLOAT;
+    // Cualquier combinación de INT/FLOAT/CTE_INT/CTE_FLOAT: resultado FLOAT
+    return TIPO_DATO_FLOAT;
 }

@@ -1,11 +1,21 @@
 init {
-    z, x : float
-    c, f, r : int
+    c, f, r, z, x : float
+
     
 }
 
+z := 27.0
+c := 3
+f := 2
+r := 500.0
+x := 0.0
+
 
 x := 27 - c
+write(x)
 x := r + 500
+write(x)
 x := 34 * 3
+write(x)
 x := z / f
+write(x)
