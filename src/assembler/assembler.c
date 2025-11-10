@@ -248,8 +248,9 @@ static void generar_asignacion_string(
     fprintf(f, "MOV ECX, %d\n", dato_origen->longitud + 1);
     fprintf(f, "REP MOVSB\n\n");
 
-    fprintf(f, "displayString %s\n", destino);
-    fprintf(f, "newLine\n");
+    // Comentado para no mostrar cada asignación
+    // fprintf(f, "displayString %s\n", destino);
+    // fprintf(f, "newLine\n");
 }
 
 static void generar_asignacion_numerica(
@@ -260,11 +261,11 @@ static void generar_asignacion_numerica(
     if (destino)
         fprintf(f, "FSTP %s\n", destino);
 
-    // agregar displayFlat para ver el resultado en consola
-    if (destino) {
-        fprintf(f, "DisplayFloat %s, 2\n", destino);
-        fprintf(f, "newLine\n");
-    }
+    // Comentado para no mostrar cada asignación
+    // if (destino) {
+    //     fprintf(f, "DisplayFloat %s, 2\n", destino);
+    //     fprintf(f, "newLine\n");
+    // }
 }
 
 static void generar_asignacion(
@@ -347,9 +348,10 @@ static void generar_comparacion(
     
     if (!op1 || !op2) return;
     
-    fprintf(f, "FLD %s\n", op1);
+    // Cargar primero op2, luego op1, para que FCOM compare op1 con op2
+    // FCOM compara ST(0) con ST(1)
     fprintf(f, "FLD %s\n", op2);
-    fprintf(f, "FXCH\n");
+    fprintf(f, "FLD %s\n", op1);
     fprintf(f, "FCOM\n");
     fprintf(f, "FSTSW AX\n");
     fprintf(f, "SAHF\n");

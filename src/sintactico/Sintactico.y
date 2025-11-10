@@ -856,8 +856,8 @@ predicado:
       tipo_dato_comparacion_aux = tipo_dato_aux;
   } operador_comparacion expresion 
     {
-      void* primera_expresion = pila_desapilar(pila_expresion);
       void* segunda_expresion = pila_desapilar(pila_expresion);
+      void* primera_expresion = pila_desapilar(pila_expresion);
 
       if (tipo_dato_aux != tipo_dato_comparacion_aux) 
       {

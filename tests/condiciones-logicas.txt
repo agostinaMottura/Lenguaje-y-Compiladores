@@ -2,7 +2,7 @@ init {
     a, b, c : int
 }
 
-a := 1
+a := 2
 b := 1
 c := 2
 
