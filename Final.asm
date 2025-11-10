@@ -5,18 +5,20 @@ include C:\asm\number.asm
 .STACK 200h
 
 .DATA
-    s                                        dd       ?
-    h                                        dd       ?
-    contador                                 dd       ?
-    _3                                       dd       3.0
-    _44                                      dd       44.0
-    _10                                      dd       10.0
-    _0                                       dd       0.0
-    _El_contador_vale_10                     db       "El contador vale 10", '$', 3 dup (?)
-    _1                                       dd       1.0
-    _7                                       dd       7.0
+    z                                        dd       ?
+    x                                        dd       ?
+    areaMax                                  dd       ?
     _2                                       dd       2.0
-    _La_expresion_es_igual_a_cero            db       "La expresion es igual a cero", '$', 3 dup (?)
+    _3P8                                     dd       3.8
+    _0                                       dd       0.0
+    _4P0                                     dd       4.0
+    _12                                      dd       12.0
+    _2P5                                     dd       2.5
+    _3                                       dd       3.0
+    @var_aux_area_triangulo_a                dd       ?
+    _6                                       dd       6.0
+    @var_aux_area_triangulo_b                dd       ?
+    @var_aux_area_triangulo_maxima           dd       ?
 
 
 .CODE
@@ -26,44 +28,137 @@ MOV AX,@DATA
 MOV DS,AX
 MOV ES,AX
 
-FLD _3
-FSTP s
-FLD _44
-FSTP h
-FLD _10
-FSTP contador
-etiqueta_0:
-FLD contador
-FLD _10
-FSUB
-FCOMP _0
-FSTSW AX
-SAHF
-JNE etiqueta_1
-displayString _El_contador_vale_10
-newLine
-FLD contador
-FLD _1
-FSUB
-FSTP contador
-JMP etiqueta_0
-etiqueta_1:
-FLD s
-FLD _7
+FLD _2
+FSTP z
+FLD _3P8
+FSTP x
+
+
+FLD _0
+FLD _12
 FMUL
-FLD _1
-FADD
-FLD h
+
+// TODO: Meterlo en una @area_a_primer_termino_a
+
+FLD _4P0
+FLD _3
+FMUL
+
+// TODO: Meterlo en una @area_a_primer_termino_b
+
+FLD _2P5
+FLD x
+FMUL
+
+// TODO: Meterlo en una @area_a_primer_termino_c
+
+/*
+    FLD @area_a_primer_termino_a
+    FLD @area_a_primer_termino_b
+    FADD
+    FLD @area_a_primer_termino_c
+    FADD
+    FSTP @area_a_primer_termino
+*/
+
+FLD x
+FLD _4P0
+FMUL
+// TODO: Meterlo en @area_a_segundo_termino_a
+FLD _12
+FLD _2P5
+FMUL
+// TODO: Meterlo en @area_a_segundo_termino_b
+FLD _3
+FLD _0
+FMUL
+// TODO: Meterlo en @area_a_segundo_termino_c
+
+/*
+    FLD @area_a_segundo_termino_a
+    FLD @area_a_segundo_termino_b
+    FADD
+    FLD @area_a_segundo_termino_c
+    FADD
+    FSTP @area_a_segundo_termino
+*/
+
+FLD @area_a_primer_termino
+FLD @area_a_segundo_termino
+FSUB
+FABS
 FLD _2
 FDIV
-FSUB
-FCOMP _0
+FSTP @area_a
+
+
+FCOM
 FSTSW AX
 SAHF
-JNE etiqueta_2
-displayString _La_expresion_es_igual_a_cero
-newLine
+JB etiqueta_0
+FSUB
+FLD _2
+FDIV
+FSTP @var_aux_area_triangulo_a
+JMP etiqueta_1
+etiqueta_0:
+FSUB
+FLD _2
+FDIV
+FSTP @var_aux_area_triangulo_a
+etiqueta_1:
+FLD x
+FLD _0
+FMUL
+FLD _6
+FLD _2
+FMUL
+FLD z
+FLD _0
+FMUL
+FADD
+FADD
+FLD _0
+FLD _6
+FMUL
+FLD _0
+FLD z
+FMUL
+FLD _2
+FLD x
+FMUL
+FADD
+FADD
+FCOM
+FSTSW AX
+SAHF
+JB etiqueta_2
+FSUB
+FLD _2
+FDIV
+FSTP @var_aux_area_triangulo_b
+JMP etiqueta_3
 etiqueta_2:
+FSUB
+FLD _2
+FDIV
+FSTP @var_aux_area_triangulo_b
+etiqueta_3:
+FLD @var_aux_area_triangulo_b
+FLD @var_aux_area_triangulo_a
+FCOM
+FSTSW AX
+SAHF
+JB etiqueta_4
+FLD @var_aux_area_triangulo_a
+FSTP @var_aux_area_triangulo_maxima
+JMP etiqueta_5
+etiqueta_4:
+FLD @var_aux_area_triangulo_b
+FSTP @var_aux_area_triangulo_maxima
+etiqueta_5:
+FLD @var_aux_area_triangulo_maxima
+FSTP areaMax
 
 MOV AX,4C00H
 INT 21H
