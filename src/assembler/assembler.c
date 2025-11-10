@@ -98,7 +98,17 @@ static const char *buscar_nombre_por_valor(
     t_tabla_simbolos *tabla, const char *valor) {
     if (!tabla || !valor) return NULL;
     
+    // Primero buscamos en variables (nombre == valor)
     t_tabla_simbolos_nodo *nodo = tabla->primero;
+    while (nodo) {
+        if (nodo->dato.nombre && strcmp(nodo->dato.nombre, valor) == 0 &&
+            !tipo_dato_es_constante(nodo->dato.tipo_dato))
+            return nodo->dato.nombre;
+        nodo = nodo->siguiente;
+    }
+    
+    // Si no encontramos, buscamos en constantes por valor
+    nodo = tabla->primero;
     while (nodo) {
         if (nodo->dato.valor && strcmp(nodo->dato.valor, valor) == 0)
             return nodo->dato.nombre;

@@ -7,12 +7,15 @@ include C:\asm\number.asm
 .DATA
     a                                        dd       ?
     b                                        dd       ?
-    c                                        dd       ?
-    _2                                       dd       2.0
-    _1                                       dd       1.0
-    _a_es_mas_grande_que_b_y_c_es_mas_grande_que_b db       "a es mas grande que b y c es mas grande que b", '$', 3 dup (?)
-    _a_no_es_mas_grande_que_b                db       "a no es mas grande que b", '$', 3 dup (?)
-    _a_es_mas_grande_que_b_o_c_es_mas_grande_que_b db       "a es mas grande que b o c es mas grande que b", '$', 3 dup (?)
+    x                                        dd       ?
+    _5P0                                     dd       5.0
+    _10P0                                    dd       10.0
+    _20P0                                    dd       20.0
+    _wow                                     db       "wow", '$', 3 dup (?)
+    _b                                       db       "b", '$', 3 dup (?)
+    _a                                       db       "a", '$', 3 dup (?)
+    _hola                                    db       "hola", '$', 3 dup (?)
+    _chau                                    db       "chau", '$', 3 dup (?)
 
 
 .CODE
@@ -22,56 +25,46 @@ MOV AX,@DATA
 MOV DS,AX
 MOV ES,AX
 
-FLD _2
+FLD _5P0
 FSTP a
-FLD _1
+FLD _10P0
 FSTP b
-FLD _2
-FSTP c
-FLD b
+FLD _20P0
+FSTP x
+FLD _5P0
 FLD a
 FCOM
 FSTSW AX
 SAHF
-JBE etiqueta_0
+JNE etiqueta_2
+FLD x
 FLD b
-FLD c
 FCOM
 FSTSW AX
 SAHF
-JBE etiqueta_0
-displayString _a_es_mas_grande_que_b_y_c_es_mas_grande_que_b
+JAE etiqueta_2
+displayString _wow
 newLine
-etiqueta_0:
+FLD _10P0
 FLD b
-FLD a
 FCOM
 FSTSW AX
 SAHF
-JA etiqueta_1
-displayString _a_no_es_mas_grande_que_b
+JB etiqueta_0
+displayString _b
+newLine
+JMP etiqueta_1
+etiqueta_0:
+displayString _a
 newLine
 etiqueta_1:
-FLD b
-FLD a
-FCOM
-FSTSW AX
-SAHF
-JA etiqueta_2
-FLD b
-FLD c
-FCOM
-FSTSW AX
-SAHF
-JBE etiqueta_3
+JMP etiqueta_3
 etiqueta_2:
-displayString _a_es_mas_grande_que_b_o_c_es_mas_grande_que_b
+displayString _hola
 newLine
 etiqueta_3:
-FLD b
-FLD c
-FADD
-FSTP a
+displayString _chau
+newLine
 
 MOV AX,4C00H
 INT 21H

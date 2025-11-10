@@ -1169,13 +1169,25 @@ factor:
           tipo_dato_aux = simbolo->tipo_dato;
         }
 
-        // Duda: Como manejamos este negativo de ID?
       }
   | CTE_STRING 
       {
         informes_sintactico_imprimir_mensaje(SIMBOLOS_NO_TERMINALES_FACTOR, "CTE_STRING");
-        punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto($1, NULL, NULL);
         tabla_simbolos_insertar_dato($1, TIPO_DATO_CTE_STRING, $1);
+        
+        t_tabla_simbolos_dato* dato = NULL;
+        t_tabla_simbolos_nodo* nodo = tabla_simbolos.primero;
+        while (nodo != NULL) {
+            if (nodo->dato.tipo_dato == TIPO_DATO_CTE_STRING && 
+                strcmp(nodo->dato.valor, $1) == 0) {
+                dato = &(nodo->dato);
+                break;
+            }
+            nodo = nodo->siguiente;
+        }
+        
+        const char* nombre_a_usar = (dato != NULL) ? dato->nombre : $1;
+        punteros_simbolos_no_terminales_factor = gci_tercetos_agregar_terceto(nombre_a_usar, NULL, NULL);
         
         tipo_dato_aux = TIPO_DATO_CTE_STRING;
         pila_apilar(pila_tipo_dato, &tipo_dato_aux, tamano_tipo_dato);
