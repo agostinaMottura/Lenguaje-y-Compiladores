@@ -66,4 +66,4 @@ compilador
 
 intermediate-code.txt
 symbol-table.txt
-assembler.asm
+final.asm

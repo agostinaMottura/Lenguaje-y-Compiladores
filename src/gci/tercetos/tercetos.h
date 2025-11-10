@@ -46,6 +46,11 @@ t_gci_tercetos_dato *gci_tercetos_agregar_terceto(
     void *c);
 t_gci_tercetos_dato *gci_tercetos_agregar_etiqueta();  
 
+t_gci_tercetos_dato **gci_tercetos_construir_vector(
+    t_gci_tercetos_lista_tercetos *lista, int *out_size);
+t_gci_tercetos_dato *gci_tercetos_buscar_por_indice(
+    t_gci_tercetos_lista_tercetos *lista, int indice);
+
 // Funciones privadas
 void liberar_memoria_nodo(t_gci_tercetos_nodo *nodo);
 void liberar_memoria_terceto(t_gci_tercetos_dato *terceto);
