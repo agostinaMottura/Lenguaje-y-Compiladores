@@ -460,8 +460,8 @@ void generar_assembler(
     FILE *archivo = fopen("final.asm", "wt");
     if (!archivo) imprimir_error("No se pudo abrir final.asm");
 
-    fprintf(archivo, "include macros2.asm\n");
-    fprintf(archivo, "include number.asm\n");
+    fprintf(archivo, "include C:\\asm\\macros2.asm\n");
+    fprintf(archivo, "include C:\\asm\\number.asm\n");
 
     fprintf(archivo, ".MODEL LARGE\n");
     fprintf(archivo, ".386\n");
