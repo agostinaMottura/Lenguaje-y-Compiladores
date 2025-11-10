@@ -8,7 +8,7 @@
 #define STRING_MAX_LENGTH 50
 #define STRING_EXTRA_SPACE 3
 
-/* ========== UTILIDADES GENERALES ========== */
+/* LISTO ========== UTILIDADES GENERALES ========== */
 
 static void imprimir_error(const char *mensaje) {
     fprintf(stderr, "[ASSEMBLER ERROR] %s\n", mensaje);
@@ -19,7 +19,7 @@ static int es_valor_nulo_o_vacio(const char *valor) {
     return !valor || strcmp(valor, "__") == 0 || strlen(valor) == 0;
 }
 
-/* ========== TIPOS DE DATO Y MAPEOS ========== */
+/* LISTO ========== TIPOS DE DATO Y MAPEOS ========== */
 
 static const char *obtener_tipo_asm(const t_tabla_simbolos_dato *dato) {
     switch (dato->tipo_dato) {
@@ -57,7 +57,7 @@ static const char *mapear_salto_condicional(const char *op) {
     return NULL;
 }
 
-/* ========== PARSEO DE ÍNDICES ========== */
+/* LISTO ========== PARSEO DE ÍNDICES ========== */
 
 static int parsear_indice(const char *s, int *indice) {
     if (!s || strlen(s) < 3) return 0;
@@ -79,7 +79,7 @@ static int parsear_indice(const char *s, int *indice) {
     return 1;
 }
 
-/* ========== BÚSQUEDA EN TERCETOS Y TABLA DE SÍMBOLOS ========== */
+/* LISTO ========== BÚSQUEDA EN TERCETOS Y TABLA DE SÍMBOLOS ========== */
 
 static t_gci_tercetos_dato *buscar_terceto_por_indice(
     t_gci_tercetos_lista_tercetos *lista, int indice) {
@@ -91,6 +91,7 @@ static t_gci_tercetos_dato *buscar_terceto_por_indice(
             return nodo->dato;
         nodo = nodo->siguiente;
     }
+
     return NULL;
 }
 
@@ -114,10 +115,11 @@ static const char *buscar_nombre_por_valor(
             return nodo->dato.nombre;
         nodo = nodo->siguiente;
     }
+
     return NULL;
 }
 
-/* ========== PREDICADOS ========== */
+/* LISTO ========== PREDICADOS ========== */
 
 static int es_operador_aritmetico(const char *op) {
     if (!op) return 0;
@@ -134,7 +136,7 @@ static int es_tipo_string(const t_tabla_simbolos_dato *dato) {
                     dato->tipo_dato == TIPO_DATO_STRING);
 }
 
-/* ========== RESOLUCIÓN DE OPERANDOS ========== */
+/* LISTO ========== RESOLUCIÓN DE OPERANDOS ========== */
 
 static const char *resolver_operando(
     const char *op, 
@@ -156,7 +158,7 @@ static const char *resolver_operando(
     return nombre ? nombre : token;
 }
 
-/* ========== ESCRITURA DE DATOS ========== */
+/* LISTO ========== ESCRITURA DE DATOS ========== */
 
 static void escribir_string_constante(
     FILE *f, const t_tabla_simbolos_dato *dato) {
@@ -202,7 +204,7 @@ static void escribir_dato(FILE *f, const t_tabla_simbolos_dato *dato) {
         escribir_dato_numerico(f, dato);
 }
 
-/* ========== SECCIÓN DE DATOS ========== */
+/* LISTO ========== SECCIÓN DE DATOS ========== */
 
 static void escribir_seccion_datos(FILE *f, t_tabla_simbolos *tabla) {
     fprintf(f, ".DATA\n");
@@ -215,7 +217,7 @@ static void escribir_seccion_datos(FILE *f, t_tabla_simbolos *tabla) {
     fprintf(f, "\n\n");
 }
 
-/* ========== CONSTRUCCIÓN DE VECTOR DE TERCETOS ========== */
+/* LISTO ========== CONSTRUCCIÓN DE VECTOR DE TERCETOS ========== */
 
 static t_gci_tercetos_dato **construir_vector_tercetos(
     t_gci_tercetos_lista_tercetos *lista, int *out_size) {
@@ -245,10 +247,12 @@ static t_gci_tercetos_dato **construir_vector_tercetos(
     return vec;
 }
 
-/* ========== GENERACIÓN DE INSTRUCCIONES ========== */
+/* LISTO ========== GENERACIÓN DE INSTRUCCIONES ========== */
 
 static void generar_asignacion_string(
-    FILE *f, const char *origen, const char *destino) {
+    FILE *f, 
+    const char *origen, 
+    const char *destino) {
     t_tabla_simbolos_dato *dato_origen = tabla_simbolos_obtener_dato(origen);
     
     if (!dato_origen) return;
@@ -257,25 +261,17 @@ static void generar_asignacion_string(
     fprintf(f, "LEA EDI, %s\n", destino);
     fprintf(f, "MOV ECX, %d\n", dato_origen->longitud + 1);
     fprintf(f, "REP MOVSB\n\n");
-
-    // Comentado para no mostrar cada asignación
-    // fprintf(f, "displayString %s\n", destino);
-    // fprintf(f, "newLine\n");
 }
 
 static void generar_asignacion_numerica(
-    FILE *f, const char *valor_c, const char *destino, 
+    FILE *f, 
+    const char *valor_c, 
+    const char *destino, 
     int es_resultado_operacion) {
     if (!es_resultado_operacion && valor_c)
         fprintf(f, "FLD %s\n", valor_c);
     if (destino)
-        fprintf(f, "FSTP %s\n", destino);
-
-    // Comentado para no mostrar cada asignación
-    // if (destino) {
-    //     fprintf(f, "DisplayFloat %s, 2\n", destino);
-    //     fprintf(f, "newLine\n");
-    // }
+        fprintf(f, "FSTP %s\n\n", destino);
 }
 
 static void generar_asignacion(
@@ -317,13 +313,13 @@ static void generar_write(
     
     if (es_tipo_string(dato))
     {
-       fprintf(f, "displayString %s\n", nombre);
-        fprintf(f, "newLine\n");
+      fprintf(f, "displayString %s\n", nombre);
+      fprintf(f, "newLine\n\n");
     }
     else
     {
       fprintf(f, "DisplayFloat %s,2\n", nombre);
-      fprintf(f, "newLine\n");
+      fprintf(f, "newLine\n\n");
     }
         
 }
@@ -342,13 +338,13 @@ static void generar_read(
     {
       fprintf(f, "getString %s\n", nombre);
       fprintf(f, "displayString %s\n", nombre);
-      fprintf(f, "newLine\n");
+      fprintf(f, "newLine\n\n");
     }
     else
-        {
+    {
       fprintf(f, "GetFloat %s\n", nombre);
       fprintf(f, "DisplayFloat %s, 2\n", nombre); //muestra el valor leído y la cant dsp de la coma
-      fprintf(f, "newLine\n");
+      fprintf(f, "newLine\n\n");
     }
 }
 
@@ -382,6 +378,7 @@ static void generar_comparacion(
             fprintf(f, "FCOM %s\n", op2);
             fprintf(f, "FSTSW AX\n");
             fprintf(f, "SAHF\n");
+            fprintf(f, "FFREE\n\n");
         }
         return;
     }
@@ -405,6 +402,7 @@ static void generar_comparacion(
     fprintf(f, "FCOM\n");
     fprintf(f, "FSTSW AX\n");
     fprintf(f, "SAHF\n");
+    fprintf(f, "FFREE\n\n");
 }
 
 static void generar_salto(
@@ -414,11 +412,11 @@ static void generar_salto(
     if (!destino || strcmp(destino, "__") == 0) return;
     
     if (es_etiqueta(destino)) {
-        fprintf(f, "%s %s\n", instr_salto, destino);
+        fprintf(f, "%s %s\n\n", instr_salto, destino);
     } else {
         int idx;
         if (parsear_indice(destino, &idx))
-            fprintf(f, "%s LABEL_%d\n", instr_salto, idx);
+            fprintf(f, "%s LABEL_%d\n\n", instr_salto, idx);
     }
 }
 
@@ -468,10 +466,10 @@ static void generar_operacion_aritmetica(
         }
     }
     
-    fprintf(f, "%s\n", operador_asm);
+    fprintf(f, "%s\n\n", operador_asm);
 }
 
-/* ========== PROCESAMIENTO DE TERCETOS ========== */
+/* LISTO ========== PROCESAMIENTO DE TERCETOS ========== */
 
 static void procesar_terceto(
     FILE *f, t_gci_tercetos_dato *terceto,
@@ -539,14 +537,14 @@ static void escribir_seccion_codigo(
     for (int i = 0; i < vec_size; i++)
         procesar_terceto(f, vec[i], lista, tabla, vec, vec_size);
     
-    fprintf(f, "\nMOV AX,4C00H\n");
+    fprintf(f, "MOV AX,4C00H\n");
     fprintf(f, "INT 21H\n");
-    fprintf(f, "END START\n");
+    fprintf(f, "END START");
     
     free(vec);
 }
 
-/* ========== FUNCIÓN PRINCIPAL ========== */
+/* LISTO ========== FUNCIÓN PRINCIPAL ========== */
 
 void generar_assembler(
     t_gci_tercetos_lista_tercetos *tercetos,
