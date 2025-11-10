@@ -32,131 +32,105 @@ FLD _2
 FSTP z
 FLD _3P8
 FSTP x
-
-
 FLD _0
 FLD _12
 FMUL
-
-// TODO: Meterlo en una @area_a_primer_termino_a
-
+FSTP @aux_area_a_primer_termino_a
 FLD _4P0
 FLD _3
 FMUL
-
-// TODO: Meterlo en una @area_a_primer_termino_b
-
+FSTP @aux_area_a_primer_termino_b
 FLD _2P5
 FLD x
 FMUL
-
-// TODO: Meterlo en una @area_a_primer_termino_c
-
-/*
-    FLD @area_a_primer_termino_a
-    FLD @area_a_primer_termino_b
-    FADD
-    FLD @area_a_primer_termino_c
-    FADD
-    FSTP @area_a_primer_termino
-*/
-
+FSTP @aux_area_a_primer_termino_c
+FLD @aux_area_a_primer_termino_a
+FLD @aux_area_a_primer_termino_b
+FADD
+FLD @aux_area_a_primer_termino_c
+FADD
+FSTP @area_a_primer_termino
 FLD x
 FLD _4P0
 FMUL
-// TODO: Meterlo en @area_a_segundo_termino_a
+FSTP @aux_area_a_segundo_termino_a
 FLD _12
 FLD _2P5
 FMUL
-// TODO: Meterlo en @area_a_segundo_termino_b
+FSTP @aux_area_a_segundo_termino_b
 FLD _3
 FLD _0
 FMUL
-// TODO: Meterlo en @area_a_segundo_termino_c
-
-/*
-    FLD @area_a_segundo_termino_a
-    FLD @area_a_segundo_termino_b
-    FADD
-    FLD @area_a_segundo_termino_c
-    FADD
-    FSTP @area_a_segundo_termino
-*/
-
+FSTP @aux_area_a_segundo_termino_c
+FLD @aux_area_a_segundo_termino_a
+FLD @aux_area_a_segundo_termino_b
+FADD
+FLD @aux_area_a_segundo_termino_c
+FADD
+FSTP @area_a_segundo_termino
 FLD @area_a_primer_termino
 FLD @area_a_segundo_termino
 FSUB
-FABS
+FLD ABS
 FLD _2
 FDIV
-FSTP @area_a
-
-
+FSTP @var_aux_area_triangulo_a
+FLD x
+FLD _0
+FMUL
+FSTP @aux_area_a_primer_termino_a
+FLD _6
+FLD _2
+FMUL
+FSTP @aux_area_a_primer_termino_b
+FLD z
+FLD _0
+FMUL
+FSTP @aux_area_a_primer_termino_c
+FLD @aux_area_a_primer_termino_a
+FLD @aux_area_a_primer_termino_b
+FADD
+FLD @aux_area_a_primer_termino_c
+FADD
+FSTP @area_a_primer_termino
+FLD _0
+FLD _6
+FMUL
+FSTP @aux_area_a_segundo_termino_a
+FLD _0
+FLD z
+FMUL
+FSTP @aux_area_a_segundo_termino_b
+FLD _2
+FLD x
+FMUL
+FSTP @aux_area_a_segundo_termino_c
+FLD @aux_area_a_segundo_termino_a
+FLD @aux_area_a_segundo_termino_b
+FADD
+FLD @aux_area_a_segundo_termino_c
+FADD
+FSTP @area_a_segundo_termino
+FLD @area_a_primer_termino
+FLD @area_a_segundo_termino
+FSUB
+FLD ABS
+FLD _2
+FDIV
+FSTP @var_aux_area_triangulo_b
+FLD @var_aux_area_triangulo_b
+FLD @var_aux_area_triangulo_a
 FCOM
 FSTSW AX
 SAHF
 JB etiqueta_0
-FSUB
-FLD _2
-FDIV
-FSTP @var_aux_area_triangulo_a
+FLD @var_aux_area_triangulo_a
+FSTP @var_aux_area_triangulo_maxima
 JMP etiqueta_1
 etiqueta_0:
-FSUB
-FLD _2
-FDIV
-FSTP @var_aux_area_triangulo_a
+FLD @var_aux_area_triangulo_b
+FSTP @var_aux_area_triangulo_maxima
 etiqueta_1:
-FLD x
-FLD _0
-FMUL
-FLD _6
-FLD _2
-FMUL
-FLD z
-FLD _0
-FMUL
-FADD
-FADD
-FLD _0
-FLD _6
-FMUL
-FLD _0
-FLD z
-FMUL
-FLD _2
-FLD x
-FMUL
-FADD
-FADD
-FCOM
-FSTSW AX
-SAHF
-JB etiqueta_2
-FSUB
-FLD _2
-FDIV
-FSTP @var_aux_area_triangulo_b
-JMP etiqueta_3
-etiqueta_2:
-FSUB
-FLD _2
-FDIV
-FSTP @var_aux_area_triangulo_b
-etiqueta_3:
-FLD @var_aux_area_triangulo_b
-FLD @var_aux_area_triangulo_a
-FCOM
-FSTSW AX
-SAHF
-JB etiqueta_4
-FLD @var_aux_area_triangulo_a
-FSTP @var_aux_area_triangulo_maxima
-JMP etiqueta_5
-etiqueta_4:
-FLD @var_aux_area_triangulo_b
-FSTP @var_aux_area_triangulo_maxima
-etiqueta_5:
 FLD @var_aux_area_triangulo_maxima
 FSTP areaMax
 

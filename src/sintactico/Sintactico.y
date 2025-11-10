@@ -413,102 +413,78 @@ triangulo:
 
       // Calculo del primer termino
       void* area_triangulo_aux_a = gci_tercetos_agregar_terceto("*", punto_a_x, punto_b_y); // A.x * B.y
-      void* area_triangulo_aux_b = gci_tercetos_agregar_terceto("*", punto_b_x, punto_c_y); // B.x * C.y
-      void* area_triangulo_aux_c = gci_tercetos_agregar_terceto("*", punto_c_x, punto_a_y); // C.x * A.y
+      void* aux_area_a_primer_termino_a = gci_tercetos_agregar_terceto("@aux_area_a_primer_termino_a", NULL, NULL);
+      gci_tercetos_agregar_terceto(":=", aux_area_a_primer_termino_a, area_triangulo_aux_a);
 
-      void* area_triangulo_suma_ab = gci_tercetos_agregar_terceto("+", area_triangulo_aux_a, area_triangulo_aux_b); // (A.x * B.y) + (B.x * C.y)
-      void* area_triangulo_primer_termino = gci_tercetos_agregar_terceto("+", area_triangulo_suma_ab, area_triangulo_aux_c); // (A.x * B.y) + (B.x * C.y) + (C.x * A.y)
+      void* area_triangulo_aux_b = gci_tercetos_agregar_terceto("*", punto_b_x, punto_c_y); // B.x * C.y
+      void* aux_area_a_primer_termino_b = gci_tercetos_agregar_terceto("@aux_area_a_primer_termino_b", NULL, NULL);
+      gci_tercetos_agregar_terceto(":=", aux_area_a_primer_termino_b, area_triangulo_aux_b);
+
+      void* area_triangulo_aux_c = gci_tercetos_agregar_terceto("*", punto_c_x, punto_a_y); // C.x * A.y
+      void* aux_area_a_primer_termino_c = gci_tercetos_agregar_terceto("@aux_area_a_primer_termino_c", NULL, NULL);
+      gci_tercetos_agregar_terceto(":=", aux_area_a_primer_termino_c, area_triangulo_aux_c);
+
+
+      void* aux_primer_suma = gci_tercetos_agregar_terceto("+", aux_area_a_primer_termino_a, aux_area_a_primer_termino_b);
+      void* area_triangulo_primer_termino = gci_tercetos_agregar_terceto("+", aux_primer_suma, aux_area_a_primer_termino_c);
+
+      void* area_a_primer_termino = gci_tercetos_agregar_terceto("@area_a_primer_termino", NULL, NULL);
+      void* aux_area_a_primer_termino = gci_tercetos_agregar_terceto(
+        ":=",
+        area_a_primer_termino,
+        area_triangulo_primer_termino
+      );
 
       // Calculo del segundo termino
       area_triangulo_aux_a = gci_tercetos_agregar_terceto("*", punto_a_y, punto_b_x); // A.y * B.x
+      void* aux_area_a_segundo_termino_a = gci_tercetos_agregar_terceto("@aux_area_a_segundo_termino_a", NULL, NULL);
+      gci_tercetos_agregar_terceto(":=", aux_area_a_segundo_termino_a, area_triangulo_aux_a);
+
       area_triangulo_aux_b = gci_tercetos_agregar_terceto("*", punto_b_y, punto_c_x); // B.y * C.x
+      void* aux_area_a_segundo_termino_b = gci_tercetos_agregar_terceto("@aux_area_a_segundo_termino_b", NULL, NULL);
+      gci_tercetos_agregar_terceto(":=", aux_area_a_segundo_termino_b, area_triangulo_aux_b);
+
       area_triangulo_aux_c = gci_tercetos_agregar_terceto("*", punto_c_y, punto_a_x); // C.y * A.x
+      void* aux_area_a_segundo_termino_c = gci_tercetos_agregar_terceto("@aux_area_a_segundo_termino_c", NULL, NULL);
+      gci_tercetos_agregar_terceto(":=", aux_area_a_segundo_termino_c, area_triangulo_aux_c);
 
-      area_triangulo_suma_ab = gci_tercetos_agregar_terceto("+", area_triangulo_aux_a, area_triangulo_aux_b); // (A.y * B.x) + (B.y * C.x)
-      void* area_triangulo_segundo_termino = gci_tercetos_agregar_terceto("+", area_triangulo_suma_ab, area_triangulo_aux_c); // (A.y * B.x) + (B.y * C.x) + (C.y * A.x)
+      void* aux_primer_suma_segundo_termino = gci_tercetos_agregar_terceto("+", aux_area_a_segundo_termino_a, aux_area_a_segundo_termino_b);
+      void* area_triangulo_segundo_termino = gci_tercetos_agregar_terceto("+", aux_primer_suma_segundo_termino, aux_area_a_segundo_termino_c);
 
-      // Finalmente, calculamos el area
-      void* area_triangulo_comp_terminos = gci_tercetos_agregar_terceto(
-        "CMP",
-        area_triangulo_primer_termino,
-        area_triangulo_segundo_termino
-      );
-      void* area_triangulo_salto_comp_terminos = gci_tercetos_agregar_terceto(
-        "BLT",
+
+      void* area_a_segundo_termino = gci_tercetos_agregar_terceto(
+        "@area_a_segundo_termino",
         NULL,
         NULL
       );
-
-      // Si el primer termino es mayor o igual, calculamos la resta normal
-      void* area_triangulo_resta = gci_tercetos_agregar_terceto(
-        "-",
-        area_triangulo_primer_termino,
+      void* aux_area_a_segundo_termino = gci_tercetos_agregar_terceto(
+        ":=",
+        area_a_segundo_termino,
         area_triangulo_segundo_termino
       );
-      void* area_triangulo_resultado = gci_tercetos_agregar_terceto(
-        "/",
-        area_triangulo_resta,
-        gci_tercetos_agregar_terceto("2", NULL, NULL)
+
+      void* numerador = gci_tercetos_agregar_terceto(
+        "-",
+        area_a_primer_termino,
+        area_a_segundo_termino
       );
-
-
-
-      if (triangulo_numero == 0)
-      {
-        gci_tercetos_agregar_terceto(
-          ":=",
-          area_triangulo_variable_resultado,
-          area_triangulo_resultado
-        );
-      }
-      else
-      {
-        gci_tercetos_agregar_terceto(
-          ":=",
-          area_triangulo_variable_resultado,
-          area_triangulo_resultado
-        );
-      }
-
-      void* area_triangulo_salto_incondicional = gci_tercetos_agregar_terceto(
-        "BI",
-        NULL,
+      void* numerador_abs = gci_tercetos_agregar_terceto(
+        "ABS",
+        numerador,
         NULL
       );
 
-      void* etiqueta_segundo_termino_mayor = gci_tercetos_agregar_etiqueta();
-      gci_tercetos_actualizar_salto_con_etiqueta(area_triangulo_salto_comp_terminos, etiqueta_segundo_termino_mayor);
-      
-      area_triangulo_resta = gci_tercetos_agregar_terceto(
-        "-",
-        area_triangulo_segundo_termino,
-        area_triangulo_primer_termino
-      );
-      area_triangulo_resultado = gci_tercetos_agregar_terceto(
+      void* area_triangulo = gci_tercetos_agregar_terceto(
         "/",
-        area_triangulo_resta,
+        numerador_abs,
         gci_tercetos_agregar_terceto("2", NULL, NULL)
       );
 
-      if (triangulo_numero == 0)
-      {
-        gci_tercetos_agregar_terceto(
-          ":=",
-          area_triangulo_variable_resultado,
-          area_triangulo_resultado
-        );
-      }
-      else
-      {
-        gci_tercetos_agregar_terceto(
-          ":=",
-          area_triangulo_variable_resultado,
-          area_triangulo_resultado
-        );
-      }
-
-      void* etiqueta_fin_calculo_area = gci_tercetos_agregar_etiqueta();
-      gci_tercetos_actualizar_salto_con_etiqueta(area_triangulo_salto_incondicional, etiqueta_fin_calculo_area);
+      void* area_triangulo_asignacion = gci_tercetos_agregar_terceto(
+        ":=",
+        area_triangulo_variable_resultado,
+        area_triangulo
+      );
     }
   ;
 
