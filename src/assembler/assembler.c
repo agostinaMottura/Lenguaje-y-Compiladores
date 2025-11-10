@@ -197,6 +197,10 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     exit(1);
   }
 
+  fprintf(archivo_assembler, ".MODEL LARGE\n");
+  fprintf(archivo_assembler, ".386\n");
+  fprintf(archivo_assembler, ".STACK 200h\n\n");
+
   fprintf(archivo_assembler, ".DATA\n");
 
   t_tabla_simbolos_nodo *simbolo = tabla->primero;
@@ -250,25 +254,40 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     if (strcmp(t->a, ":=") == 0) {
       int idx_c = -1;
       int es_operacion_c = 0;
+      const char *nombre_c = resolver_nombre_operando(t->c, tercetos, tabla);
+      const char *nombre_id = resolver_nombre_operando(t->b, tercetos, tabla);
 
-      if (parsear_indice(t->c, &idx_c)) {
-        if (idx_c >= 0 && idx_c < vector_size) {
-          t_gci_tercetos_dato *tc = vec[idx_c];
-          if (tc && tc->a && es_operador_aritmetico(tc->a)) {
-            es_operacion_c = 1;
+      // Verificar si es una constante string usando tabla_simbolos_obtener_dato
+      int es_string = 0;
+      t_tabla_simbolos_dato *dato = tabla_simbolos_obtener_dato(nombre_c);
+      if (dato != NULL && (dato->tipo_dato == TIPO_DATO_CTE_STRING || 
+                          dato->tipo_dato == TIPO_DATO_STRING)) {
+        es_string = 1;
+      }
+
+      if (es_string) {
+        // Manejo de strings usando registros
+        fprintf(archivo_assembler, "MOV R1, %s\n", nombre_c);
+        fprintf(archivo_assembler, "MOV %s, R1\n", nombre_id);
+      } else {
+        // Lógica existente para números
+        if (parsear_indice(t->c, &idx_c)) {
+          if (idx_c >= 0 && idx_c < vector_size) {
+            t_gci_tercetos_dato *tc = vec[idx_c];
+            if (tc && tc->a && es_operador_aritmetico(tc->a)) {
+              es_operacion_c = 1;
+            }
           }
         }
-      }
 
-      if (!es_operacion_c) {
-        const char *nombre_c = resolver_nombre_operando(t->c, tercetos, tabla);
-        if (nombre_c)
+        if (!es_operacion_c && nombre_c) {
           fprintf(archivo_assembler, "FLD %s\n", nombre_c);
-      }
+        }
 
-      const char *nombre_id = resolver_nombre_operando(t->b, tercetos, tabla);
-      if (nombre_id)
-        fprintf(archivo_assembler, "FSTP %s\n", nombre_id);
+        if (nombre_id) {
+          fprintf(archivo_assembler, "FSTP %s\n", nombre_id);
+        }
+      }
 
       continue;
     }
@@ -371,6 +390,10 @@ void generar_assembler(t_gci_tercetos_lista_tercetos *tercetos,
     }
     fprintf(archivo_assembler, "%s\n", mnemonic);
   }
+
+  fprintf(archivo_assembler, "\nmov ax,4c00h\n");
+  fprintf(archivo_assembler, "Int 21h\n");
+  fprintf(archivo_assembler, "End\n");
 
   free(vec);
 

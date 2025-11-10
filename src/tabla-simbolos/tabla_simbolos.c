@@ -217,6 +217,34 @@ t_tabla_simbolos_dato *tabla_simbolos_crear_dato(const char *nombre, t_tipo_dato
     {
         strcpy(dato->nombre, nombre_cte);
     }
+
+    if (tipo_dato == TIPO_DATO_CTE_FLOAT)
+    {
+        for (char *p = nombre_cte; *p != '\0'; p++)
+        {
+            if (*p == '.')
+            {
+                *p = 'P';
+            }
+        }
+
+        strcpy(dato->nombre, nombre_cte);
+    }
+
+    if (tipo_dato == TIPO_DATO_CTE_INT || tipo_dato == TIPO_DATO_CTE_FLOAT)
+    {
+        if (strchr(dato->nombre, '-') != NULL)
+        {
+            for (char *p = dato->nombre; *p != '\0'; p++)
+            {
+                if (*p == '-')
+                {
+                    *p = 'M';
+                }
+            }
+        }
+    }
+
     return dato;
 }
 
