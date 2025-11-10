@@ -457,9 +457,12 @@ void generar_assembler(
     t_gci_tercetos_lista_tercetos *tercetos,
     t_tabla_simbolos *tabla) {
     
-    FILE *archivo = fopen("assembler.asm", "wt");
-    if (!archivo) imprimir_error("No se pudo abrir assembler.asm");
-    
+    FILE *archivo = fopen("final.asm", "wt");
+    if (!archivo) imprimir_error("No se pudo abrir final.asm");
+
+    fprintf(archivo, "include macros2.asm\n");
+    fprintf(archivo, "include number.asm\n");
+
     fprintf(archivo, ".MODEL LARGE\n");
     fprintf(archivo, ".386\n");
     fprintf(archivo, ".STACK 200h\n\n");
