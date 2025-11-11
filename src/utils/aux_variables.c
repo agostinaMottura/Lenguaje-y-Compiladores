@@ -19,8 +19,7 @@ void cargar_variable_auxiliar_si_no_existe(const char* nombre_variable, t_tipo_d
     // Verificamos que:
     // 1. Sea una variable auxiliar válida (comienza con @var_aux_)
     // 2. No exista ya en la tabla de símbolos
-    if (es_variable_auxiliar(nombre_variable) && 
-        !tabla_simbolos_existe_dato(nombre_variable)) {
+    if (!tabla_simbolos_existe_dato(nombre_variable)) {
             
         // Insertamos la variable auxiliar en la tabla de símbolos
         if (!tabla_simbolos_insertar_dato(nombre_variable, tipo, VALORES_NULL)) {

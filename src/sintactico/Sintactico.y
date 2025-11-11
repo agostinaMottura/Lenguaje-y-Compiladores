@@ -479,6 +479,8 @@ triangulo:
         numerador_abs,
         gci_tercetos_agregar_terceto("2", NULL, NULL)
       );
+      tabla_simbolos_insertar_dato("2", TIPO_DATO_CTE_INT, "2");
+      
 
       void* area_triangulo_asignacion = gci_tercetos_agregar_terceto(
         ":=",

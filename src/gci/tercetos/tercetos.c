@@ -43,8 +43,8 @@ gci_tercetos_agregar_terceto(
     void *c)
 {
     // Si es una variable auxiliar (comienza con @), la cargamos en la tabla de símbolos
-    if (a != NULL && a[0] == '@') {
-        cargar_variable_auxiliar_si_no_existe(a, TIPO_DATO_INT);  // Por defecto INT, se podría parametrizar
+    if (a != NULL && (a[0] == '@' || a[1] == '@')) {
+        cargar_variable_auxiliar_si_no_existe(a, TIPO_DATO_INT);
     }
 
     t_gci_tercetos_dato *nuevo_terceto = crear_terceto(
