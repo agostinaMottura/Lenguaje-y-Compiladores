@@ -5,12 +5,12 @@ init {
 a := 5.0
 b := 10.0
 
-if (a > b and b < 1)
+if (a > b and b < 1.0)
 {
-    write("a es mas grande que b")
+    write("a mayor a b y b menor a 1 0")
 }
 
-if (a > 0 or b == a)
+if (a > 0.0 or b == a)
 {
-    write("a es mas grande que b")
+    write("a es mayor a 0 0 o b es igual a a")
 }

@@ -22,3 +22,5 @@ if (a > b or c > b)
 }
 
 a := b + c
+
+write (a)

@@ -2,7 +2,7 @@ init {
     a : int
 }
 
-a := 0
+a := 2
 
 if (isZero(a))
 {

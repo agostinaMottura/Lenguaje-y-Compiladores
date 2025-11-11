@@ -3,7 +3,7 @@ init {
 }
 s := 3
 h := 44
-contador := 10
+contador := 12
 while (isZero( contador - 10 ))
 {
     write("El contador vale 10")
