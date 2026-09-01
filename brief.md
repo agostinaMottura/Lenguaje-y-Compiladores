@@ -125,22 +125,14 @@ Hemos identificado los siguientes supuestos que consideramos verdaderos para el 
    * **Potencial Evidencia:** Presentar una representación o boceto conceptual de porcentaje de avance y consultar al estudiante si ver reflejado su progreso de forma clara modificaría su nivel de motivación ante dificultades académicas.
 
 | Supuesto del TP1 | ¿Se confirmó? | Evidencia que lo sostiene o refuta |
-|------------------|---------------|------------------------------------|
-|1                 |Sí             | Múltiples encuestados señalaron explícitamente como dificultad "El formato en el que lo entrega la facultad (texto plano o PDF)"
-                                   |
-|------------------|---------------|------------------------------------|
-|2                 |Sí             |Validado como el punto de mayor frustración por los alumnos: "No darme cuenta de qué materias me van a bloquear otras más adelante"               |
-|------------------|---------------|------------------------------------|
-|3                 |Sí             |Alta demanda de la funcionalidad "Historial automático: Que mis materias aprobadas se sincronicen solas sin cargarlas a mano"                                    |
-|------------------|---------------|------------------------------------|
-|4                 |Sí             |Los datos reflejan un uso extendido de "Excel propio", "Cálculo manual con calculadora" y consultas en "Grupos de WhatsApp"                                    |
-|------------------|---------------|------------------------------------|
-|5                 |Sí             |Estudiantes de Educación Física y Nutrición indicaron explícitamente la complejidad de "Entender la tabla de equivalencias"                                    |
-|------------------|---------------|------------------------------------|
-|6                 |No             |Los estudiantes se limitan a usar Intraconsulta por "Prueba y error" en el momento, sin conocer planes del departamento                                    |
-|------------------|---------------|------------------------------------|
-|7                 |Sí             |Masiva selección de opciones orientadas a incorporar "Indicadores duros de progreso" y "Esquemas de semáforos por colores"                                    |
-|------------------|---------------|------------------------------------|
+| :--- | :--- | :--- |
+| 1 | Sí | Múltiples encuestados señalaron explícitamente como dificultad "El formato en el que lo entrega la facultad (texto plano o PDF)" |
+| 2 | Sí | Validado como el punto de mayor frustración por los alumnos: "No darme cuenta de qué materias me van a bloquear otras más adelante" |
+| 3 | Sí | Alta demanda de la funcionalidad "Historial automático: Que mis materias aprobadas se sincronicen solas sin cargarlas a mano" |
+| 4 | Sí | Los datos reflejan un uso extendido de "Excel propio", "Cálculo manual con calculadora" y consultas en "Grupos de WhatsApp" |
+| 5 | Sí | Estudiantes de Educación Física y Nutrición indicaron explícitamente la complejidad de "Entender la tabla de equivalencias" |
+| 6 | No | Los estudiantes se limitan a usar Intraconsulta por "Prueba y error" en el momento, sin conocer planes del departamento |
+| 7 | Sí | Masiva selección de opciones orientadas a incorporar "Indicadores duros de progreso" y "Esquemas de semáforos por colores" |
 
    ### 6. Hipótesis de valor
    Creemos que los estudiantes de los primeros años de la UNLaM (1° y 2° año de cursada) tienen el problema de la desorientación en la planificación de sus cuatrimestres debido a la opacidad de los planes de estudio en PDF y la consecuente frustración de incurrir en bloqueos involuntarios de correlatividades por no visualizar el camino crítico. Nuestra solución es QuickMap: una plataforma interactiva basada en un mapa de red de correlatividades con código de colores (semáforo), proyecciones predictivas de trayectorias óptimas y sincronización automatizada del historial académico. Sabremos que estamos en lo correcto cuando logremos que el 80% de los usuarios testeados en el MVP del TP5 utilicen la proyección del camino crítico para estructurar su simulación de inscripción, y declaren una reducción significativa en el tiempo invertido en calcular su promedio y verificar sus materias habilitadas.
